@@ -1,0 +1,273 @@
+\documentclass{article}
+\usepackage{amsmath} % For advanced math environments
+\usepackage{geometry} % For setting page margins
+\usepackage{circuitikz} % For drawing circuits
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\title{ENGR 305 Lab 5}
+\author{Sean Balbale}
+\date{\today}
+\maketitle
+
+\section*{Part 1: NMOS in Saturation Mode}
+This part requires designing the circuit to meet specific operating conditions. The goal is to find the values of the drain resistor ($R_D$) and the source resistor ($R_S$).
+
+\subsection*{Given Parameters}
+\begin{itemize}
+  \item Drain Current: $I_D = 1.0 \text{ mA}$
+  \item Drain Voltage: $V_D = 5.0 \text{ V}$
+  \item Supply Voltages: $V_{DD} = +15 \text{ V}$, $V_{SS} = -15 \text{ V}$
+  \item Threshold Voltage: $V_T = 2.0 \text{ V}$
+  \item Process Parameter: $\mu_n C_{ox} = 100 \ \mu\text{A/V}^2$
+  \item Transistor Dimensions: $W = 32 \ \mu\text{m}$, $L = 1 \ \mu\text{m}$
+\end{itemize}
+
+\subsection*{1. Circuit Sketch}
+The circuit is a common-source NMOS amplifier with source degeneration. The gate is connected to ground ($V_G = 0 \text{ V}$), the drain is connected to $V_{DD}$ through $R_D$, and the source is connected to $V_{SS}$ through $R_S$.
+% Figure 1: Common Source NMOS Amplifier with Source Degeneration
+\begin{center}
+  \begin{circuitikz}
+    % Define the coordinates for the supply rails
+    \def\Vdd{3}
+    \def\Vss{-3}
+
+    % Draw the NMOS transistor at the origin (0,0)
+    \node[nmos] (mos) at (0,0) {};
+
+    % Draw the gate circuit (connected to ground)
+    \draw (mos.G) -- ++(-1,0) node[ground] {};
+
+    % Draw the drain circuit
+    \draw (mos.D) to[R, l=$R_D$, i<=$I_D$] (0,\Vdd) node[vcc] {$V_{DD}$};
+
+    % Add the output voltage label at the drain
+    \draw (mos.D) node[circ, right] {} node[right] {$V_D$};
+
+    % Draw the source circuit
+    \draw (mos.S) to[R, l=$R_S$, i<=$I_D$] (0,\Vss) node[vee] {$V_{SS}$};
+
+    % Add a title for the figure
+    \node[above] at (current bounding box.north) {\textbf{Part 1: NMOS in Saturation Mode}};
+  \end{circuitikz}
+\end{center}
+
+\subsection*{2. Calculation of $R_D$}
+The value of the drain resistor, $R_D$, can be found using Ohm's law. The voltage drop across $R_D$ is the difference between the positive supply rail ($V_{DD}$) and the desired drain voltage ($V_D$). The current flowing through it is the drain current, $I_D$.
+\[ V_{RD} = V_{DD} - V_D \]
+\[ R_D = \frac{V_{DD} - V_D}{I_D} \]
+Plugging in the given values:
+\[ R_D = \frac{15 \text{ V} - 5.0 \text{ V}}{1.0 \text{ mA}} = \frac{10 \text{ V}}{1.0 \times 10^{-3} \text{ A}} = 10,000 \ \Omega \]
+So, the required drain resistor is \textbf{$R_D = 10 \text{ k}\Omega$}.
+
+\subsection*{3. Calculation of Overdrive Voltage ($V_{OV}$)}
+Since the transistor is operating in saturation, we use the saturation current equation to find the overdrive voltage ($V_{OV} = V_{GS} - V_T$).
+\[ I_D = \frac{1}{2} \mu_n C_{ox} \left(\frac{W}{L}\right) (V_{GS} - V_T)^2 = \frac{1}{2} k'_n \left(\frac{W}{L}\right) V_{OV}^2 \]
+First, let's calculate the aspect ratio, $W/L$:
+\[ \frac{W}{L} = \frac{32 \ \mu\text{m}}{1 \ \mu\text{m}} = 32 \]
+Now, rearrange the equation to solve for $V_{OV}$:
+\[ V_{OV} = \sqrt{\frac{2 I_D}{\mu_n C_{ox} \left(\frac{W}{L}\right)}} \]
+Plugging in the values:
+\[ V_{OV} = \sqrt{\frac{2 \times (1.0 \times 10^{-3} \text{ A})}{(100 \times 10^{-6} \text{ A/V}^2) \times 32}} = \sqrt{\frac{2 \times 10^{-3}}{3.2 \times 10^{-3}}} = \sqrt{0.625} \approx 0.791 \text{ V} \]
+The required overdrive voltage is \textbf{$V_{OV} \approx 0.791 \text{ V}$}.
+
+\subsection*{4. Calculation of $V_{GS}$ and $V_S$}
+With $V_{OV}$ and $V_T$ known, we can find the gate-source voltage, $V_{GS}$.
+\[ V_{GS} = V_{OV} + V_T = 0.791 \text{ V} + 2.0 \text{ V} = 2.791 \text{ V} \]
+The gate of the transistor is connected to ground, so $V_G = 0 \text{ V}$. We can use this to find the source voltage, $V_S$.
+\[ V_{GS} = V_G - V_S \implies V_S = V_G - V_{GS} \]
+\[ V_S = 0 \text{ V} - 2.791 \text{ V} = -2.791 \text{ V} \]
+The calculated voltages are \textbf{$V_{GS} \approx 2.791 \text{ V}$} and \textbf{$V_S \approx -2.791 \text{ V}$}.
+
+\subsection*{5. Calculation of $R_S$}
+Finally, we can find the source resistor, $R_S$, using Ohm's law. The voltage drop across $R_S$ is the difference between the source voltage ($V_S$) and the negative supply rail ($V_{SS}$). The current is the source current, $I_S$, which equals $I_D$.
+\[ V_{RS} = V_S - V_{SS} \]
+\[ R_S = \frac{V_S - V_{SS}}{I_D} \]
+Plugging in the values:
+\[ R_S = \frac{-2.791 \text{ V} - (-15 \text{ V})}{1.0 \text{ mA}} = \frac{12.209 \text{ V}}{1.0 \times 10^{-3} \text{ A}} \approx 12,209 \ \Omega \]
+The required source resistor is \textbf{$R_S \approx 12.2 \text{ k}\Omega$}.
+
+\subsection*{6. Post-Measurement Exercise}
+This section addresses the post-measurement questions for the NMOS circuit
+biased in the saturation region.
+
+\subsubsection*{Measured Voltages: $V_{GS}$ and $V_{DS}$} Based on the measurement
+data, the measured gate-to-source voltage is \textbf{$V_{GS} = 1.3994 \text{
+V}$}.
+
+The drain-to-source voltage, $V_{DS}$, is calculated from the measured drain
+and source voltages:
+\begin{itemize}
+  \item $V_D = 3.909 \text{ V}$
+  \item $V_S =
+    -1.3994 \text{ V}$
+\end{itemize} $$ V_{DS} = V_D - V_S = 3.909 \text{ V} - (-1.
+3994 \text{ V}) = 5.3084 \text{ V} $$
+
+\subsubsection*{Comparison and Discrepancies} Here's a comparison of the measured
+and calculated values:
+\begin{itemize}
+  \item \textbf{$V_{GS}$}: Measured was
+    \textbf{$1.3994 \text{ V}$}, while the calculated value was \textbf{$2.791
+    \text{ V}$}.
+  \item \textbf{$V_{DS}$}: Measured was \textbf{$5.3084 \text{ V}$},
+    while the calculated value was $V_D - V_S = 5.0 \text{ V} - (-2.791 \text{ V}) =
+    \textbf{7.791 V}$.
+\end{itemize} The significant discrepancies are primarily due
+to the difference between the \textbf{assumed threshold voltage ($V_T = 2.0
+\text{ V}$)} used in the calculations and the actual $V_T$ of the 2N7000
+transistor used in the experiment. The actual $V_T$ is much lower, meaning the
+transistor requires a smaller $V_{GS}$ to turn on and conduct the target current.
+This lower required $V_{GS}$ directly leads to a less negative $V_S$ and a
+lower overall $V_{DS}$. Minor differences in resistor values and power supply
+voltages also contribute to the deviation.
+
+\subsubsection*{Measured Drain Current ($I_D$)} The measured drain current, $I_D$,
+can be calculated using the measured voltages and resistor values.
+
+\textbf{1. Using the drain resistor ($R_D$)}
+\begin{itemize}
+  \item
+    $V_{+} = 15.027 \text{ V}$
+  \item $V_D = 3.909 \text{ V}$
+  \item $R_D = 9776.7 \,
+    \Omega$
+\end{itemize} $$ I_D = \frac{V_{+} - V_D}{R_D} = \frac{15.027 \text{ V}
+- 3.909 \text{ V}}{9776.7 \, \Omega} \approx 1.137 \text{ mA} $$
+
+\textbf{2. Using the source resistor ($R_S$)}
+\begin{itemize}
+  \item
+    $V_S = -1.3994 \text{ V}$
+  \item $V_{-} = -15.03 \text{ V}$
+  \item $R_S = 12022.
+    325 \, \Omega$
+\end{itemize} $$ I_D = \frac{V_S - V_{-}}{R_S} = \frac{-1.3994
+\text{ V} - (-15.03 \text{ V})}{12022.325 \, \Omega} \approx 1.134 \text{ mA} $$
+Both calculations yield a consistent result. The measured drain current is
+approximately \textbf{$1.14 \text{ mA}$}, which is reasonably close to the
+design target of $1.0 \text{ mA}$.
+
+\newpage
+
+\section*{Part 2: Diode-Connected NMOS}
+In this configuration, the gate is connected directly to the drain ($V_G = V_D$). The goal is to find the values of $V_S$, $V_D$, and $R_D$.
+
+\subsection*{Given Parameters}
+\begin{itemize}
+  \item Drain Current: $I_D = 1.0 \text{ mA}$
+  \item Source Resistor: $R_S = 15 \text{ k}\Omega$
+  \item Supply Voltages: $V_{+} = +15 \text{ V}$, $V_{-} = -15 \text{ V}$
+  \item Transistor parameters are the same as in Part 1.
+\end{itemize}
+\begin{center}
+  \begin{circuitikz}
+    % Define the coordinates for the supply rails
+    \def\Vdd{3}
+    \def\Vss{-3}
+
+    % Draw the NMOS transistor at the origin (0,0)
+    \node[nmos] (mos) at (0,0) {};
+
+    % Define the drain node for easier connection
+    \coordinate (drain_node) at (mos.D);
+
+    % Draw the drain circuit
+    \draw (drain_node) to[R, l=$R_D$, i<=$I_D$] (0,\Vdd) node[vcc] {$V_{+}$};
+
+    % Draw the diode-connection (drain to gate)
+    \draw (drain_node) -- ++(-1.5,0) |- (mos.G);
+    \fill (drain_node) circle (2pt); % Add a dot to show the connection point
+
+    % Draw the source circuit
+    \draw (mos.S) to[R, l=$R_S$] (0,\Vss) node[vee] {$V_{-}$};
+
+    % Add a title for the figure
+    \node[above] at (current bounding box.north) {\textbf{Part 2: Diode-Connected NMOS}};
+  \end{circuitikz}
+\end{center}
+
+\subsection*{1. Operating Region of the Transistor}
+For a diode-connected NMOS, the drain and gate are at the same potential, meaning \textbf{$V_{DS} = V_{GS}$}.
+The condition for an NMOS to be in the saturation region is $V_{DS} \ge V_{GS} - V_T$. Substituting $V_{GS}$ for $V_{DS}$, the condition becomes:
+\[ V_{GS} \ge V_{GS} - V_T \implies 0 \ge -V_T \implies V_T \ge 0 \]
+Since this is an enhancement-type NMOS, $V_T$ is positive ($+2.0 \text{ V}$), so this condition is always met when the transistor is on. Therefore, the diode-connected transistor operates in the \textbf{saturation region}.
+
+\subsection*{2. Calculation of Overdrive Voltage ($V_{OV}$)}
+The calculation for $V_{OV}$ is identical to Part 1 because the drain current ($I_D = 1.0 \text{ mA}$) and the transistor parameters are the same.
+\[ V_{OV} = \sqrt{\frac{2 I_D}{\mu_n C_{ox} \left(\frac{W}{L}\right)}} \approx 0.791 \text{ V} \]
+The overdrive voltage is \textbf{$V_{OV} \approx 0.791 \text{ V}$}.
+
+\subsection*{3. Calculation of $V_S$ and $V_D$}
+First, let's find the source voltage, $V_S$.
+\[ V_S = V_{-} + (I_D \times R_S) \]
+\[ V_S = -15 \text{ V} + (1.0 \text{ mA} \times 15 \text{ k}\Omega) = -15 \text{ V} + 15 \text{ V} = 0 \text{ V} \]
+Next, we find the drain voltage, $V_D$. We first need $V_{GS}$:
+\[ V_{GS} = V_{OV} + V_T = 0.791 \text{ V} + 2.0 \text{ V} = 2.791 \text{ V} \]
+Since the gate is connected to the drain, $V_G = V_D$. Therefore:
+\[ V_{GS} = V_G - V_S = V_D - V_S \]
+\[ V_D = V_{GS} + V_S = 2.791 \text{ V} + 0 \text{ V} = 2.791 \text{ V} \]
+The calculated voltages are \textbf{$V_S = 0 \text{ V}$} and \textbf{$V_D \approx 2.791 \text{ V}$}.
+
+\subsection*{4. Calculation of $R_D$}
+Finally, we calculate the drain resistor, $R_D$, using Ohm's law.
+\[ R_D = \frac{V_{+} - V_D}{I_D} \]
+\[ R_D = \frac{15 \text{ V} - 2.791 \text{ V}}{1.0 \text{ mA}} = \frac{12.209 \text{ V}}{1.0 \times 10^{-3} \text{ A}} \approx 12,209 \ \Omega \]
+The required drain resistor is \textbf{$R_D \approx 12.2 \text{ k}\Omega$}.
+
+\subsection*{5. Post-Measurement Exercise}
+This section addresses the post-measurement questions for the diode-connected
+NMOS circuit.
+
+\subsubsection*{Comparison and Discrepancies} Here's a comparison of the key
+measured and calculated values for the circuit:
+\begin{itemize}
+  \item
+    \textbf{$V_D$}: Measured was \textbf{$2.098 \text{ V}$}, while the calculated
+    value was \textbf{$2.791 \text{ V}$}.
+  \item \textbf{$V_S$}: Measured was
+    \textbf{$0.7488 \text{ V}$}, while the calculated value was \textbf{$0 \text{
+    V}$}.
+\end{itemize} The discrepancies can be explained as follows:
+\begin{itemize}
+  \item The difference in \textbf{$V_D$} is, again, primarily
+    caused by the \textbf{assumed $V_T$ of $2.0 \text{ V}$} being much higher than
+    the actual $V_T$ of the physical transistor. A lower actual $V_T$ results in a
+    smaller required $V_{GS}$ (and therefore $V_D$) to achieve the target current.
+  \item The difference in \textbf{$V_S$} is not an error but a result of using a
+    real resistor. The pre-lab calculation of $V_S=0 \text{ V}$ was based on the
+    negative supply ($V_- = -15 \text{ V}$) being perfectly balanced by the voltage
+    drop across an ideal $R_S = 15 \text{ k}\Omega$ with exactly $I_D=1.0 \text{
+    mA}$ flowing through it. The actual measured resistance was $R_S = 14.791 \text{
+    k}\Omega$ and the actual current was slightly over $1.0 \text{ mA}$, resulting
+    in a measured $V_S$ of $0.7488 \text{ V}$ instead of exactly $0 \text{ V}$.
+\end{itemize}
+
+\subsubsection*{Measured Drain Current ($I_D$)} The measured drain current, $I_D$,
+is calculated using the measured component values.
+
+\textbf{1. Using the drain resistor ($R_D$)}
+\begin{itemize}
+  \item
+    $V_{+} = 15.027 \text{ V}$
+  \item $V_D = 2.098 \text{ V}$
+  \item $R_D = 12022.325
+    \, \Omega$
+\end{itemize} $$ I_D = \frac{V_{+} - V_D}{R_D} = \frac{15.027 \text{
+V} - 2.098 \text{ V}}{12022.325 \, \Omega} \approx 1.075 \text{ mA} $$
+
+\textbf{2. Using the source resistor ($R_S$)}
+\begin{itemize}
+  \item
+    $V_S = 0.7488 \text{ V}$
+  \item $V_{-} = -15.03 \text{ V}$
+  \item $R_S = 14791 \,
+    \Omega$
+\end{itemize} $$ I_D = \frac{V_S - V_{-}}{R_S} = \frac{0.7488 \text{ V}
+- (-15.03 \text{ V})}{14791 \, \Omega} \approx 1.067 \text{ mA} $$ The results
+from both methods are consistent. The measured drain current is approximately
+\textbf{$1.07 \text{ mA}$}, very close to the design specification of $1.0
+\text{ mA}$.
+
+\end{document}
