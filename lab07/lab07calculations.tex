@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage{amsmath} % For advanced math environments
+\usepackage{geometry} % For setting page margins
+\usepackage{circuitikz} % For drawing circuits
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\title{ENGR 305 Lab \#7: NPN at DC}
+\author{Sean Balbale}
+\date{\today}
+\maketitle
+
+\section*{Part 1: NPN in Active Mode}
+This section requires designing the circuit such that the NPN transistor is biased in the active region, meeting the specified operating conditions.
+
+\subsection*{Given Parameters}
+\begin{itemize}
+  \item Collector Current ($I_C$): $1 \text{ mA}$
+  \item Base Voltage ($V_B$): $0 \text{ V}$
+  \item Collector Voltage ($V_C$): $+5 \text{ V}$
+  \item Supply Voltages: $V_{+} = +15 \text{ V}$, $V_{-} = -15 \text{ V}$
+  \item DC Current Gain ($\beta$): $100$
+\end{itemize}
+
+\subsection*{Circuit Diagram}
+The circuit is a standard four-resistor biasing network for an NPN BJT.
+\begin{center}
+  \begin{circuitikz}
+    % Define the coordinates for the supply rails
+    \def\Vdd{3}
+    \def\Vss{-3}
+
+    % Draw the NPN transistor at the origin (0,0)
+    \node[npn, anchor=B] (bjt) at (0,0) {};
+
+    % Draw the base circuit
+    \draw (bjt.B) -- ++(-1.5,0) node[circ] {};
+    \coordinate (base_node) at (-1.5, 0);
+    \draw (base_node) to[R, l=$R_1$] (-1.5, \Vdd) node[vcc] {$V_{+}$};
+    \draw (base_node) to[R, l=$R_2$] (-1.5, \Vss) node[vee] {$V_{-}$};
+    \draw (bjt.B) node[above left] {$V_B$};
+
+    % Draw the collector circuit
+    \draw (bjt.C) to[R, l=$R_C$] (1.5, \Vdd) node[vcc] {$V_{+}$};
+    \draw (bjt.C) node[circ, right] {} node[above right] {$V_C$};
+
+    % Draw the emitter circuit
+    \draw (bjt.E) to[R, l=$R_E$] (1.5, \Vss) node[vee] {$V_{-}$};
+    \draw (bjt.E) node[circ, right] {} node[below right] {$V_E$};
+
+    % Add a title for the figure
+    \node[above=0.5cm] at (current bounding box.north) {\textbf{Part 1 \& 2: NPN Biasing Circuit}};
+  \end{circuitikz}
+\end{center}
+
+\subsection*{1. Calculate Base and Emitter Currents ($I_B$ and $I_E$)}
+The base current ($I_B$) is found by dividing the collector current by the DC current gain, $\beta$.
+\[ I_{B} = \frac{I_{C}}{\beta} = \frac{1 \text{ mA}}{100} = 0.01 \text{ mA} = \textbf{10 } \mu\textbf{A} \]
+The emitter current ($I_E$) is the sum of the collector and base currents.
+\[ I_{E} = I_{C} + I_{B} = 1 \text{ mA} + 0.01 \text{ mA} = \textbf{1.01 mA} \]
+
+\subsection*{2. Calculate Emitter Voltage ($V_E$)}
+Assuming the transistor is in the active region, the voltage drop from base to emitter ($V_{BE}$) is approximately $0.7 \text{ V}$.
+\[ V_{BE} = V_B - V_E \approx 0.7 \text{ V} \]
+\[ V_E = V_B - 0.7 \text{ V} = 0 \text{ V} - 0.7 \text{ V} = \textbf{-0.7 V} \]
+
+\subsection*{3. Calculate Resistor Values ($R_E$ and $R_C$)}
+Using Ohm's law, we can find the required resistance for the emitter and collector resistors.
+\[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{-0.7 \text{ V} - (-15 \text{ V})}{1.01 \text{ mA}} = \frac{14.3 \text{ V}}{1.01 \text{ mA}} \approx \textbf{14.16 k}\Omega \]
+\[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 5 \text{ V}}{1 \text{ mA}} = \frac{10 \text{ V}}{1 \text{ mA}} = \textbf{10 k}\Omega \]
+
+\subsection*{4. Calculate Voltage Divider Resistors ($R_1$ and $R_2$)}
+The base voltage is set by the voltage divider. Since we need $V_B = 0 \text{ V}$ with symmetric supply rails ($\pm 15 \text{ V}$), the resistors must be equal.
+\[ V_{B} = \frac{R_2 V_+ + R_1 V_-}{R_1 + R_2} \implies 0 = \frac{15R_2 - 15R_1}{R_1+R_2} \implies \textbf{R}_{\textbf{1}} = \textbf{R}_{\textbf{2}} \]
+The problem is not fully specified. To proceed, we make the divider "stiff" by setting the current through it to be about 10 times the base current ($10 \times 10 \mu\text{A} = 0.1 \text{ mA}$).
+\[ I_{divider} = \frac{V_+ - V_-}{R_1 + R_2} = \frac{30 \text{ V}}{R_1 + R_2} = 0.1 \text{ mA} \]
+\[ R_1 + R_2 = \frac{30 \text{ V}}{0.1 \text{ mA}} = 300 \text{ k}\Omega \]
+Since $R_1 = R_2$, the values are:
+\[ R_1 = R_2 = \textbf{150 k}\Omega \]
+
+\newpage
+
+\section*{Part 2: NPN in Saturation Mode}
+In this part, the circuit is redesigned to bias the NPN transistor in the saturation region.
+
+\subsection*{Given Parameters}
+\begin{itemize}
+  \item Collector Current ($I_C$): $1 \text{ mA}$
+  \item Emitter Current ($I_E$): $1.2 \text{ mA}$
+  \item Collector Voltage ($V_C$): $+2 \text{ V}$
+  \item Collector-Emitter Saturation Voltage ($V_{CE(sat)}$): $0.2 \text{ V}$
+  \item Supply Voltages: $V_{+} = +15 \text{ V}$, $V_{-} = -15 \text{ V}$
+\end{itemize}
+
+\subsection*{1. Calculate Emitter and Base Voltages ($V_E$ and $V_B$)}
+The emitter voltage ($V_E$) is found using the given $V_C$ and $V_{CE}$.
+\[ V_{CE} = V_C - V_E \implies V_E = V_C - V_{CE} \]
+\[ V_E = 2 \text{ V} - 0.2 \text{ V} = \textbf{1.8 V} \]
+For a saturated transistor, the base-emitter voltage drop ($V_{BE(sat)}$) is typically assumed to be $0.8 \text{ V}$.
+\[ V_{BE(sat)} = V_B - V_E \approx 0.8 \text{ V} \]
+\[ V_B = V_E + 0.8 \text{ V} = 1.8 \text{ V} + 0.8 \text{ V} = \textbf{2.6 V} \]
+
+\subsection*{2. Calculate Resistor Values ($R_C$ and $R_E$)}
+The resistor values are found using Ohm's law with the given specifications.
+\[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 2 \text{ V}}{1 \text{ mA}} = \frac{13 \text{ V}}{1 \text{ mA}} = \textbf{13 k}\Omega \]
+\[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{1.8 \text{ V} - (-15 \text{ V})}{1.2 \text{ mA}} = \frac{16.8 \text{ V}}{1.2 \text{ mA}} = \textbf{14 k}\Omega \]
+
+\subsection*{3. Calculate Forced Beta ($\beta_{forced}$)}
+First, calculate the base current ($I_B$) required to satisfy the given emitter and collector currents.
+\[ I_B = I_E - I_C = 1.2 \text{ mA} - 1 \text{ mA} = \textbf{0.2 mA} \]
+The forced beta is the ratio of $I_C$ to $I_B$ when the transistor is in saturation.
+\[ \beta_{forced} = \frac{I_C}{I_B} = \frac{1 \text{ mA}}{0.2 \text{ mA}} = \textbf{5} \]
+Since $\beta_{forced} \ll \beta_{active}$, the design will successfully drive the transistor into saturation.
+
+\subsection*{4. Calculate Voltage Divider Resistors ($R_1$ and $R_2$)}
+The voltage divider must provide $V_B = 2.6 \text{ V}$.
+\[ V_{B} = \frac{R_2 V_+ + R_1 V_-}{R_1 + R_2} \implies 2.6 = \frac{15R_2 - 15R_1}{R_1 + R_2} \]
+\[ 2.6(R_1 + R_2) = 15(R_2 - R_1) \implies 17.6 R_1 = 12.4 R_2 \implies R_2 \approx 1.42 R_1 \]
+Using the stiff divider rule (divider current $\approx 10 \times I_B = 10 \times 0.2 \text{ mA} = 2 \text{ mA}$):
+\[ R_1 + R_2 = \frac{V_+ - V_-}{I_{divider}} = \frac{30 \text{ V}}{2 \text{ mA}} = 15 \text{ k}\Omega \]
+Solving the system of equations:
+\[ R_1 + (1.42 R_1) = 15 \text{ k}\Omega \implies 2.42 R_1 = 15 \text{ k}\Omega \implies R_1 \approx \textbf{6.2 k}\Omega \]
+\[ R_2 = 15 \text{ k}\Omega - 6.2 \text{ k}\Omega = \textbf{8.8 k}\Omega \]
+
+\end{document}
