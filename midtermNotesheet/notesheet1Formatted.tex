@@ -1,0 +1,224 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{circuitikz} % Included from your template
+
+\setlength{\columnsep}{1cm}
+\setlength{\parindent}{0in}
+
+\begin{document}
+ENGR 305: Midterm Notesheet \hfill Chapters 3-5 \& HW 1-4 \hfill October 2025
+
+\begin{multicols}{3}
+% SECTION 1: Key Constants
+\section*{Key Constants \& Values}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Charge ($q$):} $1.602 \times 10^{-19} \text{ C}$
+    \item \textbf{Thermal Voltage ($V_T$):} at 300K, $V_T = kT/q \approx 25 \text{ mV}$
+    \item \textbf{Intrinsic Silicon ($n_i$):} at 300K, $\approx 1.5 \times 10^{10} \text{ cm}^{-3}$
+    \item \textbf{Permittivity of Si ($\epsilon_s$):} $1.04 \times 10^{-12} \text{ F/cm}$
+    \item \textbf{CVD Model:} $V_D \approx 0.7 \text{ V}$ (Silicon)
+\end{itemize}
+
+% SECTION 2: Chapter 3
+\section{Chapter 3: Semiconductors}
+
+\subsection*{Intrinsic Semiconductors}
+\begin{itemize}\itemsep0pt
+    \item Pure silicon. $n = p = n_i$
+    \item \textbf{Mass Action Law:} $np = n_i^2$
+\end{itemize}
+
+\subsection*{Doped Semiconductors}
+\begin{itemize}\itemsep0pt
+    \item \textbf{n-type:} Doped with Donors ($N_D$, e.g., P).
+    \begin{itemize}\itemsep0pt
+        \item Majority: electrons ($n_n \approx N_D$)
+        \item Minority: holes ($p_n = n_i^2 / N_D$)
+    \end{itemize}
+    \item \textbf{p-type:} Doped with Acceptors ($N_A$, e.g., B).
+    \begin{itemize}\itemsep0pt
+        \item Majority: holes ($p_p \approx N_A$)
+        \item Minority: electrons ($n_p = n_i^2 / N_A$)
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Current Flow}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Drift Current:} Due to E-field.
+    \[ J_{drift} = q(n\mu_n + p\mu_p)E \]
+    \item \textbf{Diffusion Current:} Due to $\nabla$concentration.
+    \[ J_p = -qD_p \frac{dp}{dx} \quad J_n = qD_n \frac{dn}{dx} \]
+\end{itemize}
+
+\subsection*{Einstein Relation}
+Connects mobility ($\mu$) and diffusion ($D$).
+\[ D_n = V_T \mu_n \quad D_p = V_T \mu_p \]
+
+\end{multicols}
+
+--- % New Section Divider
+
+\begin{multicols*}{2}
+
+% SECTION 3: Chapter 4
+\section{Chapter 4: Diodes}
+
+\subsection*{$pn$ Junction (Open Circuit)}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Depletion Region:} Forms at junction, clear of carriers.
+    \item \textbf{Built-in Voltage ($V_0$):}
+    \[ V_0 = V_T \ln\left(\frac{N_A N_D}{n_i^2}\right) \]
+    \item Drift current $I_S$ balances diffusion current $I_D$.
+\end{itemize}
+
+\subsection*{Diode I-V Models}
+\begin{enumerate}\itemsep0pt
+    \item \textbf{Exponential (Shockley):}
+    \[ i_D = I_S (e^{v_D / (nV_T)} - 1) \]
+    ($I_S \approx 10^{-15}$ A, $n \approx 1-2$, $V_T \approx 25$ mV).
+    For $v_D \gg V_T$, $i_D \approx I_S e^{v_D / (nV_T)}$.
+    
+    \item \textbf{CVD (Constant Voltage Drop):}
+    \begin{itemize}\itemsep0pt
+        \item ON: $v_D = 0.7 \text{ V}$ (0.7V battery)
+        \item OFF: $i_D = 0$ (open circuit)
+    \end{itemize}
+    
+    \item \textbf{Ideal Diode:}
+    \begin{itemize}\itemsep0pt
+        \item ON: $v_D = 0 \text{ V}$ (short circuit)
+        \item OFF: $i_D = 0$ (open circuit)
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Small-Signal Model (at bias Q)}
+\begin{enumerate}\itemsep0pt
+    \item Find DC bias current $I_D$.
+    \item Replace diode with \textbf{small-signal resistance ($r_d$)}:
+    \[ r_d = \frac{nV_T}{I_D} \]
+\end{enumerate}
+
+\subsection*{Zener Diode (Breakdown)}
+\begin{itemize}\itemsep0pt
+    \item Operates in reverse breakdown for voltage regulation.
+    \item Model: $V_Z = V_{Z0} + r_z I_Z$
+\end{itemize}
+
+\subsection*{Diode Capacitance}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Junction ($C_j$):} Reverse bias.
+    \[ C_j = \frac{C_{j0}}{(1 + V_R/V_0)^m} \]
+    \item \textbf{Diffusion ($C_d$):} Forward bias.
+    \[ C_d = \left(\frac{\tau_T}{V_T}\right) I_D \]
+\end{itemize}
+
+\subsection*{Rectifiers \& Peak Detector}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Rectifiers:} HW (1 diode), FW-CenterTap (2 diodes), FW-Bridge (4 diodes).
+    \item \textbf{Peak Rectifier (with Filter C):}
+    Capacitor $C$ smooths output.
+    \item \textbf{Ripple Voltage ($V_r$):}
+    \[ V_r \approx \frac{V_p}{fCR_L} = \frac{I_L}{fC} \quad \text{(HW)} \]
+    \[ V_r \approx \frac{V_p}{2fCR_L} = \frac{I_L}{2fC} \quad \text{(FW)} \]
+    \item Diode Current (avg):
+    \[ i_{D,avg} \approx I_L(1 + \pi\sqrt{2V_p/V_r}) \]
+\end{itemize}
+
+--- % New Section Divider
+
+% SECTION 4: Chapter 5
+\section{Chapter 5: MOSFETs}
+(Tables 5.1 \& 5.2 provided on exam)
+
+\subsection*{MOSFET Parameters}
+\begin{itemize}\itemsep0pt
+    \item \textbf{Threshold Voltage:} $V_t$ ($V_{tn} > 0$, $V_{tp} < 0$)
+    \item \textbf{Oxide Capacitance:} $C_{ox} = \epsilon_{ox} / t_{ox}$
+    \item \textbf{Process Transconductance:} $k_n' = \mu_n C_{ox}$, $k_p' = \mu_p C_{ox}$
+    \item \textbf{Transistor Transconductance:} $k_n = k_n'(W/L)$
+    \item \textbf{Overdrive Voltage ($V_{OV}$):}
+    \begin{itemize}\itemsep0pt
+        \item NMOS: $V_{OV} = V_{GS} - V_{tn}$
+        \item PMOS: $|V_{OV}| = V_{SG} - |V_{tp}|$
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Regions (NMOS)}
+\begin{enumerate}\itemsep0pt
+    \item \textbf{Cutoff:}
+    \begin{itemize}\itemsep0pt
+        \item \textbf{Cond:} $V_{GS} < V_{tn}$
+        \item \textbf{Current:} $i_D = 0$
+    \end{itemize}
+    
+    \item \textbf{Triode (Linear):}
+    \begin{itemize}\itemsep0pt
+        \item \textbf{Cond:} $V_{GS} \ge V_{tn}$ AND $V_{DS} < V_{OV}$
+        \item \textbf{Current:} $i_D = k_n \left[ (V_{GS} - V_{tn})V_{DS} - \frac{1}{2}V_{DS}^2 \right]$
+        \item Small $V_{DS}$: $r_{DS} = 1 / (k_n V_{OV})$
+    \end{itemize}
+    
+    \item \textbf{Saturation (Amplifier):}
+    \begin{itemize}\itemsep0pt
+        \item \textbf{Cond:} $V_{GS} \ge V_{tn}$ AND $V_{DS} \ge V_{OV}$
+        \item \textbf{Current:} $i_D = \frac{1}{2} k_n (V_{GS} - V_{tn})^2 = \frac{1}{2} k_n V_{OV}^2$
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Regions (PMOS)}
+Use $V_{SG}$, $V_{SD}$, $|V_{tp}|$, $k_p$.
+\begin{enumerate}\itemsep0pt
+    \item \textbf{Cutoff:} $V_{SG} < |V_{tp}|$ $\rightarrow$ $i_D = 0$
+    \item \textbf{Triode:} $V_{SG} \ge |V_{tp}|$ AND $V_{SD} < |V_{OV}|$
+    \[ i_D = k_p \left[ (V_{SG} - |V_{tp}|)V_{SD} - \frac{1}{2}V_{SD}^2 \right] \]
+    \item \textbf{Saturation:} $V_{SG} \ge |V_{tp}|$ AND $V_{SD} \ge |V_{OV}|$
+    \[ i_D = \frac{1}{2} k_p (V_{SG} - |V_{tp}|)^2 = \frac{1}{2} k_p |V_{OV}|^2 \]
+\end{enumerate}
+
+\subsection*{Channel-Length Modulation ($\lambda$)}
+\begin{itemize}\itemsep0pt
+    \item Models $\uparrow i_D$ with $\uparrow v_{DS}$ in saturation.
+    \item $i_D' = i_D (1 + \lambda v_{DS})$
+    \item \textbf{Output Resistance ($r_o$):}
+    \[ r_o = \frac{V_A}{I_D} \approx \frac{1}{\lambda I_D} \quad (V_A = 1/\lambda) \]
+\end{itemize}
+
+--- % New Section Divider
+
+% SECTION 5: HW Problem Solving
+\section{Problem-Solving Steps (HW)}
+
+\subsection*{DC Analysis of Diode Circuits}
+\begin{enumerate}\itemsep0pt
+    \item Assume a state for each diode (ON/OFF).
+    \item Model: ON $\rightarrow$ 0.7V source (CVD), OFF $\rightarrow$ open circuit.
+    \item Solve the linear circuit for $i_D$ and $v_D$.
+    \item \textbf{Check assumptions:}
+    \begin{itemize}\itemsep0pt
+        \item Assumed ON $\rightarrow$ Check if $i_D > 0$.
+        \item Assumed OFF $\rightarrow$ Check if $v_D < 0.7 \text{ V}$.
+    \end{itemize}
+    \item If wrong, change state and re-solve.
+\end{enumerate}
+
+\subsection*{DC Analysis of MOSFET Circuits}
+\begin{enumerate}\itemsep0pt
+    \item \textbf{Assume} region (usually \textbf{Saturation}).
+    \item Write $i_D$ equation for that region.
+    \item Write KVL/KCL for the circuit (e.g., for $V_G, V_S, V_D$).
+    \item Substitute relationships (e.g., $V_{OV} = V_{GS} - V_{tn}$).
+    \item Solve system for $i_D$ and node voltages.
+    \item \textbf{Check assumption:}
+    \begin{itemize}\itemsep0pt
+        \item Saturation: $V_{DS} \ge V_{OV}$ (NMOS)
+        \item Triode: $V_{DS} < V_{OV}$ (NMOS)
+        \item (Use $V_{SD}, |V_{OV}|$ for PMOS)
+    \end{itemize}
+    \item If wrong, re-assume region and re-solve.
+\end{enumerate}
+
+\end{multicols*}
+\end{document}
