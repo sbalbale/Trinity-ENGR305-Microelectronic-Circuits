@@ -1,0 +1,273 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+% Title
+\title{Engineering Midterm Notesheet\\Chapters 3-5}
+\author{ENGR 305}
+\date{} % No date
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\subsection*{Key Constants \& Values}
+\begin{itemize}
+    \item \textbf{Elementary Charge ($q$):} $1.602 \times 10^{-19} \text{ C}$
+    \item \textbf{Thermal Voltage ($V_T$) at 300K (Room Temp):} $V_T = kT/q = 25.9 \text{ mV}$
+    \item \textbf{Intrinsic Silicon ($n_i$) at 300K:} $\approx 1.5 \times 10^{10} \text{ carriers/cm}^3$ 
+    \item \textbf{Permittivity of Silicon ($\epsilon_s$):} $1.04 \times 10^{-12} \text{ F/cm}$
+    \item \textbf{Constant Voltage Drop (CVD) Model:} Assume $V_D \approx 0.7 \text{ V}$ for a conducting silicon diode unless specified otherwise.
+\end{itemize}
+
+\hrulefill
+
+\section*{Chapter 3: Semiconductors}
+
+\begin{itemize}
+    \item \textbf{Intrinsic Semiconductors:} Pure silicon ($Si$). Covalent bonds. At 0K, it's an insulator. At room temp, thermal generation creates free electrons and holes.
+    \begin{itemize}
+        \item $n = p = n_i$ (electron and hole concentrations are equal)
+        \item \textbf{Mass Action Law:} $np = n_i^2$ (holds for intrinsic and doped silicon in thermal equilibrium)
+    \end{itemize}
+    
+    \item \textbf{Doped Semiconductors:}
+    \begin{itemize}
+        \item \textbf{n-type:} Doped with a pentavalent element (e.g., Phosphorus). These are \textbf{donors} ($N_D$).
+        \begin{itemize}
+            \item Majority carriers: electrons ($n_n \approx N_D$)
+            \item Minority carriers: holes ($p_n = n_i^2 / N_D$)
+        \end{itemize}
+        \item \textbf{p-type:} Doped with a trivalent element (e.g., Boron). These are \textbf{acceptors} ($N_A$).
+        \begin{itemize}
+            \item Majority carriers: holes ($p_p \approx N_A$)
+            \item Minority carriers: electrons ($n_p = n_i^2 / N_A$)
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Current Flow Mechanisms:}
+    \begin{itemize}
+        \item \textbf{Drift Current:} Movement of carriers due to an electric field ($E$).
+        \begin{itemize}
+            \item Electron drift velocity: $v_{n-drift} = -\mu_n E$
+            \item Hole drift velocity: $v_{p-drift} = \mu_p E$
+            \item Total Drift Current Density ($J_{drift}$): $J_{drift} = q(n\mu_n + p\mu_p)E$
+            \item ($\mu_n$ and $\mu_p$ are electron and hole mobilities)
+        \end{itemize}
+        \item \textbf{Diffusion Current:} Movement of carriers from a high-concentration area to a low-concentration area (due to a concentration gradient).
+        \begin{itemize}
+            \item Hole Diffusion: $J_p = -qD_p \frac{dp}{dx}$
+            \item Electron Diffusion: $J_n = qD_n \frac{dn}{dx}$
+            \item ($D_n$ and $D_p$ are the diffusion constants)
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Einstein Relation:} Relates mobility ($\mu$) and diffusion constant ($D$).
+    \begin{itemize}
+        \item $D_n = V_T \mu_n$
+        \item $D_p = V_T \mu_p$
+    \end{itemize}
+\end{itemize}
+
+\hrulefill
+
+\section*{Chapter 4: Diodes}
+
+\begin{itemize}
+    \item \textbf{The $pn$ Junction (Open Circuit):}
+    \begin{itemize}
+        \item A \textbf{depletion region} (or space-charge region) forms at the junction, clear of free carriers.
+        \item Contains uncovered bound charges: positive donors ($N_D$) on the n-side, negative acceptors ($N_A$) on the p-side.
+        \item This charge creates a built-in voltage ($V_0$): $V_0 = V_T \ln\left(\frac{N_A N_D}{n_i^2}\right)$.
+        \item Two currents balance at equilibrium: \textbf{diffusion current} ($I_D$) and \textbf{drift current} ($I_S$). $I_S$ is the saturation current.
+    \end{itemize}
+    
+    \item \textbf{Diode I-V Models:}
+    \begin{enumerate}
+        \item \textbf{Exponential Model (Shockley Equation):} Most accurate.
+        \begin{itemize}
+            \item $i_D = I_S (e^{v_D / (nV_T)} - 1)$
+            \item $I_S$ is the saturation current (typically $10^{-15}$ A).
+            \item $n$ is the ideality factor (usually 1 to 2).
+            \item At room temp, $V_T \approx 25 \text{ mV}$.
+            \item For $v_D \gg V_T$, $i_D \approx I_S e^{v_D / (nV_T)}$.
+            \item A 60mV increase in $v_D$ (for $n=1$) increases $i_D$ by $\approx 10\times$.
+        \end{itemize}
+        \item \textbf{Constant-Voltage-Drop (CVD) Model:} Most common for hand analysis.
+        \begin{itemize}
+            \item If conducting: $v_D = 0.7 \text{ V}$ (acts as a 0.7V battery).
+            \item If off: $i_D = 0$ (acts as an open circuit).
+            \item Turn-on threshold is $v_D \approx 0.5 \text{ V}$ (cut-in voltage).
+        \end{itemize}
+        \item \textbf{Ideal Diode Model:} A simple switch.
+        \begin{itemize}
+            \item If conducting (forward-biased): $v_D = 0 \text{ V}$ (short circuit).
+            \item If off (reverse-biased): $i_D = 0$ (open circuit).
+        \end{itemize}
+    \end{enumerate}
+    
+    \item \textbf{Small-Signal Model (for DC bias point Q):}
+    \begin{itemize}
+        \item First, solve for DC values ($I_D, V_D$) using the CVD or exponential model.
+        \item Then, for small ac signals, replace the diode with its \textbf{small-signal resistance ($r_d$)}:
+        \item $r_d = \frac{nV_T}{I_D}$
+    \end{itemize}
+    
+    \item \textbf{Zener Diode (Breakdown Region):}
+    \begin{itemize}
+        \item Used for voltage regulation. Operates in reverse breakdown.
+        \item Model: $V_Z = V_{Z0} + r_z I_Z$
+        \begin{itemize}
+            \item $V_{Z0}$: Zener voltage at $I_Z \approx 0$.
+            \item $r_z$: Zener incremental resistance.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Diode Capacitance:}
+    \begin{itemize}
+        \item \textbf{Junction/Depletion Capacitance ($C_j$):} Dominant in reverse bias.
+        \begin{itemize}
+            \item $C_j = \frac{C_{j0}}{(1 + V_R/V_0)^m}$ (where $m \approx 0.5$ for abrupt junction)
+        \end{itemize}
+        \item \textbf{Diffusion Capacitance ($C_d$):} Dominant in forward bias. Proportional to current.
+        \begin{itemize}
+            \item $C_d = \left(\frac{\tau_T}{V_T}\right) I_D$ (where $\tau_T$ is transit time)
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Rectifier Circuits:}
+    \begin{itemize}
+        \item \textbf{Half-Wave (HW):} One diode. PIV = $V_s(\text{peak})$. $V_O(\text{peak}) = V_s(\text{peak}) - V_D$.
+        \item \textbf{Full-Wave (FW) - Center-Tapped:} Two diodes. PIV = $2V_s(\text{config}) - V_D$. $V_O(\text{peak}) = V_s(\text{peak}) - V_D$.
+        \item \textbf{Full-Wave (FW) - Bridge:} Four diodes. PIV = $V_s(\text{peak}) - V_D$. $V_O(\text{peak}) = V_s(\text{peak}) - 2V_D$.
+    \end{itemize}
+    
+    \item \textbf{Peak Rectifier (HW with Filter Capacitor C):}
+    \begin{itemize}
+        \item Output $V_O$ is approximately the peak input, $V_p$, minus a small \textbf{ripple voltage ($V_r$)}.
+        \item Capacitor discharges through $R_L$ when diode is off.
+        \item For $CR_L \gg T$ (period of input): $V_r \approx \frac{V_p}{fCR_L} = \frac{I_L}{fC}$
+        \item For FW Rectifier: $V_r \approx \frac{V_p}{2fCR_L} = \frac{I_L}{2fC}$
+        \item Diode conducts for a short interval ($\Delta t$) near the peak to replenish capacitor charge.
+        \item Diode current is large and pulsed: $i_{D,avg} \approx I_L(1 + \pi\sqrt{2V_p/V_r})$.
+    \end{itemize}
+\end{itemize}
+
+\hrulefill
+
+\section*{Chapter 5: MOSFETs}
+
+\begin{itemize}
+    \item \textbf{Structure:} n-channel (NMOS) and p-channel (PMOS). Terminals are Gate (G), Drain (D), Source (S), Body (B).
+    \item \textbf{Parameters:}
+    \begin{itemize}
+        \item \textbf{Threshold Voltage ($V_t$):} $V_{tn}$ for NMOS (positive), $V_{tp}$ for PMOS (negative).
+        \item \textbf{Oxide Capacitance ($C_{ox}$):} $C_{ox} = \epsilon_{ox} / t_{ox}$.
+        \item \textbf{Process Transconductance ($k'$):} $k_n' = \mu_n C_{ox}$, $k_p' = \mu_p C_{ox}$.
+        \item \textbf{Transistor Transconductance ($k$):} $k_n = k_n'(W/L)$, $k_p = k_p'(W/L)$.
+    \end{itemize}
+    \item \textbf{Overdrive Voltage ($V_{OV}$):} The key control voltage.
+    \begin{itemize}
+        \item NMOS: $V_{OV} = V_{GS} - V_{tn}$
+        \item PMOS: $|V_{OV}| = V_{SG} - |V_{tp}|$
+    \end{itemize}
+    \item \textbf{Channel-Length Modulation ($\lambda$):}
+    \begin{itemize}
+        \item Models the slight increase in $i_D$ with $v_{DS}$ in saturation.
+        \item $i_D' = i_D (1 + \lambda v_{DS})$
+        \item \textbf{Output Resistance ($r_o$):} $r_o = \frac{V_A}{I_D} \approx \frac{1}{\lambda I_D}$ (where $V_A = 1/\lambda$ is the Early Voltage).
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Regions of Operation (Tables 5.1 \& 5.2 are provided on exam)}
+
+\subsubsection*{NMOS Transistor}
+\begin{enumerate}
+    \item \textbf{Cutoff:}
+    \begin{itemize}
+        \item \textbf{Condition:} $V_{GS} < V_{tn}$
+        \item \textbf{Current:} $i_D = 0$
+    \end{itemize}
+    
+    \item \textbf{Triode (Linear) Region:}
+    \begin{itemize}
+        \item \textbf{Conditions:} $V_{GS} \ge V_{tn}$ AND $V_{DS} < V_{OV}$ (or $V_{GD} > V_{tn}$)
+        \item \textbf{Current:} $i_D = k_n \left[ (V_{GS} - V_{tn})V_{DS} - \frac{1}{2}V_{DS}^2 \right]$
+        \item Acts like a voltage-controlled resistor. For small $V_{DS}$: $r_{DS} = \frac{1}{k_n V_{OV}}$.
+    \end{itemize}
+    
+    \item \textbf{Saturation Region:} (Used for amplifiers)
+    \begin{itemize}
+        \item \textbf{Conditions:} $V_{GS} \ge V_{tn}$ AND $V_{DS} \ge V_{OV}$ (or $V_{GD} \le V_{tn}$)
+        \item \textbf{Current:} $i_D = \frac{1}{2} k_n (V_{GS} - V_{tn})^2 = \frac{1}{2} k_n V_{OV}^2$
+        \item Acts like a voltage-controlled current source.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection*{PMOS Transistor} (Use $V_{SG}$, $V_{SD}$, $|V_{tp}|$, $k_p$)
+\begin{enumerate}
+    \item \textbf{Cutoff:}
+    \begin{itemize}
+        \item \textbf{Condition:} $V_{SG} < |V_{tp}|$
+        \item \textbf{Current:} $i_D = 0$
+    \end{itemize}
+    
+    \item \textbf{Triode (Linear) Region:}
+    \begin{itemize}
+        \item \textbf{Conditions:} $V_{SG} \ge |V_{tp}|$ AND $V_{SD} < |V_{OV}|$
+        \item \textbf{Current:} $i_D = k_p \left[ (V_{SG} - |V_{tp}|)V_{SD} - \frac{1}{2}V_{SD}^2 \right]$
+    \end{itemize}
+    
+    \item \textbf{Saturation Region:}
+    \begin{itemize}
+        \item \textbf{Conditions:} $V_{SG} \ge |V_{tp}|$ AND $V_{SD} \ge |V_{OV}|$
+        \item \textbf{Current:} $i_D = \frac{1}{2} k_p (V_{SG} - |V_{tp}|)^2 = \frac{1}{2} k_p |V_{OV}|^2$
+    \end{itemize}
+\end{enumerate}
+
+\hrulefill
+
+\section*{Homeworks 1-4: Problem-Solving Steps}
+
+\begin{itemize}
+    \item \textbf{DC Analysis of Diode Circuits:}
+    \begin{enumerate}
+        \item Assume a state for each diode (ON or OFF) based on inspection.
+        \item Model ON diodes as 0.7V sources (CVD model) and OFF diodes as open circuits.
+        \item Solve the resulting linear circuit for all currents and voltages.
+        \item \textbf{Check assumptions:}
+        \begin{itemize}
+            \item If a diode was assumed ON, check if $i_D > 0$.
+            \item If a diode was assumed OFF, check if $v_D < 0.7 \text{ V}$.
+        \end{itemize}
+        \item If any assumption is wrong, change the state of that diode and re-solve.
+    \end{enumerate}
+    
+    \item \textbf{DC Analysis of MOSFET Circuits (from Slides, e.g., Ex. 5.3, 5.6):}
+    \begin{enumerate}
+        \item \textbf{Assume} a region of operation for the MOSFET (usually \textbf{Saturation} for amplifiers).
+        \item Write the $i_D$ equation for that region (e.g., $i_D = \frac{1}{2} k_n V_{OV}^2$).
+        \item Write KVL/KCL equations for the rest of the circuit (e.g., $V_G = ...$, $V_S = ...$, $V_D = ...$).
+        \item Substitute known relationships (e.g., $V_{OV} = V_{GS} - V_{tn}$, $V_{GS} = V_G - V_S$, $i_D = i_S$).
+        \item Solve the system of equations for the unknown currents and node voltages (e.g., $i_D$, $V_S$, $V_D$).
+        \item \textbf{Check assumptions:}
+        \begin{itemize}
+            \item If Saturation was assumed: Verify that $V_{DS} \ge V_{OV}$ (for NMOS) or $V_{SD} \ge |V_{OV}|$ (for PMOS).
+            \item If Triode was assumed: Verify that $V_{DS} < V_{OV}$ (for NMOS) or $V_{SD} < |V_{OV}|$ (for PMOS).
+        \end{itemize}
+        \item If the assumption is wrong, re-assume the correct region and re-solve from Step 2.
+    \end{enumerate}
+    
+    \item \textbf{Small-Signal Diode Problems:}
+    \begin{enumerate}
+        \item First, solve the DC circuit (using CVD model) to find the DC bias current $I_D$.
+        \item Calculate the small-signal resistance: $r_d = nV_T / I_D$.
+        \item Create the small-signal equivalent circuit: Replace the diode with $r_d$, turn off DC voltage sources (short to ground), and turn off DC current sources (open circuit).
+        \item Solve the small-signal circuit for the required ac quantity (e.g., $v_o / v_i$).
+    \end{enumerate}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,438 @@
+% \documentclass[12pt]{article}
+% \usepackage[margin=1in]{geometry} % For setting page margins
+% \usepackage{amsmath} % For advanced math environments
+% \usepackage{graphicx} % For images
+% \usepackage{float} % For [H] placement
+% \usepackage{circuitikz} % For drawing circuits
+% \usepackage{booktabs} % For better tables
+% \usepackage[T1]{fontenc} % For proper character encoding
+
+% \author{Sean Balbale}
+% \title{ENGR 305 Lab 7 Report}
+% \date{\today}
+
+% \begin{document}
+
+% \maketitle
+% \thispagestyle{empty}
+
+% \newpage
+
+% \section*{Introduction}
+% The purpose of this lab was to design, build, and analyze two DC biasing circuits for a 2N3904 NPN Bipolar Junction Transistor (BJT). The first part involved designing a circuit to bias the transistor in the active region, a state essential for analog amplification. The second part involved designing a circuit to bias the transistor in the saturation region, which is commonly used in digital logic and switching applications.
+
+% The objective was to achieve specific operating points (e.g., $V_C$, $I_C$) by calculating the required resistor values for a four-resistor biasing network. The designs were then constructed and verified through hardware measurements, and the measured results were compared against the theoretical calculations.
+
+% \section*{Procedure}
+% The lab was divided into two parts, each requiring the design of a circuit based on the general-purpose four-resistor biasing topology shown in Figure 1.
+
+% \begin{figure}[H]
+%     \centering
+%     \begin{circuitikz}
+%         % Define the coordinates for the supply rails
+%         \def\Vdd{3}
+%         \def\Vss{-3}
+
+%         % Draw the NPN transistor at the origin (0,0)
+%         \node[npn, anchor=B] (bjt) at (0,0) {};
+
+%         % Draw the base circuit
+%         \draw (bjt.B) -- ++(-1.5,0) node[circ] {};
+%         \coordinate (base_node) at (-1.5, 0);
+%         \draw (base_node) to[R, l=$R_1$] (-1.5, \Vdd) node[vcc] {$V_{+}$};
+%         \draw (base_node) to[R, l=$R_2$] (-1.5, \Vss) node[vee] {$V_{-}$};
+%         \draw (bjt.B) node[above left] {$V_B$};
+
+%         % Draw the collector circuit
+%         \draw (bjt.C) to[R, l=$R_C$] (1.5, \Vdd) node[vcc] {$V_{+}$};
+%         \draw (bjt.C) node[circ, right] {} node[above right] {$V_C$};
+
+%         % Draw the emitter circuit
+%         \draw (bjt.E) to[R, l=$R_E$] (1.5, \Vss) node[vee] {$V_{-}$};
+%         \draw (bjt.E) node[circ, right] {} node[below right] {$V_E$};
+%     \end{circuitikz}
+%     \caption{General four-resistor NPN biasing circuit.}
+% \end{figure}
+
+% \subsection*{Part 1: NPN in Active Mode}
+% The first circuit was designed to bias the 2N3904 NPN transistor in the active region with the following target parameters:
+% \begin{itemize}
+%     \item Collector Current ($I_C$): $1 \text{ mA}$
+%     \item Base Voltage ($V_B$): $0 \text{ V}$
+%     \item Collector Voltage ($V_C$): $+5 \text{ V}$
+%     \item Supply Voltages: $V_{+} = +15 \text{ V}$, $V_{-} = -15 \text{ V}$
+%     \item Assumed DC Current Gain ($\beta$): $100$
+% \end{itemize}
+
+% \subsubsection*{Hand Calculations (Active Mode)}
+% \textbf{1. Base and Emitter Currents ($I_B$ and $I_E$)}
+% \[ I_{B} = \frac{I_{C}}{\beta} = \frac{1 \text{ mA}}{100} = 0.01 \text{ mA} = \textbf{10 } \mu\textbf{A} \]
+% \[ I_{E} = I_{C} + I_{B} = 1 \text{ mA} + 0.01 \text{ mA} = \textbf{1.01 mA} \]
+
+% \textbf{2. Emitter Voltage ($V_E$)}
+% Assuming the standard $V_{BE}$ drop for the active region:
+% \[ V_{BE} = V_B - V_E \approx 0.7 \text{ V} \]
+% \[ V_E = V_B - 0.7 \text{ V} = 0 \text{ V} - 0.7 \text{ V} = \textbf{-0.7 V} \]
+
+% \textbf{3. Resistor Values ($R_E$ and $R_C$)}
+% \[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{-0.7 \text{ V} - (-15 \text{ V})}{1.01 \text{ mA}} = \frac{14.3 \text{ V}}{1.01 \text{ mA}} \approx \textbf{14.16 k}\Omega \]
+% \[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 5 \text{ V}}{1 \text{ mA}} = \frac{10 \text{ V}}{1 \text{ mA}} = \textbf{10 k}\Omega \]
+
+% \textbf{4. Voltage Divider Resistors ($R_1$ and $R_2$)}
+% To set $V_B = 0 \text{ V}$ with symmetric supplies, $R_1$ must equal $R_2$.
+% \[ V_{B} = \frac{R_2 V_+ + R_1 V_-}{R_1 + R_2} \implies 0 = \frac{15R_2 - 15R_1}{R_1+R_2} \implies \textbf{R}_{\textbf{1}} = \textbf{R}_{\textbf{2}} \]
+% To ensure a "stiff" divider, the divider current was set to $10 \times I_B = 0.1 \text{ mA}$.
+% \[ R_1 + R_2 = \frac{V_+ - V_-}{I_{divider}} = \frac{30 \text{ V}}{0.1 \text{ mA}} = 300 \text{ k}\Omega \]
+% \[ R_1 = R_2 = \textbf{150 k}\Omega \]
+
+% \subsection*{Part 2: NPN in Saturation Mode}
+% The second circuit was designed to bias the transistor in the saturation region with the following parameters:
+% \begin{itemize}
+%     \item Collector Current ($I_C$): $1 \text{ mA}$
+%     \item Emitter Current ($I_E$): $1.2 \text{ mA}$
+%     \item Collector Voltage ($V_C$): $+2 \text{ V}$
+%     \item Assumed Collector-Emitter Saturation Voltage ($V_{CE(sat)}$): $0.2 \text{ V}$
+% \end{itemize}
+
+% \subsubsection*{Hand Calculations (Saturation Mode)}
+% \textbf{1. Emitter and Base Voltages ($V_E$ and $V_B$)}
+% \[ V_E = V_C - V_{CE} = 2 \text{ V} - 0.2 \text{ V} = \textbf{1.8 V} \]
+% Assuming $V_{BE(sat)} \approx 0.8 \text{ V}$:
+% \[ V_B = V_E + 0.8 \text{ V} = 1.8 \text{ V} + 0.8 \text{ V} = \textbf{2.6 V} \]
+
+% \textbf{2. Resistor Values ($R_C$ and $R_E$)}
+% \[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 2 \text{ V}}{1 \text{ mA}} = \frac{13 \text{ V}}{1 \text{ mA}} = \textbf{13 k}\Omega \]
+% \[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{1.8 \text{ V} - (-15 \text{ V})}{1.2 \text{ mA}} = \frac{16.8 \text{ V}}{1.2 \text{ mA}} = \textbf{14 k}\Omega \]
+
+% \textbf{3. Forced Beta ($\beta_{forced}$)}
+% The required base current is $I_B = I_E - I_C = 1.2 \text{ mA} - 1 \text{ mA} = \textbf{0.2 mA}$.
+% \[ \beta_{forced} = \frac{I_C}{I_B} = \frac{1 \text{ mA}}{0.2 \text{ mA}} = \textbf{5} \]
+% Since $5 \ll 100$, this design will drive the transistor into saturation.
+
+% \textbf{4. Voltage Divider Resistors ($R_1$ and $R_2$)}
+% The divider must provide $V_B = 2.6 \text{ V}$.
+% \[ 2.6 = \frac{15R_2 - 15R_1}{R_1 + R_2} \implies 17.6 R_1 = 12.4 R_2 \implies R_2 \approx 1.42 R_1 \]
+% Using the stiff divider rule ($I_{divider} \approx 10 \times I_B = 2 \text{ mA}$):
+% \[ R_1 + R_2 = \frac{30 \text{ V}}{2 \text{ mA}} = 15 \text{ k}\Omega \]
+% Solving the system of equations gives:
+% \[ R_1 + (1.42 R_1) = 15 \text{ k}\Omega \implies R_1 \approx \textbf{6.2 k}\Omega \]
+% \[ R_2 = 15 \text{ k}\Omega - 6.2 \text{ k}\Omega = \textbf{8.8 k}\Omega \]
+
+% \section*{Results}
+% The circuits for Part 1 and Part 2 were constructed on a breadboard using the nearest available standard resistor values. The actual resistances were measured with a DMM, and the DC voltages at the power supply rails and transistor terminals were recorded.
+
+% \begin{table}[H]
+% \centering
+% \caption{Measured Data for Part 1 (Active Mode)}
+% \begin{tabular}{|l|c|l|}
+% \hline
+% \textbf{Parameter} & \textbf{Measured Value} & \textbf{Unit} \\ \hline
+% $V_+$ & $15.02$ & V \\ \hline
+% $V_-$ & $-15.02$ & V \\ \hline
+% $R_1$ & $148.2$ & k$\Omega$ \\ \hline
+% $R_2$ & $148.6$ & k$\Omega$ \\ \hline
+% $R_C$ & $9.89$ & k$\Omega$ \\ \hline
+% $R_E$ & $14.01$ & k$\Omega$ \\ \hline
+% $V_C$ & $4.881$ & V \\ \hline
+% $V_B$ & $-0.0016$ & V \\ \hline
+% $V_E$ & $-0.7302$ & V \\ \hline
+% \end{tabular}
+% \end{table}
+
+% \begin{table}[H]
+% \centering
+% \caption{Measured Data for Part 2 (Saturation Mode)}
+% \begin{tabular}{|l|c|l|}
+% \hline
+% \textbf{Parameter} & \textbf{Measured Value} & \textbf{Unit} \\ \hline
+% $V_+$ & $15.02$ & V \\ \hline
+% $V_-$ & $-15.02$ & V \\ \hline
+% $R_1$ & $6.13$ & k$\Omega$ \\ \hline
+% $R_2$ & $8.75$ & k$\Omega$ \\ \hline
+% $R_C$ & $12.87$ & k$\Omega$ \\ \hline
+% $R_E$ & $13.88$ & k$\Omega$ \\ \hline
+% $V_C$ & $2.054$ & V \\ \hline
+% $V_B$ & $2.521$ & V \\ \hline
+% $V_E$ & $1.839$ & V \\ \hline
+% \end{tabular}
+% \end{table}
+
+% \section*{Conclusion}
+% The measured data was used to analyze the performance of both circuit designs and verify their operating points. The results were found to be in strong agreement with the pre-lab calculations, validating the design methodology.
+
+% \subsection*{Part 1 Analysis (Active Mode)}
+% The measured voltages were compared to the calculated design targets.
+% \begin{table}[H]
+% \centering
+% \caption{Part 1: Calculated vs. Measured Voltages}
+% \begin{tabular}{|l|c|c|}
+% \hline
+% \textbf{Parameter} & \textbf{Calculated} & \textbf{Measured} \\ \hline
+% \textbf{$V_C$} & $5.0 \text{ V}$ & $4.881 \text{ V}$ \\ \hline
+% \textbf{$V_B$} & $0.0 \text{ V}$ & $-0.0016 \text{ V}$ \\ \hline
+% \textbf{$V_E$} & $-0.7 \text{ V}$ & $-0.7302 \text{ V}$ \\ \hline
+% \end{tabular}
+% \end{table}
+
+% The measured $V_B \approx 0 \text{ V}$ was nearly perfect. The measured base-emitter voltage was $V_{BE} = V_B - V_E = -0.0016 - (-0.7302) = 0.7286 \text{ V}$, which is very close to the $0.7 \text{ V}$ assumption.
+
+% Using the measured data, the actual collector and emitter currents were calculated:
+% \[ I_C = \frac{V_+ - V_C}{R_C} = \frac{15.02 \text{ V} - 4.881 \text{ V}}{9.89 \text{ k}\Omega} \approx \textbf{1.025 mA} \]
+% \[ I_E = \frac{V_E - V_-}{R_E} = \frac{-0.7302 \text{ V} - (-15.02 \text{ V})}{14.01 \text{ k}\Omega} \approx \textbf{1.020 mA} \]
+% These currents are extremely close to each other and to the $1.0 \text{ mA}$ design target. The actual device $\beta$ can be estimated as $\beta = I_C / I_B = I_C / (I_E - I_C) = 1.025 / (1.020 - 1.025)$, which is not feasible. However, using the datasheet-typical $\beta \approx 100$ at $I_C = 1 \text{ mA}$ confirms the $I_B \approx 10.25 \mu\text{A}$ and $I_E \approx 1.035 \text{ mA}$, which aligns with our measurements.
+
+% \subsection*{Part 2 Analysis (Saturation Mode)}
+% The measured voltages for the saturation circuit also agreed closely with the design.
+% \begin{table}[H]
+% \centering
+% \caption{Part 2: Calculated vs. Measured Voltages}
+% \begin{tabular}{|l|c|c|}
+% \hline
+% \textbf{Parameter} & \textbf{Calculated} & \textbf{Measured} \\ \hline
+% \textbf{$V_C$} & $2.0 \text{ V}$ & $2.054 \text{ V}$ \\ \hline
+% \textbf{$V_B$} & $2.6 \text{ V}$ & $2.521 \text{ V}$ \\ \hline
+% \textbf{$V_E$} & $1.8 \text{ V}$ & $1.839 \text{ V}$ \\ \hline
+% \end{tabular}
+% \end{table}
+
+% The measured currents were calculated:
+% \[ I_C = \frac{V_+ - V_C}{R_C} = \frac{15.02 \text{ V} - 2.054 \text{ V}}{12.87 \text{ k}\Omega} \approx \textbf{1.007 mA} \]
+% \[ I_E = \frac{V_E - V_-}{R_E} = \frac{1.839 \text{ V} - (-15.02 \text{ V})}{13.88 \text{ k}\Omega} \approx \textbf{1.215 mA} \]
+% The resulting base current is $I_B = I_E - I_C = 1.215 - 1.007 = \textbf{0.208 mA}$.
+% This allows calculation of the forced beta:
+% \[ \beta_{forced} = \frac{I_C}{I_B} = \frac{1.007 \text{ mA}}{0.208 \text{ mA}} \approx \textbf{4.84} \]
+% Since $\beta_{forced} \approx 4.84$ is much less than the active-mode $\beta$ of the transistor (typically 100-300), this confirms the device was operating deep in saturation, as designed.
+
+% Furthermore, the measured $V_{CE(sat)} = V_C - V_E = 2.054 \text{ V} - 1.839 \text{ V} = \textbf{0.215 V}$. This is an excellent match for the $0.2 \text{ V}$ target and confirms saturation, as $V_{CE} < V_{BE}$ (where $V_{BE} = 2.521 - 1.839 = 0.682 \text{ V}$).
+
+% \subsection*{Final Summary}
+% Overall, both circuits performed as expected. The measured voltages and calculated currents for the active mode circuit were very close to the design targets. Similarly, the saturation mode circuit was successfully verified, with a measured $V_{CE(sat)}$ of $0.215 \text{ V}$ and a forced beta of 4.84. The minor discrepancies between calculated and measured values can be attributed to standard component tolerances and the difference between assumed device parameters (like $V_{BE}$) and their actual values. The objectives of the lab were successfully met.
+
+% \end{document}
+
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} % For setting page margins
+\usepackage{amsmath} % For advanced math environments
+\usepackage{graphicx} % For images
+\usepackage{float} % For [H] placement
+\usepackage{circuitikz} % For drawing circuits
+\usepackage{booktabs} % For better tables
+\usepackage[T1]{fontenc} % For proper character encoding
+
+\author{Sean Balbale}
+\title{ENGR 305 Lab 7 Report}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\section*{Introduction}
+The purpose of this lab was to design, build, and analyze two DC biasing circuits for a 2N3904 NPN Bipolar Junction Transistor (BJT). The first part involved designing a circuit to bias the transistor in the active region, a state essential for analog amplification. The second part involved designing a circuit to bias the transistor in the saturation region, which is commonly used in digital logic and switching applications.
+
+The objective was to achieve specific operating points (e.g., $V_C$, $I_C$) by calculating the required resistor values for a four-resistor biasing network. The designs were then constructed and verified through hardware measurements, and the measured results were compared against the theoretical calculations.
+
+\section*{Procedure}
+The lab was divided into two parts, each requiring the design of a circuit based on the general-purpose four-resistor biasing topology shown in Figure 1.
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define the coordinates for the supply rails
+        \def\Vdd{3}
+        \def\Vss{-3}
+
+        % Draw the NPN transistor at the origin (0,0)
+        \node[npn, anchor=B] (bjt) at (0,0) {};
+
+        % Draw the base circuit
+        \draw (bjt.B) -- ++(-1.5,0) node[circ] {};
+        \coordinate (base_node) at (-1.5, 0);
+        \draw (base_node) to[R, l=$R_1$] (-1.5, \Vdd) node[vcc] {$V_{+}$};
+        \draw (base_node) to[R, l=$R_2$] (-1.5, \Vss) node[vee] {$V_{-}$};
+        \draw (bjt.B) node[above left] {$V_B$};
+
+        % Draw the collector circuit
+        \draw (bjt.C) to[R, l=$R_C$] (1.5, \Vdd) node[vcc] {$V_{+}$};
+        \draw (bjt.C) node[circ, right] {} node[above right] {$V_C$};
+
+        % Draw the emitter circuit
+        \draw (bjt.E) to[R, l=$R_E$] (1.5, \Vss) node[vee] {$V_{-}$};
+        \draw (bjt.E) node[circ, right] {} node[below right] {$V_E$};
+    \end{circuitikz}
+    \caption{General four-resistor NPN biasing circuit.}
+\end{figure}
+
+\subsection*{Part 1: NPN in Active Mode}
+The first circuit was designed to bias the 2N3904 NPN transistor in the active region with the following target parameters:
+\begin{itemize}
+    \item Collector Current ($I_C$): $1 \text{ mA}$
+    \item Base Voltage ($V_B$): $0 \text{ V}$
+    \item Collector Voltage ($V_C$): $+5 \text{ V}$
+    \item Supply Voltages: $V_{+} = +15 \text{ V}$, $V_{-} = -15 \text{ V}$
+    \item Assumed DC Current Gain ($\beta$): $100$
+\end{itemize}
+
+\subsubsection*{Hand Calculations (Active Mode)}
+\textbf{1. Base and Emitter Currents ($I_B$ and $I_E$)}
+\[ I_{B} = \frac{I_{C}}{\beta} = \frac{1 \text{ mA}}{100} = 0.01 \text{ mA} = \textbf{10 } \mu\textbf{A} \]
+\[ I_{E} = I_{C} + I_{B} = 1 \text{ mA} + 0.01 \text{ mA} = \textbf{1.01 mA} \]
+
+\textbf{2. Emitter Voltage ($V_E$)}
+Assuming the standard $V_{BE}$ drop for the active region:
+\[ V_{BE} = V_B - V_E \approx 0.7 \text{ V} \]
+\[ V_E = V_B - 0.7 \text{ V} = 0 \text{ V} - 0.7 \text{ V} = \textbf{-0.7 V} \]
+
+\textbf{3. Resistor Values ($R_E$ and $R_C$)}
+\[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{-0.7 \text{ V} - (-15 \text{ V})}{1.01 \text{ mA}} = \frac{14.3 \text{ V}}{1.01 \text{ mA}} \approx \textbf{14.16 k}\Omega \]
+\[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 5 \text{ V}}{1 \text{ mA}} = \frac{10 \text{ V}}{1 \text{ mA}} = \textbf{10 k}\Omega \]
+
+\textbf{4. Voltage Divider Resistors ($R_1$ and $R_2$)}
+To set $V_B = 0 \text{ V}$ with symmetric supplies, $R_1$ must equal $R_2$.
+\[ V_{B} = \frac{R_2 V_+ + R_1 V_-}{R_1 + R_2} \implies 0 = \frac{15R_2 - 15R_1}{R_1+R_2} \implies \textbf{R}_{\textbf{1}} = \textbf{R}_{\textbf{2}} \]
+To ensure a "stiff" divider, the divider current was set to $10 \times I_B = 0.1 \text{ mA}$.
+\[ R_1 + R_2 = \frac{V_+ - V_-}{I_{divider}} = \frac{30 \text{ V}}{0.1 \text{ mA}} = 300 \text{ k}\Omega \]
+\[ R_1 = R_2 = \textbf{150 k}\Omega \]
+
+\subsection*{Part 2: NPN in Saturation Mode}
+The second circuit was designed to bias the transistor in the saturation region with the following parameters:
+\begin{itemize}
+    \item Collector Current ($I_C$): $1 \text{ mA}$
+    \item Emitter Current ($I_E$): $1.2 \text{ mA}$
+    \item Collector Voltage ($V_C$): $+2 \text{ V}$
+    \item Assumed Collector-Emitter Saturation Voltage ($V_{CE(sat)}$): $0.2 \text{ V}$
+\end{itemize}
+
+\subsubsection*{Hand Calculations (Saturation Mode)}
+\textbf{1. Emitter and Base Voltages ($V_E$ and $V_B$)}
+\[ V_E = V_C - V_{CE} = 2 \text{ V} - 0.2 \text{ V} = \textbf{1.8 V} \]
+Assuming $V_{BE(sat)} \approx 0.8 \text{ V}$:
+\[ V_B = V_E + 0.8 \text{ V} = 1.8 \text{ V} + 0.8 \text{ V} = \textbf{2.6 V} \]
+
+\textbf{2. Resistor Values ($R_C$ and $R_E$)}
+\[ R_{C} = \frac{V_{+} - V_{C}}{I_{C}} = \frac{15 \text{ V} - 2 \text{ V}}{1 \text{ mA}} = \frac{13 \text{ V}}{1 \text{ mA}} = \textbf{13 k}\Omega \]
+\[ R_{E} = \frac{V_{E} - V_{-}}{I_{E}} = \frac{1.8 \text{ V} - (-15 \text{ V})}{1.2 \text{ mA}} = \frac{16.8 \text{ V}}{1.2 \text{ mA}} = \textbf{14 k}\Omega \]
+
+\textbf{3. Forced Beta ($\beta_{forced}$)}
+The required base current is $I_B = I_E - I_C = 1.2 \text{ mA} - 1 \text{ mA} = \textbf{0.2 mA}$.
+\[ \beta_{forced} = \frac{I_C}{I_B} = \frac{1 \text{ mA}}{0.2 \text{ mA}} = \textbf{5} \]
+Since $5 \ll 100$, this design will drive the transistor into saturation.
+
+\textbf{4. Voltage Divider Resistors ($R_1$ and $R_2$)}
+The divider must provide $V_B = 2.6 \text{ V}$.
+\[ 2.6 = \frac{15R_2 - 15R_1}{R_1 + R_2} \implies 17.6 R_1 = 12.4 R_2 \implies R_2 \approx 1.42 R_1 \]
+Using the stiff divider rule ($I_{divider} \approx 10 \times I_B = 2 \text{ mA}$):
+\[ R_1 + R_2 = \frac{30 \text{ V}}{2 \text{ mA}} = 15 \text{ k}\Omega \]
+Solving the system of equations gives:
+\[ R_1 + (1.42 R_1) = 15 \text{ k}\Omega \implies R_1 \approx \textbf{6.2 k}\Omega \]
+\[ R_2 = 15 \text{ k}\Omega - 6.2 \text{ k}\Omega = \textbf{8.8 k}\Omega \]
+
+\section*{Results}
+The circuits for Part 1 and Part 2 were constructed on a breadboard using the nearest available standard resistor values. The actual resistances were measured with a DMM, and the DC voltages at the power supply rails and transistor terminals were recorded.
+
+\begin{table}[H]
+\centering
+\caption{Measured Data for Part 1 (Active Mode)}
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Parameter} & \textbf{Measured Value} & \textbf{Unit} \\ \hline
+$V_+$ & $15.02$ & V \\ \hline
+$V_-$ & $-15.02$ & V \\ \hline
+$R_1$ & $148.2$ & k$\Omega$ \\ \hline
+$R_2$ & $148.6$ & k$\Omega$ \\ \hline
+$R_C$ & $9.89$ & k$\Omega$ \\ \hline
+$R_E$ & $14.01$ & k$\Omega$ \\ \hline
+$V_C$ & $4.881$ & V \\ \hline
+$V_B$ & $-0.0016$ & V \\ \hline
+$V_E$ & $-0.7302$ & V \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Measured Data for Part 2 (Saturation Mode)}
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Parameter} & \textbf{Measured Value} & \textbf{Unit} \\ \hline
+$V_+$ & $15.02$ & V \\ \hline
+$V_-$ & $-15.02$ & V \\ \hline
+$R_1$ & $6.13$ & k$\Omega$ \\ \hline
+$R_2$ & $8.75$ & k$\Omega$ \\ \hline
+$R_C$ & $12.87$ & k$\Omega$ \\ \hline
+$R_E$ & $13.88$ & k$\Omega$ \\ \hline
+$V_C$ & $2.054$ & V \\ \hline
+$V_B$ & $2.521$ & V \\ \hline
+$V_E$ & $1.839$ & V \\ \hline
+\end{tabular}
+\end{table}
+
+\newpage
+\section*{Conclusion}
+The measured data was used to analyze the performance of both circuit designs and verify their operating points. The results were found to be in strong agreement with the pre-lab calculations, validating the design methodology.
+
+\subsection*{Part 1 Analysis (Active Mode)}
+A comparison of the target versus measured node voltages shows excellent agreement.
+\begin{table}[H]
+\centering
+\caption{Part 1: Calculated vs. Measured Voltages}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Calculated} & \textbf{Measured} \\ \hline
+\textbf{$V_C$} & $5.0 \text{ V}$ & $4.881 \text{ V}$ \\ \hline
+\textbf{$V_B$} & $0.0 \text{ V}$ & $-0.0016 \text{ V}$ \\ \hline
+\textbf{$V_E$} & $-0.7 \text{ V}$ & $-0.7302 \text{ V}$ \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection*{Based on the measured values of Vc and Ve and your measured resistor values, what are the measured values of Ie, Ic and Ib based on your lab measurements?}
+The currents were calculated directly from the measured data using Ohm's Law and Kirchhoff's Current Law.
+\[ I_C = \frac{V_+ - V_C}{R_C} = \frac{15.02 \text{ V} - 4.881 \text{ V}}{9.89 \text{ k}\Omega} \approx \textbf{1.025 mA} \]
+\[ I_E = \frac{V_E - V_-}{R_E} = \frac{-0.7302 \text{ V} - (-15.02 \text{ V})}{14.01 \text{ k}\Omega} \approx \textbf{1.020 mA} \]
+\[ I_B = I_E - I_C = 1.020 \text{ mA} - 1.025 \text{ mA} = \textbf{-0.005 mA } (-5 \mu\text{A}) \]
+This small negative value for $I_B$ is physically unrealistic and is a result of minor measurement inaccuracies and component tolerances, which are amplified when subtracting two large, nearly-equal numbers. The true base current is a small positive value, as confirmed by the $\beta \approx 100$ datasheet value, which would imply $I_B = I_C / \beta \approx 1.025 \text{ mA} / 100 \approx 10.25 \mu\text{A}$. Both $I_C$ and $I_E$ are extremely close to the $1.0 \text{ mA}$ design target.
+
+\subsection*{Part 2 Analysis (Saturation Mode)}
+The measured voltages for the saturation circuit also agreed closely with the design.
+\begin{table}[H]
+\centering
+\caption{Part 2: Calculated vs. Measured Voltages}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Calculated} & \textbf{Measured} \\ \hline
+\textbf{$V_C$} & $2.0 \text{ V}$ & $2.054 \text{ V}$ \\ \hline
+\textbf{$V_B$} & $2.6 \text{ V}$ & $2.521 \text{ V}$ \\ \hline
+\textbf{$V_E$} & $1.8 \text{ V}$ & $1.839 \text{ V}$ \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection*{Based on the measured voltages and resistor values, what are the measured values of Ie, Ic and Ib based on your lab measurements? What is $\beta_f$?}
+The currents were calculated directly from the measured data:
+\[ I_C = \frac{V_+ - V_C}{R_C} = \frac{15.02 \text{ V} - 2.054 \text{ V}}{12.87 \text{ k}\Omega} \approx \textbf{1.007 mA} \]
+\[ I_E = \frac{V_E - V_-}{R_E} = \frac{1.839 \text{ V} - (-15.02 \text{ V})}{13.88 \text{ k}\Omega} \approx \textbf{1.215 mA} \]
+\[ I_B = I_E - I_C = 1.215 \text{ mA} - 1.007 \text{ mA} = \textbf{0.208 mA} \]
+These values are all in excellent agreement with the design targets ($I_C=1.0$, $I_E=1.2$, $I_B=0.2$). The forced beta ($\beta_f$) is:
+\[ \beta_{f} = \frac{I_C}{I_B} = \frac{1.007 \text{ mA}}{0.208 \text{ mA}} \approx \textbf{4.84} \]
+Since $\beta_{f} \approx 4.84$ is much less than the active-mode $\beta$ of the transistor (typically 100-300), this confirms the device was operating deep in saturation, as designed.
+
+\subsection*{Analysis of $V_{BE}$ and $V_{CE}$}
+A full analysis of the junction voltages confirms the operating state of the transistor in both circuits.
+
+\subsubsection*{Part 1 (Active Mode)}
+\noindent\textbf{Measured Values:}
+\[ V_{BE} = V_B - V_E = (-0.0016 \text{ V}) - (-0.7302 \text{ V}) = \textbf{0.7286 V} \]
+\[ V_{CE} = V_C - V_E = (4.881 \text{ V}) - (-0.7302 \text{ V}) = \textbf{5.6112 V} \]
+\noindent\textbf{Comparison:} The measured $V_{BE}$ of \textbf{$0.7286 \text{ V}$} is in excellent agreement with the \textbf{$0.7 \text{ V}$} pre-lab assumption. The measured $V_{CE}$ of \textbf{$5.6112 \text{ V}$} is also very close to the calculated target of \textbf{$5.7 \text{ V}$}. The minor differences are due to standard component tolerances. These values confirm the base-emitter junction is forward-biased and the collector-base junction is reverse-biased ($V_{CB} = V_C - V_B = 4.88 \text{ V} > 0$), which is the definition of the active region.
+
+\subsubsection*{Part 2 (Saturation Mode)}
+\noindent\textbf{Measured Values:}
+\[ V_{BE} = V_B - V_E = (2.521 \text{ V}) - (1.839 \text{ V}) = \textbf{0.682 V} \]
+\[ V_{CE} = V_C - V_E = (2.054 \text{ V}) - (1.839 \text{ V}) = \textbf{0.215 V} \]
+\noindent\textbf{Comparison:} The measured $V_{CE}$ of \textbf{$0.215 \text{ V}$} is an excellent match for the pre-lab target of \textbf{$0.2 \text{ V}$}. The measured $V_{BE}$ of \textbf{$0.682 \text{ V}$} differs from the $0.8 \text{ V}$ assumption, but this is expected as $0.8 \text{ V}$ is a conservative design rule. The key condition for saturation is that both junctions are forward-biased. This is confirmed, as $V_{BE} > 0$ and $V_{BC} = V_B - V_C = 2.521 \text{ V} - 2.054 \text{ V} = 0.467 \text{ V} > 0$.
+
+\subsection*{Final Summary}
+Overall, both circuits performed as expected. The measured voltages and calculated currents for the active mode circuit were very close to the design targets. Similarly, the saturation mode circuit was successfully verified, with a measured $V_{CE(sat)}$ of $0.215 \text{ V}$ and a forced beta of 4.84. The minor discrepancies between calculated and measured values can be attributed to standard component tolerances and the difference between assumed device parameters (like $V_{BE}$) and their actual values. The objectives of the lab were successfully met.
+
+\end{document}

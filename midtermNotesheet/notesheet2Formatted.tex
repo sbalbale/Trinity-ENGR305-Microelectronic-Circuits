@@ -1,0 +1,213 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{circuitikz}
+\usepackage{enumitem} % Added for list control
+
+\setlength{\columnsep}{1cm}
+\setlength{\parindent}{0in}
+
+\begin{document}
+ENGR 305: Midterm Notesheet \hfill Chapters 3-5 \& HW 1-4 \hfill
+
+\begin{multicols}{2}
+
+% --- SECTION 1: CONTENT SUMMARY ---
+\section*{Content Summary \& Key Formulas}
+
+\subsection*{Chapter 3: Semiconductors}
+
+\subsubsection*{Objective 1: Intrinsic Carrier Concentration ($n_i$)}
+The concentration of free electrons and holes in pure (intrinsic) silicon, dependent on temperature ($T$ in Kelvin).
+\[ n_i = B \cdot T^{3/2} \cdot e^{-E_g / (2 k T)} \]
+\begin{itemize}
+    \item \textbf{For Silicon (Si):} $E_g \approx 1.12 \text{ eV}$; $B = 7.3 \times 10^{15} \text{ cm}^{-3}K^{-3/2}$
+    \item \textbf{Constants:} $k = 8.62 \times 10^{-5} \text{ eV/K}$
+    \item \textbf{At 300K:} $n_i \approx 1.5 \times 10^{10} \text{ cm}^{-3}$
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Objective 2: Carrier Concentrations (Doped)}
+\begin{itemize}
+    \item \textbf{Mass-Action Law:} \[ p \cdot n = n_i^2 \]
+    \item \textbf{n-type ($N_D$):} Majority \( n_n \approx N_D \); Minority \( p_n \approx n_i^2 / N_D \)
+    \item \textbf{p-type ($N_A$):} Majority \( p_p \approx N_A \); Minority \( n_p \approx n_i^2 / N_A \)
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Objective 8: Conductivity ($\sigma$) \& Resistivity ($\rho$)}
+\begin{itemize}
+    \item \textbf{Drift Current:} \[ J_{\text{drift}} = q (n \mu_n + p \mu_p) \mathcal{E} \]
+    \item \textbf{Conductivity:} \[ \sigma = q (n \mu_n + p \mu_p) \]
+    \item \textbf{Resistivity:} \[ \rho = 1 / \sigma \]
+    \item \textbf{Diffusion Current:} \[ J_p = -q D_p \frac{dp}{dx}; \quad J_n = q D_n \frac{dn}{dx} \]
+    \item \textbf{Einstein Relation:} \[ D / \mu = V_T \]
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Objective 3: pn Junction Built-in Potential ($V_0$)}
+The voltage across the depletion region in thermal equilibrium.
+\[ V_0 = V_T \ln \left( \frac{N_A N_D}{n_i^2} \right) \]
+\begin{itemize}
+    \item \textbf{Thermal Voltage ($V_T$):} \( V_T = kT/q \approx 25.9 \text{ mV} \) at 300K.
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Objective 4: pn Junction Depletion Region ($W$)}
+\begin{itemize}
+    \item \textbf{Total Width (with $V_R$):} \[ W = \sqrt{\frac{2\epsilon_s}{q} \left(\frac{1}{N_A} + \frac{1}{N_D}\right) (V_0 + V_R)} \]
+    \item \textbf{Individual Widths:} \[ x_n = W \frac{N_A}{N_A + N_D}; \quad x_p = W \frac{N_D}{N_A + N_D} \]
+\end{itemize}
+
+\subsection*{Chapter 4: Diodes}
+
+\subsubsection*{Objective 5: Exponential Model (Shockley Eq)}
+\[ i_D = I_S (e^{v_D / V_T} - 1) \]
+\begin{itemize}
+    \item $I_S$ is the saturation current.
+    \item \textbf{Finding new V/I:} \[ V_2 - V_1 = V_T \ln(I_2 / I_1) \]
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Objective 6: Diode Circuit Models}
+\begin{enumerate}
+    \item \textbf{Ideal Diode:} 0V short circuit (forward), open circuit (reverse).
+    \item \textbf{Constant Voltage Drop (CVD):} 0.7V battery (forward), open circuit (reverse).
+    \item \textbf{Small-Signal Model:} A resistor \( r_d = V_T / I_D \) for AC analysis.
+\end{enumerate}
+
+\hrule
+
+\subsubsection*{Objective 7: Rectifier Circuits}
+\begin{itemize}
+    \item \textbf{Half-Wave:} One diode. Output \( v_O = v_S - V_D \). \( PIV = V_{\text{peak}} \).
+    \item \textbf{Full-Wave (Center-Tap):} Two diodes. Output \( v_O = V_S - V_D \). \( PIV = 2V_S - V_D \).
+    \item \textbf{Full-Wave (Bridge):} Four diodes. Output \( v_O = V_S - 2V_D \). \( PIV = V_S - V_D \).
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Peak Rectifier (Filter Capacitor)}
+A capacitor (C) in parallel with the load (R).
+\begin{itemize}
+    \item Diode charges C to $V_p$. C discharges through R.
+    \item \textbf{Ripple Voltage ($V_r$):} \[ V_r \approx \frac{V_p}{fCR} \approx \frac{I_L}{fC} \quad \text{} \]
+\end{itemize}
+
+\hrule
+
+\subsubsection*{Voltage Regulation}
+\begin{itemize}
+    \item \textbf{Line Regulation:} \[ \Delta v_O = \Delta V_{\text{supply}} \cdot \frac{r}{r + R} \quad \text{} \]
+    \item \textbf{Load Regulation:} \[ \Delta v_O = -(\Delta I_{\text{diodes}}) \cdot r \quad \text{} \]
+    \item \textbf{Zener Model:} \( V_Z = V_{Z0} + r_z I_Z \)
+\end{itemize}
+
+\columnbreak
+
+\subsection*{Chapter 5: MOSFETs}
+
+\subsubsection*{Key Parameters}
+\begin{itemize}
+    \item \textbf{Overdrive Voltage ($v_{OV}$):} \( v_{OV} = v_{GS} - V_{tn} \) (NMOS); \( |v_{OV}| = v_{SG} - |V_{tp}| \) (PMOS).
+    \item \textbf{Process Transconductance:} \( k_n' = \mu_n C_{ox} \); \( k_p' = \mu_p C_{ox} \).
+    \item \textbf{MOSFET Transconductance:} \( k_n = k_n' (W/L) \); \( k_p = k_p' (W/L) \).
+\end{itemize}
+
+\hrule
+
+\subsubsection*{NMOS Regions of Operation}
+\begin{enumerate}
+    \item \textbf{Cutoff:}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{GS} < V_{tn} \)
+        \item \textbf{Current:} \( i_D = 0 \)
+    \end{itemize}
+    \item \textbf{Triode (Linear):}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{GS} \ge V_{tn} \) AND \( v_{DS} < v_{OV} \)
+        \item \textbf{Current:} \[ i_D = k_n \left[ (v_{GS} - V_{tn}) v_{DS} - \frac{1}{2} v_{DS}^2 \right] \quad \text{} \]
+        \item \textbf{Resistor (small $v_{DS}$):} \( r_{DS} = 1 / (k_n v_{OV}) \)
+    \end{itemize}
+    \item \textbf{Saturation (Active):}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{GS} \ge V_{tn} \) AND \( v_{DS} \ge v_{OV} \)
+        \item \textbf{Current (ideal):} \[ i_D = \frac{1}{2} k_n v_{OV}^2 = \frac{1}{2} k_n (v_{GS} - V_{tn})^2 \quad \text{} \]
+    \end{itemize}
+\end{enumerate}
+
+\hrule
+
+\subsubsection*{PMOS Regions of Operation}
+(Uses positive $v_{SG}$, $v_{SD}$, and $|V_{tp}|$)
+\begin{enumerate}
+    \item \textbf{Cutoff:}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{SG} < |V_{tp}| \)
+        \item \textbf{Current:} \( i_D = 0 \)
+    \end{itemize}
+    \item \textbf{Triode (Linear):}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{SG} \ge |V_{tp}| \) AND \( v_{SD} < |v_{OV}| \)
+        \item \textbf{Current:} \[ i_D = k_p \left[ (v_{SG} - |V_{tp}|) v_{SD} - \frac{1}{2} v_{SD}^2 \right] \quad \text{} \]
+    \end{itemize}
+    \item \textbf{Saturation (Active):}
+    \begin{itemize}
+        \item \textbf{Condition:} \( v_{SG} \ge |V_{tp}| \) AND \( v_{SD} \ge |v_{OV}| \)
+        \item \textbf{Current (ideal):} \[ i_D = \frac{1}{2} k_p |v_{OV}|^2 = \frac{1}{2} k_p (v_{SG} - |V_{tp}|)^2 \quad \text{} \]
+    \end{itemize}
+\end{enumerate}
+
+\hrule
+
+\subsubsection*{Channel-Length Modulation (Saturation Effect)}
+The effective channel length $L_{\text{eff}}$ shortens as $v_{DS}$ increases past $v_{OV}$. This causes $i_D$ to increase slightly.
+\begin{itemize}
+    \item \textbf{Updated Current (NMOS):} \[ i_D = \frac{1}{2} k_n v_{OV}^2 (1 + \lambda v_{DS}) \quad \text{} \]
+    \item \textbf{Early Voltage:} \( V_A = 1 / \lambda \)
+    \item \textbf{Output Resistance:} \[ r_o = \frac{V_A}{I_D'} \quad \text{(where $I_D'$ is ideal current)} \text{} \]
+\end{itemize}
+
+\hrule
+
+\subsubsection*{MOSFET DC Circuit Analysis}
+\begin{enumerate}
+    \item \textbf{Assumptions:} \( I_G = 0 \). For amplifiers, \textbf{assume SATURATION}.
+    \item \textbf{Find $V_G$:} Use KVL at the gate (e.g., voltage divider).
+    \item \textbf{Write $V_{GS}$ and $I_D$ Equations:}
+    \begin{itemize}
+        \item KVL: \( V_{GS} = V_G - V_S = V_G - I_D R_S \)
+        \item Current: \( I_D = \frac{1}{2} k_n (V_{GS} - V_{tn})^2 \)
+    \end{itemize}
+    \item \textbf{Solve} for $I_D$ and $V_{GS}$.
+    \item \textbf{Find Voltages:} \( V_D = V_{DD} - I_D R_D \); \( V_S = I_D R_S \) (or \( V_S = V_{SS} + I_D R_S \)).
+    \item \textbf{VERIFY:} Check if \( V_{DS} \ge V_{OV} \) (where \( V_{DS} = V_D - V_S \)).
+    \item \textbf{If False:} Re-solve using the \textbf{Triode} equation.
+    \item \textbf{Diode-Connected:} If $V_G = V_D$, it is \textit{always in saturation} (if on).
+\end{enumerate}
+
+% --- SECTION 2: LEARNING OBJECTIVES ---
+\section*{Midterm Learning Objectives}
+\begin{enumerate}[itemsep=0pt]
+    \item Calculate the intrinsic carrier concentration in a semiconductor.
+    \item Determine minority and majority carrier concentrations (electron and hole concentrations) in a semiconductor.
+    \item Calculate the built-in potential of a pn junction.
+    \item Calculate the depletion region width of a pn junction.
+    \item Given the voltage and current for a forward-biased diode, be able to calculate the current at a different value of voltage (or the voltage at a different value of current).
+    \item Be able to determine voltages and currents at points in a diode circuit, using either the ideal diode model (zero volts across the diode) or the constant voltage drop model (0.7 volts across the diode).
+    \item Understand operation of half-wave rectifiers.
+    \item Be able to calculate resistivity and conductivity in a semiconductor.
+    \item Perform drain current calculations for NMOS and PMOS transistors. Know difference between the triode region of operation and the saturation region of operation.
+    \item Discuss/explain the effect in a MOSFET when the channel pinches off and moves away from the drain (Finite Output Resistance in Saturation).
+    \item Be able to design an NMOS circuit with DC voltages. This may require determining resistor values needed or voltages and currents in the circuit.
+\end{enumerate}
+
+\end{multicols}
+\end{document}
