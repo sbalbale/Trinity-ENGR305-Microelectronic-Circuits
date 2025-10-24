@@ -1,0 +1,542 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{float} % For [H] figure placement
+\usepackage{booktabs} % For professional tables
+\usepackage{siunitx} % For SI units, e.g., \si{\kilo\ohm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots} % For plotting
+\pgfplotsset{compat=1.18}
+\usepackage{fancyhdr} % To create headers/footers if needed
+\usepackage{hyperref} % For clickable links (if you add them)
+\usepackage{circuitikz} % For drawing circuits
+
+% Set paragraph formatting (no indent, space between)
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+% --- DOCUMENT INFORMATION ---
+\title{Lab 8: PNP at DC}
+\author{Sean Balbale}
+\date{\today} % Or specify: {October 24, 2025}
+
+% --- BEGIN DOCUMENT ---
+\begin{document}
+
+% --- COVER SHEET ---
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 8}
+
+    \LARGE
+    \vspace{0.5cm}
+    PNP at DC
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Instructor:} Professor Fixel
+    \\ \textbf{Course:} ENGR 305
+    \\ \textbf{Date:} \today
+
+    \vfill
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+% --- TITLE ---
+\section*{Lab 8: PNP at DC}
+
+% --- OBJECTIVE ---
+\section{Objective}
+The objective of this laboratory exercise is to study the DC biasing of a PNP bipolar transistor (2N3906). This will be accomplished by first completing a DC analysis for three distinct circuits: (1) a PNP transistor biased in the active region, (2) a PNP transistor biased in the saturation region, and (3) a diode-connected PNP transistor. The calculated results from this analysis will be compared against circuit simulations and device datasheets. Finally, the circuits will be implemented in an experimental setting to compare measured performance with both the theoretical and simulated results.
+
+% --- THEORY ---
+\section{Theory}
+A Bipolar Junction Transistor (BJT) is a three-terminal semiconductor device (emitter, base, collector) that can be used for amplification or switching applications. This lab focuses on the PNP BJT, where the majority charge carriers are "holes." For a PNP transistor to operate, the base must be at a lower potential than the emitter ($V_{EB} > 0$), and the collector must be at a lower potential than the base ($V_{BC} < 0$).
+
+The transistor's behavior is defined by its region of operation:
+\begin{itemize}
+  \item \textbf{Active Region:} The emitter-base junction is forward-biased and the collector-base junction is reverse-biased. This region is used for signal amplification. The currents are related by the fundamental equations:
+    $$I_C = \beta I_B$$
+    $$I_E = I_C + I_B = (\beta + 1)I_B$$
+    where $\beta$ is the DC current gain ($h_{FE}$). A typical assumption for a forward-biased emitter-base junction is $V_{EB(\text{on})} \approx \SI{0.7}{\volt}$. The datasheet for the 2N3906 specifies $h_{FE}$ ranges depending on the collector current; for example, at $I_C = \SI{1.0}{mA}$, $h_{FE}$ is specified as being at least 80. Graphs suggest typical values around 150-160 at this current.
+
+  \item \textbf{Saturation Region:} Both the emitter-base and collector-base junctions are forward-biased. The transistor acts like a closed switch. The collector current is no longer controlled by $\beta$ and is instead limited by the external circuit. The collector-emitter voltage ($V_{EC}$) is small, and the relationship $I_C < \beta I_B$ holds. This is quantified by the $\beta_{\text{forced}}$:
+    $$\beta_{\text{forced}} = \frac{I_C}{I_B} < \beta$$
+    The datasheet specifies maximum saturation voltages, such as $V_{CE(sat)} \leq \SI{0.25}{V}$ at $I_C = \SI{10}{mA}$ (note $V_{EC(sat)}$ for PNP is positive) and $V_{BE(sat)}$ between \SIrange{0.65}{0.85}{V} at $I_C = \SI{10}{mA}$ ($V_{EB(sat)}$ for PNP is positive).
+
+  \item \textbf{Cutoff Region:} Both junctions are reverse-biased. The transistor acts like an open switch, and ideally, $I_C = I_E = I_B = 0$.
+\end{itemize}
+A diode-connected BJT, where the base and collector are shorted ($V_{BC} = 0$), operates at the boundary of the active and saturation regions.
+
+% --- EXPERIMENTAL METHOD AND REASONING ---
+\section{Experimental method and reasoning}
+Three circuit configurations were analyzed, simulated, and built. All circuits used a 2N3906 PNP transistor and dual voltage supplies of $V_{+} = \SI{15}{\volt}$ and $V_{-} = \SI{-15}{\volt}$. For each part, hand calculations were performed first to determine the required resistor values ($R_E$, $R_C$, $R_1$, $R_2$) to meet the specified design goals.
+
+Next, the circuits were simulated using a "dc op pnt" analysis to find the theoretical node voltages and branch currents, using the 2N3906 model. Finally, the circuits were prototyped on a breadboard. A digital multimeter was used to measure all resistor values and the DC node voltages ($V_E$, $V_C$, $V_B$). These measurements were then used to calculate the experimental currents ($I_E$, $I_C$, $I_B$) as part of the post-measurement exercise.
+
+\subsection{Part 1: PNP in Active Mode}
+\textbf{Design Goals:} $I_C = \SI{1}{mA}$, $V_B = \SI{0}{\volt}$, $V_C = \SI{-5}{\volt}$.
+\textbf{Assumptions:} $\beta = 100$, $V_{EB(\text{on})} = \SI{0.7}{\volt}$.
+
+Calculations were performed to find $I_B$, $I_E$, $V_E$, $R_E$, $R_C$, $R_1$, and $R_2$.
+
+\subsection{Part 2: PNP in Saturation Mode}
+\textbf{Design Goals:} $I_C = \SI{1}{mA}$, $I_E = \SI{1.2}{mA}$, $V_C = \SI{-2}{\volt}$, $V_{EC} = \SI{0.2}{\volt}$.
+\textbf{Assumptions:} Saturation model (e.g., $V_{EB(\text{sat})} = \SI{0.8}{\volt}$).
+
+Calculations were performed to find $V_E$, $V_B$, $R_E$, $R_C$, $\beta_{\text{forced}}$, $R_1$, and $R_2$.
+
+\subsection{Part 3: Diode-Connected PNP}
+\textbf{Design Goals:} $I_C = \SI{1}{mA}$.
+\textbf{Given:} $R_E = \SI{15}{k\Omega}$.
+\textbf{Assumptions:} $\beta = 100$, $V_{EB(\text{on})} = \SI{0.7}{\volt}$.
+
+Calculations were performed to determine the operating region, $V_C$, and $R_C$.
+
+% --- RESULTS AND CONCLUSIONS (DISCUSSION) ---
+\section{Results and Conclusions (Discussion)}
+
+\subsection{Part 1: Active Mode Results}
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}
+    % Define power rails
+    \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+    \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+
+    % Transistor
+    \node[pnp, anchor=B](Q1) at (0, 0) {};
+
+    % Emitter Resistor
+    \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+
+    % Collector Resistor
+    \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+
+    % Base Resistors
+    \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+    \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
+    \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
+
+    % Labels for nodes
+    \draw (Q1.B) ++(0.25, -0.5) node[left] {$V_B$};
+    \draw (Q1.C) -- ++(0.5, 0) node[right] {$V_C$};
+    \draw (Q1.E) -- ++(0.5, 0) node[right] {$V_E$};
+  \end{circuitikz}
+  \caption{Part 1: PNP in Active Mode Circuit}
+  \label{fig:part1_circuit}
+\end{figure}
+
+\subsubsection{Hand Calculations}
+
+\paragraph{Given Parameters}
+\begin{itemize}
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $V_{B} = \SI{0}{\volt}$, $V_{C} = \SI{-5}{\volt}$
+  \item \textbf{Transistor Model:} $\beta = 100$
+  \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
+\end{itemize}
+
+\paragraph{Calculations}
+Calculated currents:
+$$
+I_B = \frac{I_C}{\beta} = \frac{\SI{1}{\milli\ampere}}{100} = \SI{10}{\micro\ampere}
+$$
+$$
+I_E = I_C + I_B = \SI{1}{\milli\ampere} + \SI{0.01}{\milli\ampere} = \SI{1.01}{\milli\ampere}
+$$
+Calculated voltages and resistors:
+$$
+V_E = V_B + V_{EB(\text{on})} = \SI{0}{\volt} + \SI{0.7}{\volt} = \SI{0.7}{\volt}
+$$
+$$
+R_E = \frac{V_{+} - V_E}{I_E} = \frac{\SI{15}{\volt} - \SI{0.7}{\volt}}{\SI{1.01}{\milli\ampere}} \approx \SI{14.16}{\kilo\ohm}
+$$
+$$
+R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-5}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \SI{10}{\kilo\ohm}
+$$
+$$
+I_{R2} = 10 \times I_B = \SI{100}{\micro\ampere}
+$$
+$$
+R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{0}{\volt} - (\SI{-15}{\volt})}{\SI{100}{\micro\ampere}} = \SI{150}{\kilo\ohm}
+$$
+$$
+I_{R1} = I_{R2} + I_B = \SI{100}{\micro\ampere} + \SI{10}{\micro\ampere} = \SI{110}{\micro\ampere}
+$$
+$$
+R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - \SI{0}{\volt}}{\SI{110}{\micro\ampere}} \approx \SI{136.36}{\kilo\ohm}
+$$
+
+\subsubsection{Simulation Results}
+The circuit was simulated in LTspice using the calculated resistor values and a 2N3906 transistor.
+\begin{itemize}
+    \item $V_E = \SI{1.68}{\volt}$
+    \item $V_B = \SI{1.03}{\volt}$
+    \item $V_C = \SI{-5.64}{\volt}$
+    \item $I_C = \SI{0.936}{\milli\ampere}$
+    \item $I_B = \SI{4.40}{\micro\ampere}$
+    \item $I_E = \SI{0.941}{\milli\ampere}$
+\end{itemize}
+
+\subsubsection{Measurement Data}
+The circuit was constructed and the following DC values were measured with a digital multimeter.
+\begin{itemize}
+    \item $V_+ = \SI{15.01}{\volt}$, $V_- = \SI{-15.02}{\volt}$
+    \item $R_1 = \SI{136.265}{\kilo\ohm}$, $R_2 = \SI{151.03}{\kilo\ohm}$, $R_C = \SI{10.02}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$
+    \item $V_E = \SI{1.755}{\volt}$, $V_B = \SI{1.09}{\volt}$, $V_C = \SI{-6.027}{\volt}$
+\end{itemize}
+
+\paragraph{Post-Measurement Calculations}
+Based on the measured values above:
+$$
+V_{EB} = V_E - V_B = \SI{1.755}{\volt} - \SI{1.09}{\volt} = \SI{0.665}{\volt}
+$$
+$$
+I_E = \frac{V_{+} - V_E}{R_E} = \frac{\SI{15.01}{\volt} - \SI{1.755}{\volt}}{\SI{14.7}{\kilo\ohm}} = \SI{0.902}{\milli\ampere}
+$$
+$$
+I_C = \frac{V_C - V_{-}}{R_C} = \frac{\SI{-6.027}{\volt} - (\SI{-15.02}{\volt})}{\SI{10.02}{\kilo\ohm}} = \SI{0.898}{\milli\ampere}
+$$
+$$
+I_B = I_E - I_C = \SI{0.902}{\milli\ampere} - \SI{0.898}{\milli\ampere} = \SI{0.004}{\milli\ampere} \text{ (or } \SI{4}{\micro\ampere})
+$$
+$$
+\beta = \frac{I_C}{I_B} = \frac{\SI{0.898}{\milli\ampere}}{\SI{0.004}{\milli\ampere}} \approx 225
+$$
+
+\subsubsection{Comparison of Results (Part 1)}
+\begin{table}[H]
+    \centering
+    \caption{Part 1: Comparison of Calculated, Simulated, and Measured Values}
+    \label{tab:part1_compare}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Parameter} & \textbf{Hand Calc (Goal)} & \textbf{Simulation} & \textbf{Measured} \\
+        \midrule
+        $V_B$ & \SI{0}{\volt} & \SI{1.03}{\volt} & \SI{1.09}{\volt} \\
+        $V_E$ & \SI{0.7}{\volt} & \SI{1.68}{\volt} & \SI{1.755}{\volt} \\
+        $V_C$ & \SI{-5.0}{\volt} & \SI{-5.64}{\volt} & \SI{-6.027}{\volt} \\
+        $V_{EB}$ & \SI{0.7}{\volt} (Assumed) & \SI{0.65}{\volt} & \SI{0.665}{\volt} \\
+        $I_C$ & \SI{1.0}{\milli\ampere} & \num{0.936e-3} A & \num{0.898e-3} A \\
+        $I_B$ & \SI{10.0}{\micro\ampere} & \num{4.40e-6} A & \num{4.0e-6} A \\
+        $I_E$ & \SI{1.01}{\milli\ampere} & \num{0.941e-3} A & \num{0.902e-3} A \\
+        $\beta$ ($h_{FE}$) & 100 (Assumed) & $\approx 213$ & $\approx 225$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\clearpage
+
+\subsection{Part 2: Saturation Mode Results}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define power rails
+        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+
+        % Transistor
+        \node[pnp, anchor=B](Q1) at (0, 0) {};
+
+        % Emitter Resistor
+        \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+
+        % Collector Resistor
+        \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+
+        % Base Resistors
+        \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+        \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
+        \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
+
+        % Labels for nodes
+        \draw (Q1.B) ++(0.25, -0.5) node[left] {$V_B$};
+        \draw (Q1.C) -- ++(0.5, 0) node[right] {$V_C$};
+        \draw (Q1.E) -- ++(0.5, 0) node[right] {$V_E$};
+    \end{circuitikz}
+    \caption{Part 2: PNP in Saturation Mode Circuit (Same topology as Part 1)}
+    \label{fig:part2_circuit}
+\end{figure}
+
+\subsubsection{Hand Calculations}
+
+\paragraph{Given Parameters}
+\begin{itemize}
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $I_{E} = \SI{1.2}{\milli\ampere}$, $V_{C} = \SI{-2}{\volt}$, $V_{EC} = \SI{0.2}{\volt}$
+  \item \textbf{Assumption:} Saturation model $V_{EB(\text{sat})} = \SI{0.8}{\volt}$
+\end{itemize}
+
+\paragraph{Calculations}
+$$
+V_E = V_C + V_{EC} = \SI{-2}{\volt} + \SI{0.2}{\volt} = \SI{-1.8}{\volt}
+$$
+$$
+V_B = V_E - V_{EB(\text{sat})} = \SI{-1.8}{\volt} - \SI{0.8}{\volt} = \SI{-2.6}{\volt}
+$$
+$$
+R_E = \frac{V_{+} - V_E}{I_E} = \frac{\SI{15}{\volt} - (\SI{-1.8}{\volt})}{\SI{1.2}{\milli\ampere}} = \SI{14}{\kilo\ohm}
+$$
+$$
+R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-2}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \SI{13}{\kilo\ohm}
+$$
+$$
+I_B = I_E - I_C = \SI{1.2}{\milli\ampere} - \SI{1.0}{\milli\ampere} = \SI{0.2}{\milli\ampere}
+$$
+$$
+\beta_{\text{forced}} = \frac{I_C}{I_B} = \frac{\SI{1}{\milli\ampere}}{\SI{0.2}{\milli\ampere}} = 5
+$$
+$$
+I_{R2} = 10 \times I_B = \SI{2.0}{\milli\ampere}
+$$
+$$
+R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{-2.6}{\volt} - (\SI{-15}{\volt})}{\SI{2.0}{\milli\ampere}} = \SI{6.2}{\kilo\ohm}
+$$
+$$
+I_{R1} = I_{R2} + I_B = \SI{2.0}{\milli\ampere} + \SI{0.2}{\milli\ampere} = \SI{2.2}{\milli\ampere}
+$$
+$$
+R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - (\SI{-2.6}{\volt})}{\SI{2.2}{\milli\ampere}} = \SI{8}{\kilo\ohm}
+$$
+
+\subsubsection{Simulation Results}
+The circuit was simulated in LTspice using the calculated resistor values.
+\begin{itemize}
+    \item $V_E = \SI{-0.996}{\volt}$
+    \item $V_B = \SI{-1.66}{\volt}$
+    \item $V_C = \SI{-1.04}{\volt}$
+    \item $I_C = \SI{1.074}{\milli\ampere}$
+    \item $I_B = \SI{68.79}{\micro\ampere}$
+    \item $I_E = \SI{1.143}{\milli\ampere}$
+\end{itemize}
+
+\subsubsection{Measurement Data}
+The circuit was constructed and the following DC values were measured.
+\begin{itemize}
+    \item $V_+ = \SI{15.01}{\volt}$, $V_- = \SI{-15.02}{\volt}$
+    \item $R_1 = \SI{8.6356}{\kilo\ohm}$, $R_2 = \SI{6.652}{\kilo\ohm}$, $R_C = \SI{12.945}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$
+    \item $V_E = \SI{-1.255}{\volt}$, $V_B = \SI{-1.91}{\volt}$, $V_C = \SI{-1.842}{\volt}$
+\end{itemize}
+
+\paragraph{Post-Measurement Calculations}
+Based on the measured values above:
+$$
+V_{EB} = V_E - V_B = \SI{-1.255}{\volt} - (\SI{-1.91}{\volt}) = \SI{0.655}{\volt}
+$$
+$$
+V_{EC} = V_E - V_C = \SI{-1.255}{\volt} - (\SI{-1.842}{\volt}) = \SI{0.587}{\volt}
+$$
+$$
+I_E = \frac{V_{+} - V_E}{R_E} = \frac{\SI{15.01}{\volt} - (\SI{-1.255}{\volt})}{\SI{14.7}{\kilo\ohm}} = \SI{1.106}{\milli\ampere}
+$$
+$$
+I_C = \frac{V_C - V_{-}}{R_C} = \frac{\SI{-1.842}{\volt} - (\SI{-15.02}{\volt})}{\SI{12.945}{\kilo\ohm}} = \SI{1.018}{\milli\ampere}
+$$
+$$
+I_B = I_E - I_C = \SI{1.106}{\milli\ampere} - \SI{1.018}{\milli\ampere} = \SI{0.088}{\milli\ampere} \text{ (or } \SI{88}{\micro\ampere})
+$$
+$$
+\beta_{\text{forced}} = \frac{I_C}{I_B} = \frac{\SI{1.018}{\milli\ampere}}{\SI{0.088}{\milli\ampere}} \approx 11.57
+$$
+
+\subsubsection{Comparison of Results (Part 2)}
+\begin{table}[H]
+    \centering
+    \caption{Part 2: Comparison of Calculated, Simulated, and Measured Values}
+    \label{tab:part2_compare}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Parameter} & \textbf{Hand Calc (Goal)} & \textbf{Simulation} & \textbf{Measured} \\
+        \midrule
+        $V_B$ & \SI{-2.6}{\volt} & \SI{-1.66}{\volt} & \SI{-1.91}{\volt} \\
+        $V_E$ & \SI{-1.8}{\volt} & \SI{-0.996}{\volt} & \SI{-1.255}{\volt} \\
+        $V_C$ & \SI{-2.0}{\volt} & \SI{-1.04}{\volt} & \SI{-1.842}{\volt} \\
+        $V_{EC(sat)}$ & \SI{0.2}{\volt} (Goal) & \num{0.045} V & \num{0.587} V \\
+        $V_{EB(sat)}$ & \SI{0.8}{\volt} (Assumed) & \SI{0.66}{\volt} & \SI{0.655}{\volt} \\
+        $I_C$ & \SI{1.0}{\milli\ampere} & \num{1.074e-3} A & \num{1.018e-3} A \\
+        $I_B$ & \SI{0.2}{\milli\ampere} & \num{68.79e-6} A & \num{88e-6} A \\
+        $I_E$ & \SI{1.2}{\milli\ampere} & \num{1.143e-3} A & \num{1.106e-3} A \\
+        $\beta_{\text{forced}}$ & 5 (Goal) & $\approx 15.6$ & $\approx 11.57$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\clearpage
+
+\subsection{Part 3: Diode-Connected Results}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define power rails
+        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+
+        % Transistor
+        \node[pnp, anchor=E](Q1) at (0, 1) {};
+
+        % Emitter Resistor
+        \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+
+        % Collector Resistor
+        \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+
+        % Diode Connection (Base to Collector)
+        \draw (Q1.B) to[short, -*] (Q1.C);
+
+        % Labels for nodes
+        \draw (Q1.C) -- ++(-0.5, 0) node[left] {$V_C = V_B$};
+        \draw (Q1.E) -- ++(-0.5, 0) node[left] {$V_E$};
+    \end{circuitikz}
+    \caption{Part 3: Diode-Connected PNP Circuit}
+    \label{fig:part3_circuit}
+\end{figure}
+
+\subsubsection{Hand Calculations}
+
+\paragraph{Given Parameters}
+\begin{itemize}
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$
+  \item \textbf{Given Component:} $R_E = \SI{15}{\kilo\ohm}$
+  \item \textbf{Transistor Model:} $\beta = 100$
+  \item \textbf{Circuit:} Diode-connected ($V_B = V_C$)
+  \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
+\end{itemize}
+
+\paragraph{Calculations}
+$$
+I_B = \frac{I_C}{\beta} = \frac{\SI{1}{\milli\ampere}}{100} = \SI{0.01}{\milli\ampere}
+$$
+$$
+I_E = I_C + I_B = \SI{1}{\milli\ampere} + \SI{0.01}{\milli\ampere} = \SI{1.01}{\milli\ampere}
+$$
+$$
+V_E = V_{+} - (I_E \cdot R_E) = \SI{15}{\volt} - (\SI{1.01}{\milli\ampere} \cdot \SI{15}{\kilo\ohm}) = \SI{-0.15}{\volt}
+$$
+$$
+V_C = V_B = V_E - V_{EB(\text{on})} = \SI{-0.15}{\volt} - \SI{0.7}{\volt} = \SI{-0.85}{\volt}
+$$
+$$
+I_{R_C} = I_E = \SI{1.01}{\milli\ampere}
+$$
+$$
+R_C = \frac{V_C - V_{-}}{I_E} = \frac{\SI{-0.85}{\volt} - (\SI{-15}{\volt})}{\SI{1.01}{\milli\ampere}} \approx \SI{14.01}{\kilo\ohm}
+$$
+
+\subsubsection{Simulation Results}
+The circuit was simulated in LTspice using the calculated resistor values.
+\begin{itemize}
+    \item $V_E = \SI{-0.173}{\volt}$
+    \item $V_C = V_B = \SI{-0.828}{\volt}$
+    \item $I_C = \SI{1.006}{\milli\ampere}$
+    \item $I_B = \SI{5.05}{\micro\ampere}$
+    \item $I_E = \SI{1.012}{\milli\ampere}$
+\end{itemize}
+
+\subsubsection{Measurement Data}
+The circuit was constructed and the following DC values were measured.
+\begin{itemize}
+    \item $V_+ = \SI{15.01}{\volt}$, $V_- = \SI{-15.02}{\volt}$
+    \item $R_C = \SI{14.04}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$
+    \item $V_E = \SI{-0.0556}{\volt}$, $V_C = \SI{-0.71}{\volt}$, $V_B = \SI{-0.716}{\volt}$
+\end{itemize}
+
+\paragraph{Post-Measurement Calculations}
+Based on the measured values above:
+$$
+V_{EB} = V_E - V_B = \SI{-0.0556}{\volt} - (\SI{-0.716}{\volt}) = \SI{0.66}{\volt}
+$$
+$$
+I_E \text{ (from Emitter)} = \frac{V_{+} - V_E}{R_E} = \frac{\SI{15.01}{\volt} - (\SI{-0.0556}{\volt})}{\SI{14.7}{\kilo\ohm}} = \SI{1.025}{\milli\ampere}
+$$
+$$
+I_E \text{ (from Collector)} = \frac{V_C - V_{-}}{R_C} = \frac{\SI{-0.71}{\volt} - (\SI{-15.02}{\volt})}{\SI{14.04}{\kilo\ohm}} = \SI{1.019}{\milli\ampere}
+$$
+We use the average of these two consistent current measurements: $I_E \approx \SI{1.022}{\milli\ampere}$. Assuming the $\beta$ measured in Part 1 is representative:
+$$
+\beta \approx 225
+$$
+$$
+I_C = I_E \left( \frac{\beta}{\beta+1} \right) = \SI{1.022}{\milli\ampere} \left( \frac{225}{226} \right) \approx \SI{1.017}{\milli\ampere}
+$$
+$$
+I_B = I_E - I_C = \SI{1.022}{\milli\ampere} - \SI{1.017}{\milli\ampere} = \SI{0.005}{\milli\ampere} \text{ (or } \SI{5}{\micro\ampere})
+$$
+
+\subsubsection{Comparison of Results (Part 3)}
+\begin{table}[H]
+    \centering
+    \caption{Part 3: Comparison of Calculated, Simulated, and Measured Values}
+    \label{tab:part3_compare}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Parameter} & \textbf{Hand Calc (Goal)} & \textbf{Simulation} & \textbf{Measured} \\
+        \midrule
+        $V_E$ & \SI{-0.15}{\volt} & \SI{-0.173}{\volt} & \SI{-0.0556}{\volt} \\
+        $V_C = V_B$ & \SI{-0.85}{\volt} & \SI{-0.828}{\volt} & $\approx \SI{-0.713}{\volt}$ \\
+        $V_{EB}$ & \SI{0.7}{\volt} (Assumed) & \SI{0.655}{\volt} & \SI{0.66}{\volt} \\
+        $I_C$ & \SI{1.0}{\milli\ampere} & \num{1.006e-3} A & $\approx \num{1.017e-3}$ A \\
+        $I_B$ & \SI{10.0}{\micro\ampere} & \num{5.05e-6} A & $\approx \num{5.0e-6}$ A \\
+        $I_E$ & \SI{1.01}{\milli\ampere} & \num{1.012e-3} A & $\approx \num{1.022e-3}$ A \\
+        $\beta$ ($h_{FE}$) & 100 (Assumed) & $\approx 199$ & $\approx 225$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\clearpage
+
+\subsection{Discussion}
+This experiment successfully demonstrated the DC biasing of a PNP transistor (2N3906) in three different configurations: active mode, saturation mode, and diode-connected. The results highlight the differences between idealized hand calculations, more realistic simulations, actual circuit measurements, and datasheet specifications.
+
+\paragraph{Comparison: Hand Calculations vs. Simulation vs. Datasheet}
+Across all three parts, the simulation results deviated from the initial hand calculations. This was primarily due to the simplified assumptions used in the hand calculations, namely a fixed $V_{EB}$ (\SI{0.7}{\volt} or \SI{0.8}{\volt}) and a fixed $\beta$ (100 or 5 for forced beta). The LTspice simulation employed a more sophisticated model for the 2N3906, resulting in different operating points. Datasheet values often provide ranges or typical values, which further adds context.
+
+For instance, in Part 1, the hand calculation assumed $\beta=100$. The simulation yielded $\beta \approx 213$. The datasheet minimum $h_{FE}$ at $I_C = \SI{1}{mA}$ is 80, with typical graphical values suggesting 150-160. The higher actual $\beta$ required less base current ($I_B = \SI{4.4}{\micro\ampere}$ simulated vs. \SI{10}{\micro\ampere} goal). This reduced loading on the base voltage divider caused $V_B$ to rise (\SI{1.03}{\volt} simulated vs. \SI{0}{\volt} goal), shifting other voltages. The assumed $V_{EB}$ of \SI{0.7}{\volt} was close to the simulated \SI{0.65}{\volt} and the typical datasheet graph value around \SI{0.7}{\volt}.
+
+In Part 2 (Saturation), the hand calculation assumed $V_{EC(sat)} = \SI{0.2}{\volt}$. The simulation showed much deeper saturation ($V_{EC} = \SI{0.045}{\volt}$). The datasheet specifies $V_{CE(sat)} \le \SI{0.25}{V}$ at a higher current of \SI{10}{mA}, suggesting that smaller values are expected at \SI{1}{mA}. The hand-calculated $V_{EB(sat)}$ of \SI{0.8}{\volt} was higher than the simulated \SI{0.66}{\volt}; the datasheet suggests $V_{BE(sat)}$ is typically around \SI{0.7}{\volt} at \SI{1}{mA} but gives a range of \SIrange{0.65}{0.85}{V} only at \SI{10}{mA}. Despite these voltage shifts, the simulated currents remained close to the design goals.
+
+\paragraph{Comparison: Simulation vs. Measurement vs. Datasheet}
+The measured results generally agreed well with the simulations. Component tolerances in resistors affected the measured operating points compared to simulations using ideal values. The measured $V_{EB}$ was consistently around \SI{0.66}{\volt} (\SI{0.665}{\volt}, \SI{0.655}{\volt}, \SI{0.66}{\volt}), aligning well with both simulation and typical datasheet values.
+
+The measured active-mode $\beta$ in Part 1 ($\approx 225$) was higher than both the simulation ($\approx 213$) and the typical datasheet value ($\approx$ 150-160), but well above the minimum specification of 80. This highlights the significant variability in $\beta$ even for transistors of the same part number.
+
+In Part 2, the measured $V_{EC(sat)}$ (\SI{0.587}{\volt}) was higher than both the simulation (\SI{0.045}{\volt}) and the datasheet maximum at \SI{10}{mA} (\SI{0.25}{V}). While the calculated $\beta_{\text{forced}} \approx 11.6$ confirms saturation, the measured $V_{EC}$ is unexpectedly high and warrants further investigation (potential measurement error or component issue). The measured $V_{EB(sat)}$ (\SI{0.655}{\volt}) agreed well with simulation (\SI{0.66}{\volt}) and the lower end of the datasheet range for higher currents.
+
+Part 3 showed excellent agreement for currents between simulation (\SI{1.006}{mA}) and measurement ($\approx \SI{1.017}{mA}$). The measured voltages were also reasonably close.
+
+\paragraph{Overall Performance}
+The experiment successfully demonstrated BJT biasing principles. Active mode (Part 1) achieved $I_C = \SI{0.898}{mA}$ (vs. \SI{1.0}{mA} goal). Saturation mode (Part 2) met current goals ($I_C=\SI{1.018}{mA}$, $I_E=\SI{1.106}{mA}$) and confirmed saturation ($\beta_{\text{forced}} \approx 11.6$). Diode-connected (Part 3) achieved $I_C \approx \SI{1.017}{mA}$ accurately. Post-measurement calculations using measured voltages/resistors were crucial. The results emphasize the discrepancies between simple assumptions, detailed simulations, datasheet ranges/typical values, and specific component measurements, particularly for $\beta$ and saturation voltages.
+
+\subsection{Conclusion}
+This laboratory exercise successfully investigated the DC biasing of a 2N3906 PNP BJT in active, saturation, and diode-connected configurations. Hand calculations provided effective initial designs, while LTspice simulations offered more accurate predictions by using a detailed transistor model. Experimental measurements, combined with post-measurement calculations, validated the theoretical principles and generally aligned with simulations and datasheet typical values, highlighting the practical impact of component tolerances and transistor parameter variability. Key findings include:
+\begin{itemize}
+    \item Target currents were closely achieved in all three configurations. Measured $I_C$ values were \SI{0.898}{mA} (Part 1), \SI{1.018}{mA} (Part 2), and $\approx \SI{1.017}{mA}$ (Part 3).
+    \item Measured $V_{EB}$ values were consistently around \SI{0.66}{V}, aligning well with datasheet typical values and simulations, but differing slightly from the \SI{0.7}{V} hand calculation assumption.
+    \item The measured active-mode $\beta$ ($\approx 225$) was significantly higher than the assumed 100 and the typical datasheet value, demonstrating expected device variance but falling within plausible limits (above the minimum 80).
+    \item Saturation was confirmed in Part 2 ($\beta_{\text{forced}} \approx 11.6$), although the measured $V_{EC(sat)}$ (\SI{0.587}{V}) was higher than expected from simulation and datasheet values.
+\end{itemize}
+Overall, the experiment provided practical experience in BJT circuit analysis, simulation, and measurement, reinforcing the understanding of operating regions and the differences between idealized models, simulations, datasheet specifications, and real-world hardware performance.
+
+% --- BIBLIOGRAPHY ---
+\section{Bibliography}
+[1] Fixel, Professor. "ENGR 305-Lab 8: PNP at DC." Trinity College, Hartford, CT, October 2025.
+\newline
+
+[2] ON Semiconductor. "2N3906 General Purpose Transistors PNP Silicon." Datasheet, 2N3906/D, Rev. 4, February 2010. Accessed October 24, 2025. http://onsemi.com.
+% [List all other references cited]
+
+\end{document}

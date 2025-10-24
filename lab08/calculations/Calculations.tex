@@ -1,0 +1,280 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx} % For proper unit formatting
+\usepackage{booktabs} % For any tables, though not used here
+\usepackage{circuitikz} % Added for circuit drawings
+\usepackage{float} % Added for [H] figure placement
+
+% Set paragraph spacing instead of indentation
+\setlength{\parindent}{0in}
+\setlength{\parskip}{1ex}
+
+\title{ENGR 305 Lab 8: Hand Calculations}
+\author{Sean Balbale} % Left blank
+\date{\today} % No date
+
+\begin{document}
+
+\maketitle
+
+
+\section{Part 1: PNP in Active Mode}
+
+\subsection{Given Parameters}
+\begin{itemize}
+    \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+    \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $V_{B} = \SI{0}{\volt}$, $V_{C} = \SI{-5}{\volt}$
+    \item \textbf{Transistor Model:} $\beta = 100$
+    \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
+\end{itemize}
+
+\subsection{Circuit Analysis}
+The circuit is a standard four-resistor voltage divider bias for a PNP transistor.
+\begin{itemize}
+    \item $R_E$ is connected from $V_+$ to the Emitter.
+    \item $R_C$ is connected from the Collector to $V_-$.
+    \item $R_1$ is connected from $V_+$ to the Base.
+    \item $R_2$ is connected from the Base to $V_-$.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define power rails
+        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+        
+        % Transistor
+        \node[pnp, anchor=B](Q1) at (0, 0) {};
+        
+        % Emitter Resistor
+        \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+        
+        % Collector Resistor
+        \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+        
+        % Base Resistors
+        \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+        \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
+        \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
+        
+        % Labels for nodes
+        \draw (Q1.B) -- ++(-0.5, 0) node[left] {$V_B = \SI{0}{\volt}$};
+        \draw (Q1.C) -- ++(0.5, 0) node[right] {$V_C = \SI{-5}{\volt}$};
+        \draw (Q1.E) -- ++(0.5, 0) node[right] {$V_E = \SI{0.7}{\volt}$};
+    \end{circuitikz}
+    \caption{Part 1: PNP in Active Mode Circuit}
+    \label{fig:part1_circuit}
+\end{figure}
+
+\subsection{Calculations}
+\textbf{1. Calculate Base and Emitter Currents ($I_B$, $I_E$)} \\
+The base current is calculated from the collector current and $\beta$:
+$$
+I_B = \frac{I_C}{\beta} = \frac{\SI{1}{\milli\ampere}}{100} = \SI{0.01}{\milli\ampere} = \SI{10}{\micro\ampere}
+$$
+The emitter current is the sum of the collector and base currents:
+$$
+I_E = I_C + I_B = \SI{1}{\milli\ampere} + \SI{0.01}{\milli\ampere} = \SI{1.01}{\milli\ampere}
+$$
+
+\textbf{2. Calculate Emitter Voltage ($V_E$)} \\
+The emitter voltage is found relative to the base voltage, using the $V_{EB(\text{on})}$ assumption:
+$$
+V_E = V_B + V_{EB(\text{on})} = \SI{0}{\volt} + \SI{0.7}{\volt} = \SI{0.7}{\volt}
+$$
+
+\textbf{3. Calculate Emitter and Collector Resistors ($R_E$, $R_C$)} \\
+$R_E$ is calculated using Ohm's law with the voltage drop across it ($V_+ - V_E$) and the current through it ($I_E$):
+$$
+R_E = \frac{V_{+} - V_E}{I_E} = \frac{\SI{15}{\volt} - \SI{0.7}{\volt}}{\SI{1.01}{\milli\ampere}} = \frac{\SI{14.3}{\volt}}{\SI{1.01}{\milli\ampere}} \approx \SI{14.16}{\kilo\ohm}
+$$
+$R_C$ is calculated using the voltage drop across it ($V_C - V_-$) and the current through it ($I_C$):
+$$
+R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-5}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \frac{\SI{10}{\volt}}{\SI{1}{\milli\ampere}} = \SI{10}{\kilo\ohm}
+$$
+
+\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$)} \\
+This problem is not fully specified, as there is one KCL equation at the base with two unknown resistors. We must make a design choice for the stiffness of the voltage divider. A common rule of thumb is to set the divider current ($I_{\text{divider}}$) to be at least 10 times the base current.
+\begin{itemize}
+    \item $I_B = \SI{10}{\micro\ampere}$ (note: this current flows *out* of the PNP base).
+    \item Let's set the current through $R_2$ as $I_{R2} = 10 \times I_B = 10 \times \SI{10}{\micro\ampere} = \SI{100}{\micro\ampere}$.
+\end{itemize}
+Now, we can find $R_2$:
+$$
+R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{0}{\volt} - (\SI{-15}{\volt})}{\SI{100}{\micro\ampere}} = \frac{\SI{15}{\volt}}{\SI{0.1}{\milli\ampere}} = \SI{150}{\kilo\ohm}
+$$
+The current through $R_1$ is found by KCL at the base node ($I_{R1} = I_{R2} + I_B$):
+$$
+I_{R1} = \SI{100}{\micro\ampere} + \SI{10}{\micro\ampere} = \SI{110}{\micro\ampere}
+$$
+Now, we can find $R_1$:
+$$
+R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - \SI{0}{\volt}}{\SI{110}{\micro\ampere}} = \frac{\SI{15}{\volt}}{\SI{0.11}{\milli\ampere}} \approx \SI{136.36}{\kilo\ohm}
+$$
+
+\newpage
+\section{Part 2: PNP in Saturation Mode}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define power rails
+        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+        
+        % Transistor
+        \node[pnp, anchor=B](Q1) at (0, 0) {};
+        
+        % Emitter Resistor
+        \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+        
+        % Collector Resistor
+        \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+        
+        % Base Resistors
+        \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+        \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
+        \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
+        
+        % Labels for nodes
+        \draw (Q1.B) -- ++(-0.5, 0) node[left] {$V_B = \SI{-2.6}{\volt}$};
+        \draw (Q1.C) -- ++(0.5, 0) node[right] {$V_C = \SI{-2}{\volt}$};
+        \draw (Q1.E) -- ++(0.5, 0) node[right] {$V_E = \SI{-1.8}{\volt}$};
+    \end{circuitikz}
+    \caption{Part 2: PNP in Saturation Mode Circuit (Same topology as Part 1)}
+    \label{fig:part2_circuit}
+\end{figure}
+
+\subsection{Given Parameters}
+\begin{itemize}
+    \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+    \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $I_{E} = \SI{1.2}{\milli\ampere}$, $V_{C} = \SI{-2}{\volt}$, $V_{EC} = \SI{0.2}{\volt}$
+    \item \textbf{Assumption:} Saturation model $V_{EB(\text{sat})} = \SI{0.8}{\volt}$
+\end{itemize}
+
+\subsection{Calculations}
+\textbf{1. Calculate Emitter and Base Voltages ($V_E$, $V_B$)} \\
+The emitter voltage is found from the given collector voltage and $V_{EC}$:
+$$
+V_E = V_C + V_{EC} = \SI{-2}{\volt} + \SI{0.2}{\volt} = \SI{-1.8}{\volt}
+$$
+The base voltage is found using the $V_{EB(\text{sat})}$ assumption:
+$$
+V_B = V_E - V_{EB(\text{sat})} = \SI{-1.8}{\volt} - \SI{0.8}{\volt} = \SI{-2.6}{\volt}
+$$
+
+\textbf{2. Calculate Emitter and Collector Resistors ($R_E$, $R_C$)} \\
+$R_E$ is calculated using the voltage drop ($V_+ - V_E$) and current $I_E$:
+$$
+R_E = \frac{V_{+} - V_E}{I_E} = \frac{\SI{15}{\volt} - (\SI{-1.8}{\volt})}{\SI{1.2}{\milli\ampere}} = \frac{\SI{16.8}{\volt}}{\SI{1.2}{\milli\ampere}} = \SI{14}{\kilo\ohm}
+$$
+$R_C$ is calculated using the voltage drop ($V_C - V_-$) and current $I_C$:
+$$
+R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-2}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \frac{\SI{13}{\volt}}{\SI{1}{\milli\ampere}} = \SI{13}{\kilo\ohm}
+$$
+
+\textbf{3. Calculate $\beta_{\text{forced}}$} \\
+First, find the base current $I_B$:
+$$
+I_B = I_E - I_C = \SI{1.2}{\milli\ampere} - \SI{1.0}{\milli\ampere} = \SI{0.2}{\milli\ampere}
+$$
+Now, calculate the forced $\beta$:
+$$
+\beta_{\text{forced}} = \frac{I_C}{I_B} = \frac{\SI{1}{\milli\ampere}}{\SI{0.2}{\milli\ampere}} = 5
+$$
+
+\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$)} \\
+We must again choose a divider current. We will use the $10 \times I_B$ rule for the current through $R_2$.
+\begin{itemize}
+    \item $I_B = \SI{0.2}{\milli\ampere}$ (flowing out of the base).
+    \item $I_{R2} = 10 \times I_B = 10 \times \SI{0.2}{\milli\ampere} = \SI{2.0}{\milli\ampere}$.
+\end{itemize}
+Now, find $R_2$:
+$$
+R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{-2.6}{\volt} - (\SI{-15}{\volt})}{\SI{2.0}{\milli\ampere}} = \frac{\SI{12.4}{\volt}}{\SI{2.0}{\milli\ampere}} = \SI{6.2}{\kilo\ohm}
+$$
+Find $I_{R1}$ using KCL at the base ($I_{R1} = I_{R2} + I_B$):
+$$
+I_{R1} = \SI{2.0}{\milli\ampere} + \SI{0.2}{\milli\ampere} = \SI{2.2}{\milli\ampere}
+$$
+Now, find $R_1$:
+$$
+R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - (\SI{-2.6}{\volt})}{\SI{2.2}{\milli\ampere}} = \frac{\SI{17.6}{\volt}}{\SI{2.2}{\milli\ampere}} = \SI{8}{\kilo\ohm}
+$$
+
+\newpage
+\section{Part 3: Diode-Connected PNP}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}
+        % Define power rails
+        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+        
+        % Transistor
+        \node[pnp, anchor=E](Q1) at (0, 1) {};
+        
+        % Emitter Resistor
+        \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vcc.south) -- (Vcc);
+        
+        % Collector Resistor
+        \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
+        
+        % Diode Connection (Base to Collector)
+        \draw (Q1.B) to[short, -*] (Q1.C);
+        
+        % Labels for nodes
+        \draw (Q1.C) -- ++(-0.5, 0) node[left] {$V_C = V_B = \SI{-0.85}{\volt}$};
+        \draw (Q1.E) -- ++(-0.5, 0) node[left] {$V_E = \SI{-0.15}{\volt}$};
+    \end{circuitikz}
+    \caption{Part 3: Diode-Connected PNP Circuit}
+    \label{fig:part3_circuit}
+\end{figure}
+
+\subsection{Given Parameters}
+\begin{itemize}
+    \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+    \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$
+    \item \textbf{Given Component:} $R_E = \SI{15}{\kilo\ohm}$
+    \item \textbf{Transistor Model:} $\beta = 100$
+    \item \textbf{Circuit:} Diode-connected ($V_B = V_C$)
+    \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
+\end{itemize}
+
+\subsection{Calculations}
+\textbf{1. Operating Region} \\
+In a diode-connected BJT, the base and collector are shorted, so $V_{BC} = V_B - V_C = \SI{0}{\volt}$. This places the transistor at the boundary between the active and saturation regions. It will operate in the \textbf{Active Region}, as it cannot enter saturation ($V_{BC}$ cannot become positive for a PNP).
+
+\textbf{2. Calculate Currents ($I_B$, $I_E$)}
+$$
+I_B = \frac{I_C}{\beta} = \frac{\SI{1}{\milli\ampere}}{100} = \SI{0.01}{\milli\ampere}
+$$
+$$
+I_E = I_C + I_B = \SI{1}{\milli\ampere} + \SI{0.01}{\milli\ampere} = \SI{1.01}{\milli\ampere}
+$$
+
+\textbf{3. Calculate Voltages ($V_E$, $V_C$)} \\
+The emitter voltage is determined by the $V_+$ supply, $R_E$, and $I_E$:
+$$
+V_E = V_{+} - (I_E \cdot R_E) = \SI{15}{\volt} - (\SI{1.01}{\milli\ampere} \cdot \SI{15}{\kilo\ohm}) = \SI{15}{\volt} - \SI{15.15}{\volt} = \SI{-0.15}{\volt}
+$$
+The collector (and base) voltage is found relative to the emitter:
+$$
+V_C = V_B = V_E - V_{EB(\text{on})} = \SI{-0.15}{\volt} - \SI{0.7}{\volt} = \SI{-0.85}{\volt}
+$$
+
+\textbf{4. Calculate Collector Resistor ($R_C$)} \\
+The circuit configuration is $V_+ \to R_E \to \text{Emitter; Base} \to \text{Collector} \to R_C \to V_-$.
+The current flowing out of the shared Base-Collector node and through $R_C$ is the sum of $I_B$ and $I_C$, which equals $I_E$.
+$$
+I_{R_C} = I_B + I_C = I_E = \SI{1.01}{\milli\ampere}
+$$
+$R_C$ is calculated using the voltage drop ($V_C - V_-$) and current $I_E$:
+$$
+R_C = \frac{V_C - V_{-}}{I_E} = \frac{\SI{-0.85}{\volt} - (\SI{-15}{\volt})}{\SI{1.01}{\milli\ampere}} = \frac{\SI{14.15}{\volt}}{\SI{1.01}{\milli\ampere}} \approx \SI{14.01}{\kilo\ohm}
+$$
+
+\end{document}

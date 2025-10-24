@@ -1,0 +1,15 @@
+LTspice 24.1.9 for Windows
+Circuit: C:\Users\seanb\Documents\Trinity-ENGR305-Microelectronic-Circuits\lab08\part1.net
+Start Time: Fri Oct 24 13:49:13 2025
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration for .op point succeeded.
+Total elapsed time: 0.130 seconds.
+
+Files loaded:
+C:\Users\seanb\Documents\Trinity-ENGR305-Microelectronic-Circuits\lab08\part1.net
+C:\Users\seanb\AppData\Local\LTspice\lib\cmp\standard.bjt
+
