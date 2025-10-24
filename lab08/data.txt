@@ -1,0 +1,45 @@
+Part 1	B=100				
+Resistors (kΩ)					
+	R1	R2	Rc	Re	
+Calculated	136.36	150	10	14.16	
+Actual	136.265	151.03	10.02	14.7	
+					
+Voltages (V)					
+	Calculated	Actual			
+V+	15	15.01			
+V-	-15	-15.02			
+Vc	-5	-6.027			
+Ve	0.7	1.755			
+Vb	0	1.09			
+Vbe	0.7	0.665			
+
+
+Part 2	B = 5			
+Resistors (kΩ)				
+	R1	R2	Rc	Re
+Calculated	8	6.2	13	14
+Actual	8.6356	6.652	12.945	14.7
+				
+Voltages (V)				
+	Calculated	Actual		
+V+	15	15.01		
+V-	-15	-15.02		
+Vc	-2	-1.842		
+Ve	-1.8	-1.255		
+Vb	-2.6	-1.91		
+
+
+Part 3	B = 100			
+Resistors (kΩ)				
+	Rc	Re		
+Calculated	14.01	15		
+Actual	14.04	14.7		
+				
+Voltages (V)				
+	Calculated	Actual		
+V+	15	15.01		
+V-	-15	-15.02		
+Vc	-0.85	-0.71		
+Ve	-0.15	-0.0556		
+Vb	-0.85	-0.716		
+				
