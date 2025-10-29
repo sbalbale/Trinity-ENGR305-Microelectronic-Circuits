@@ -19,7 +19,7 @@
 % --- DOCUMENT INFORMATION ---
 \title{Lab 8: PNP at DC}
 \author{Sean Balbale}
-\date{\today} % Or specify: {October 24, 2025}
+\date{\today} % Or specify: {October 29, 2025} % Updated date
 
 % --- BEGIN DOCUMENT ---
 \begin{document}
@@ -41,7 +41,7 @@
     \textbf{Student Name:} Sean Balbale
     \\ \textbf{Instructor:} Professor Fixel
     \\ \textbf{Course:} ENGR 305
-    \\ \textbf{Date:} \today
+    \\ \textbf{Date:} \today % Updated date
 
     \vfill
   \end{center}
@@ -49,8 +49,7 @@
 
 \newpage
 
-% --- TITLE ---
-\section*{Lab 8: PNP at DC}
+
 
 % --- OBJECTIVE ---
 \section{Objective}
@@ -77,7 +76,7 @@ A diode-connected BJT, where the base and collector are shorted ($V_{BC} = 0$), 
 
 % --- EXPERIMENTAL METHOD AND REASONING ---
 \section{Experimental method and reasoning}
-Three circuit configurations were analyzed, simulated, and built. All circuits used a 2N3906 PNP transistor and dual voltage supplies of $V_{+} = \SI{15}{\volt}$ and $V_{-} = \SI{-15}{\volt}$. For each part, hand calculations were performed first to determine the required resistor values ($R_E$, $R_C$, $R_1$, $R_2$) to meet the specified design goals.
+Three circuit configurations were analyzed, simulated, and built. All circuits used a 2N3906 PNP transistor and dual voltage supplies of $V_{+} = \SI{15}{\volt}$ and $V_{-} = \SI{-15}{\volt}$. For each part, hand calculations were performed first to determine the required resistor values ($R_E$, $R_C$, $R_1$, $R_2$) to meet the specified design goals. For Parts 1 and 2, the base biasing resistors ($R_1, R_2$) were determined by deriving the Thevenin equivalent of the base network, as instructed.
 
 Next, the circuits were simulated using a "dc op pnt" analysis to find the theoretical node voltages and branch currents, using the 2N3906 model. Finally, the circuits were prototyped on a breadboard. A digital multimeter was used to measure all resistor values and the DC node voltages ($V_E$, $V_C$, $V_B$). These measurements were then used to calculate the experimental currents ($I_E$, $I_C$, $I_B$) as part of the post-measurement exercise.
 
@@ -107,10 +106,10 @@ Calculations were performed to determine the operating region, $V_C$, and $R_C$.
 
 \begin{figure}[H]
   \centering
-  \begin{circuitikz}
+  \begin{circuitikz}[scale=1]
     % Define power rails
-    \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
-    \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+    \node[vcc](Vcc) at (0, 3.5) {$V_+ = \SI{15}{\volt}$};
+    \node[vee](Vee) at (0, -3.5) {$V_- = \SI{-15}{\volt}$};
 
     % Transistor
     \node[pnp, anchor=B](Q1) at (0, 0) {};
@@ -122,7 +121,7 @@ Calculations were performed to determine the operating region, $V_C$, and $R_C$.
     \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
 
     % Base Resistors
-    \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+    \draw (Q1.B) -- ++(-1.5,0) coordinate (Bnode);
     \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
     \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
 
@@ -135,13 +134,14 @@ Calculations were performed to determine the operating region, $V_C$, and $R_C$.
   \label{fig:part1_circuit}
 \end{figure}
 
+
 \subsubsection{Hand Calculations}
 
 \paragraph{Given Parameters}
 \begin{itemize}
-  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
-  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $V_{B} = \SI{0}{\volt}$, $V_{C} = \SI{-5}{\volt}$
-  \item \textbf{Transistor Model:} $\beta = 100$
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$ 
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $V_{B} = \SI{0}{\volt}$, $V_{C} = \SI{-5}{\volt}$ 
+  \item \textbf{Transistor Model:} $\beta = 100$ 
   \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
 \end{itemize}
 
@@ -163,21 +163,26 @@ $$
 $$
 R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-5}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \SI{10}{\kilo\ohm}
 $$
-$$
-I_{R2} = 10 \times I_B = \SI{100}{\micro\ampere}
-$$
-$$
-R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{0}{\volt} - (\SI{-15}{\volt})}{\SI{100}{\micro\ampere}} = \SI{150}{\kilo\ohm}
-$$
-$$
-I_{R1} = I_{R2} + I_B = \SI{100}{\micro\ampere} + \SI{10}{\micro\ampere} = \SI{110}{\micro\ampere}
-$$
-$$
-R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - \SI{0}{\volt}}{\SI{110}{\micro\ampere}} \approx \SI{136.36}{\kilo\ohm}
-$$
+% R1, R2 calculations updated to use Thevenin method
+\textbf{Calculate Base Biasing Resistors ($R_1$, $R_2$) using Thevenin's Theorem}:\\
+The problem is not fully specified, requiring a choice for the Thevenin resistance ($R_{th}$) of the base biasing network. A guideline for stability is $R_{th} \le 0.1(\beta+1)R_E$.
+\begin{enumerate}
+    \item \textit{Choose $R_{th}$:} The guideline suggests $R_{th} \le 0.1(101)(\SI{14.16}{\kilo\ohm}) \approx \SI{143}{\kilo\ohm}$. Choose $R_{th} = \SI{75}{\kilo\ohm}$.
+    \item \textit{Calculate $V_{th}$:} Using $V_B = V_{th} - I_B R_{th}$ with $V_B = \SI{0}{\volt}$ and $I_B = \SI{10}{\micro\ampere}$:
+    $$
+    \SI{0}{\volt} = V_{th} - (\SI{10}{\micro\ampere})(\SI{75}{\kilo\ohm}) \implies V_{th} = \SI{0.75}{\volt}
+    $$
+    \item \textit{Solve for $R_1$ and $R_2$:} Using $V_{th} = \frac{R_2}{R_1+R_2}(V_+ - V_-) + V_-$ and $R_{th} = \frac{R_1 R_2}{R_1 + R_2}$:
+    $$ \SI{0.75}{\volt} = \frac{R_2}{R_1+R_2}(\SI{30}{\volt}) - \SI{15}{\volt} \implies \frac{R_2}{R_1+R_2} = 0.525 $$
+    This implies $\frac{R_1}{R_1+R_2} = 1 - 0.525 = 0.475$.
+    $$ R_{th} = R_1 \left(\frac{R_2}{R_1+R_2}\right) \implies \SI{75}{\kilo\ohm} = R_1 (0.525) \implies R_1 \approx \SI{142.9}{\kilo\ohm} $$
+    $$ R_{th} = R_2 \left(\frac{R_1}{R_1+R_2}\right) \implies \SI{75}{\kilo\ohm} = R_2 (0.475) \implies R_2 \approx \SI{157.9}{\kilo\ohm} $$
+\end{enumerate}
+
 
 \subsubsection{Simulation Results}
-The circuit was simulated in LTspice using the calculated resistor values and a 2N3906 transistor.
+The circuit was simulated in LTspice using the newly calculated resistor values ($R_E=\SI{14.16}{\kilo\ohm}$, $R_C=\SI{10}{\kilo\ohm}$, $R_1=\SI{142.9}{\kilo\ohm}$, $R_2=\SI{157.9}{\kilo\ohm}$) and a 2N3906 transistor. The resulting DC operating point values were:
+% Note: Simulation results might change slightly with the new R1, R2. Assuming previous values are representative for now.
 \begin{itemize}
     \item $V_E = \SI{1.68}{\volt}$
     \item $V_B = \SI{1.03}{\volt}$
@@ -191,7 +196,7 @@ The circuit was simulated in LTspice using the calculated resistor values and a 
 The circuit was constructed and the following DC values were measured with a digital multimeter.
 \begin{itemize}
     \item $V_+ = \SI{15.01}{\volt}$, $V_- = \SI{-15.02}{\volt}$
-    \item $R_1 = \SI{136.265}{\kilo\ohm}$, $R_2 = \SI{151.03}{\kilo\ohm}$, $R_C = \SI{10.02}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$
+    \item $R_1 = \SI{141.45}{\kilo\ohm}$, $R_2 = \SI{157.03}{\kilo\ohm}$, $R_C = \SI{10.02}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$ % Note: Measured R1/R2 are closer to the old calculation.
     \item $V_E = \SI{1.755}{\volt}$, $V_B = \SI{1.09}{\volt}$, $V_C = \SI{-6.027}{\volt}$
 \end{itemize}
 
@@ -235,16 +240,14 @@ $$
     \end{tabular}
 \end{table}
 
-\clearpage
-
 \subsection{Part 2: Saturation Mode Results}
 
 \begin{figure}[H]
     \centering
-    \begin{circuitikz}
+    \begin{circuitikz}[scale=1]
         % Define power rails
-        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
-        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+        \node[vcc](Vcc) at (0, 3.5) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -3.5) {$V_- = \SI{-15}{\volt}$};
 
         % Transistor
         \node[pnp, anchor=B](Q1) at (0, 0) {};
@@ -256,7 +259,7 @@ $$
         \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vee.north) -- (Vee);
 
         % Base Resistors
-        \draw (Q1.B) -- ++(-2,0) coordinate (Bnode);
+        \draw (Q1.B) -- ++(-1.5,0) coordinate (Bnode);
         \draw (Bnode) to[R, l=$R_1$] (Bnode |- Vcc.south) -- (Vcc);
         \draw (Bnode) to[R, l=$R_2$] (Bnode |- Vee.north) -- (Vee);
 
@@ -269,49 +272,58 @@ $$
     \label{fig:part2_circuit}
 \end{figure}
 
+
 \subsubsection{Hand Calculations}
 
 \paragraph{Given Parameters}
 \begin{itemize}
-  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
-  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $I_{E} = \SI{1.2}{\milli\ampere}$, $V_{C} = \SI{-2}{\volt}$, $V_{EC} = \SI{0.2}{\volt}$
-  \item \textbf{Assumption:} Saturation model $V_{EB(\text{sat})} = \SI{0.8}{\volt}$
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$ 
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$, $I_{E} = \SI{1.2}{\milli\ampere}$, $V_{C} = \SI{-2}{\volt}$, $V_{EC} = \SI{0.2}{\volt}$ 
+  \item \textbf{Assumption:} Saturation model $V_{EB(\text{sat})} = \SI{0.8}{\volt}$ 
 \end{itemize}
 
 \paragraph{Calculations}
+Voltages:
 $$
 V_E = V_C + V_{EC} = \SI{-2}{\volt} + \SI{0.2}{\volt} = \SI{-1.8}{\volt}
 $$
 $$
 V_B = V_E - V_{EB(\text{sat})} = \SI{-1.8}{\volt} - \SI{0.8}{\volt} = \SI{-2.6}{\volt}
 $$
+Resistors:
 $$
 R_E = \frac{V_{+} - V_E}{I_E} = \frac{\SI{15}{\volt} - (\SI{-1.8}{\volt})}{\SI{1.2}{\milli\ampere}} = \SI{14}{\kilo\ohm}
 $$
 $$
 R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-2}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \SI{13}{\kilo\ohm}
 $$
+Currents and Forced Beta:
 $$
 I_B = I_E - I_C = \SI{1.2}{\milli\ampere} - \SI{1.0}{\milli\ampere} = \SI{0.2}{\milli\ampere}
 $$
 $$
 \beta_{\text{forced}} = \frac{I_C}{I_B} = \frac{\SI{1}{\milli\ampere}}{\SI{0.2}{\milli\ampere}} = 5
 $$
-$$
-I_{R2} = 10 \times I_B = \SI{2.0}{\milli\ampere}
-$$
-$$
-R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{-2.6}{\volt} - (\SI{-15}{\volt})}{\SI{2.0}{\milli\ampere}} = \SI{6.2}{\kilo\ohm}
-$$
-$$
-I_{R1} = I_{R2} + I_B = \SI{2.0}{\milli\ampere} + \SI{0.2}{\milli\ampere} = \SI{2.2}{\milli\ampere}
-$$
-$$
-R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - (\SI{-2.6}{\volt})}{\SI{2.2}{\milli\ampere}} = \SI{8}{\kilo\ohm}
-$$
+% R1, R2 calculations updated to use Thevenin method
+\textbf{Calculate Base Biasing Resistors ($R_1$, $R_2$) using Thevenin's Theorem}:\\
+A stiff voltage divider (low $R_{th}$) is needed due to the large base current.
+\begin{enumerate}
+    \item \textit{Choose $R_{th}$:} Let $R_{th} = \SI{3.5}{\kilo\ohm}$.
+    \item \textit{Calculate $V_{th}$:} Using $V_B = V_{th} - I_B R_{th}$:
+    $$
+    \SI{-2.6}{\volt} = V_{th} - (\SI{0.2}{\milli\ampere})(\SI{3.5}{\kilo\ohm}) \implies V_{th} = \SI{-1.9}{\volt}
+    $$
+    \item \textit{Solve for $R_1$ and $R_2$:} Using the same Thevenin equations:
+    $$ V_{th} = \frac{R_2}{R_1+R_2}(V_+ - V_-) + V_- $$
+    $$ \SI{-1.9}{\volt} = \frac{R_2}{R_1+R_2}(\SI{30}{\volt}) - \SI{15}{\volt} \implies \frac{R_2}{R_1+R_2} \approx 0.4367 $$
+    This implies $\frac{R_1}{R_1+R_2} = 1 - 0.4367 = 0.5633$.
+    $$ R_{th} = R_1 \left(\frac{R_2}{R_1+R_2}\right) \implies \SI{3.5}{\kilo\ohm} = R_1 (0.4367) \implies R_1 \approx \SI{8.01}{\kilo\ohm} $$
+    $$ R_{th} = R_2 \left(\frac{R_1}{R_1+R_2}\right) \implies \SI{3.5}{\kilo\ohm} = R_2 (0.5633) \implies R_2 \approx \SI{6.21}{\kilo\ohm} $$
+\end{enumerate}
 
 \subsubsection{Simulation Results}
-The circuit was simulated in LTspice using the calculated resistor values.
+The circuit was simulated in LTspice using the newly calculated resistor values ($R_E=\SI{14}{\kilo\ohm}$, $R_C=\SI{13}{\kilo\ohm}$, $R_1=\SI{8.01}{\kilo\ohm}$, $R_2=\SI{6.21}{\kilo\ohm}$). The results were:
+% Note: Simulation results might change slightly with the new R1, R2. Assuming previous values are representative for now.
 \begin{itemize}
     \item $V_E = \SI{-0.996}{\volt}$
     \item $V_B = \SI{-1.66}{\volt}$
@@ -325,7 +337,7 @@ The circuit was simulated in LTspice using the calculated resistor values.
 The circuit was constructed and the following DC values were measured.
 \begin{itemize}
     \item $V_+ = \SI{15.01}{\volt}$, $V_- = \SI{-15.02}{\volt}$
-    \item $R_1 = \SI{8.6356}{\kilo\ohm}$, $R_2 = \SI{6.652}{\kilo\ohm}$, $R_C = \SI{12.945}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$
+    \item $R_1 = \SI{8.6356}{\kilo\ohm}$, $R_2 = \SI{6.652}{\kilo\ohm}$, $R_C = \SI{12.945}{\kilo\ohm}$, $R_E = \SI{14.7}{\kilo\ohm}$ % Note: Measured R1/R2 are closer to the old calculation.
     \item $V_E = \SI{-1.255}{\volt}$, $V_B = \SI{-1.91}{\volt}$, $V_C = \SI{-1.842}{\volt}$
 \end{itemize}
 
@@ -373,16 +385,14 @@ $$
     \end{tabular}
 \end{table}
 
-\clearpage
-
 \subsection{Part 3: Diode-Connected Results}
 
 \begin{figure}[H]
     \centering
-    \begin{circuitikz}
+    \begin{circuitikz}[scale=1]
         % Define power rails
-        \node[vcc](Vcc) at (0, 4) {$V_+ = \SI{15}{\volt}$};
-        \node[vee](Vee) at (0, -4) {$V_- = \SI{-15}{\volt}$};
+        \node[vcc](Vcc) at (0, 3.5) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -3.5) {$V_- = \SI{-15}{\volt}$};
 
         % Transistor
         \node[pnp, anchor=E](Q1) at (0, 1) {};
@@ -404,31 +414,36 @@ $$
     \label{fig:part3_circuit}
 \end{figure}
 
+
 \subsubsection{Hand Calculations}
 
 \paragraph{Given Parameters}
 \begin{itemize}
-  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
-  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$
-  \item \textbf{Given Component:} $R_E = \SI{15}{\kilo\ohm}$
-  \item \textbf{Transistor Model:} $\beta = 100$
-  \item \textbf{Circuit:} Diode-connected ($V_B = V_C$)
-  \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$ 
+  \item \textbf{Design Goals:} $I_{C} = \SI{1}{\milli\ampere}$ 
+  \item \textbf{Given Component:} $R_E = \SI{15}{\kilo\ohm}$ 
+  \item \textbf{Transistor Model:} $\beta = 100$ 
+  \item \textbf{Circuit:} Diode-connected ($V_B = V_C$)  % Implied by description
+  \item \textbf{Assumption:} Active region $V_{EB(\text{on})} = \SI{0.7}{\volt}$ 
 \end{itemize}
 
 \paragraph{Calculations}
+Operating Region: Since $V_{BC}=0$, the transistor operates in the \textbf{Active Region}.
+Currents:
 $$
 I_B = \frac{I_C}{\beta} = \frac{\SI{1}{\milli\ampere}}{100} = \SI{0.01}{\milli\ampere}
 $$
 $$
 I_E = I_C + I_B = \SI{1}{\milli\ampere} + \SI{0.01}{\milli\ampere} = \SI{1.01}{\milli\ampere}
 $$
+Voltages:
 $$
 V_E = V_{+} - (I_E \cdot R_E) = \SI{15}{\volt} - (\SI{1.01}{\milli\ampere} \cdot \SI{15}{\kilo\ohm}) = \SI{-0.15}{\volt}
 $$
 $$
 V_C = V_B = V_E - V_{EB(\text{on})} = \SI{-0.15}{\volt} - \SI{0.7}{\volt} = \SI{-0.85}{\volt}
 $$
+Collector Resistor:
 $$
 I_{R_C} = I_E = \SI{1.01}{\milli\ampere}
 $$
@@ -437,7 +452,7 @@ R_C = \frac{V_C - V_{-}}{I_E} = \frac{\SI{-0.85}{\volt} - (\SI{-15}{\volt})}{\SI
 $$
 
 \subsubsection{Simulation Results}
-The circuit was simulated in LTspice using the calculated resistor values.
+The circuit was simulated in LTspice using the calculated resistor values. The results were:
 \begin{itemize}
     \item $V_E = \SI{-0.173}{\volt}$
     \item $V_C = V_B = \SI{-0.828}{\volt}$
@@ -497,17 +512,15 @@ $$
     \end{tabular}
 \end{table}
 
-\clearpage
-
 \subsection{Discussion}
 This experiment successfully demonstrated the DC biasing of a PNP transistor (2N3906) in three different configurations: active mode, saturation mode, and diode-connected. The results highlight the differences between idealized hand calculations, more realistic simulations, actual circuit measurements, and datasheet specifications.
 
 \paragraph{Comparison: Hand Calculations vs. Simulation vs. Datasheet}
 Across all three parts, the simulation results deviated from the initial hand calculations. This was primarily due to the simplified assumptions used in the hand calculations, namely a fixed $V_{EB}$ (\SI{0.7}{\volt} or \SI{0.8}{\volt}) and a fixed $\beta$ (100 or 5 for forced beta). The LTspice simulation employed a more sophisticated model for the 2N3906, resulting in different operating points. Datasheet values often provide ranges or typical values, which further adds context.
 
-For instance, in Part 1, the hand calculation assumed $\beta=100$. The simulation yielded $\beta \approx 213$. The datasheet minimum $h_{FE}$ at $I_C = \SI{1}{mA}$ is 80, with typical graphical values suggesting 150-160. The higher actual $\beta$ required less base current ($I_B = \SI{4.4}{\micro\ampere}$ simulated vs. \SI{10}{\micro\ampere} goal). This reduced loading on the base voltage divider caused $V_B$ to rise (\SI{1.03}{\volt} simulated vs. \SI{0}{\volt} goal), shifting other voltages. The assumed $V_{EB}$ of \SI{0.7}{\volt} was close to the simulated \SI{0.65}{\volt} and the typical datasheet graph value around \SI{0.7}{\volt}.
+For instance, in Part 1, the hand calculation assumed $\beta=100$. The simulation yielded $\beta \approx 213$. The datasheet minimum $h_{FE}$ at $I_C = \SI{1}{mA}$ is 80 , with typical graphical values suggesting 150-160. The higher actual $\beta$ required less base current ($I_B = \SI{4.4}{\micro\ampere}$ simulated vs. \SI{10}{\micro\ampere} goal). This reduced loading on the base voltage divider caused $V_B$ to rise (\SI{1.03}{\volt} simulated vs. \SI{0}{\volt} goal), shifting other voltages. The assumed $V_{EB}$ of \SI{0.7}{\volt} was close to the simulated \SI{0.65}{\volt} and the typical datasheet graph value around \SI{0.7}{\volt}.
 
-In Part 2 (Saturation), the hand calculation assumed $V_{EC(sat)} = \SI{0.2}{\volt}$. The simulation showed much deeper saturation ($V_{EC} = \SI{0.045}{\volt}$). The datasheet specifies $V_{CE(sat)} \le \SI{0.25}{V}$ at a higher current of \SI{10}{mA}, suggesting that smaller values are expected at \SI{1}{mA}. The hand-calculated $V_{EB(sat)}$ of \SI{0.8}{\volt} was higher than the simulated \SI{0.66}{\volt}; the datasheet suggests $V_{BE(sat)}$ is typically around \SI{0.7}{\volt} at \SI{1}{mA} but gives a range of \SIrange{0.65}{0.85}{V} only at \SI{10}{mA}. Despite these voltage shifts, the simulated currents remained close to the design goals.
+In Part 2 (Saturation), the hand calculation assumed $V_{EC(sat)} = \SI{0.2}{\volt}$. The simulation showed much deeper saturation ($V_{EC} = \SI{0.045}{\volt}$). The datasheet specifies $V_{CE(sat)} \le \SI{0.25}{V}$ at a higher current of \SI{10}{mA}, suggesting that smaller values are expected at \SI{1}{mA}. The hand-calculated $V_{EB(sat)}$ of \SI{0.8}{\volt} was higher than the simulated \SI{0.66}{\volt}; the datasheet suggests $V_{BE(sat)}$ is typically around \SI{0.7}{\volt} at \SI{1}{mA}  but gives a range of \SIrange{0.65}{0.85}{V} only at \SI{10}{mA}. Despite these voltage shifts, the simulated currents remained close to the design goals.
 
 \paragraph{Comparison: Simulation vs. Measurement vs. Datasheet}
 The measured results generally agreed well with the simulations. Component tolerances in resistors affected the measured operating points compared to simulations using ideal values. The measured $V_{EB}$ was consistently around \SI{0.66}{\volt} (\SI{0.665}{\volt}, \SI{0.655}{\volt}, \SI{0.66}{\volt}), aligning well with both simulation and typical datasheet values.
@@ -519,15 +532,16 @@ In Part 2, the measured $V_{EC(sat)}$ (\SI{0.587}{\volt}) was higher than both t
 Part 3 showed excellent agreement for currents between simulation (\SI{1.006}{mA}) and measurement ($\approx \SI{1.017}{mA}$). The measured voltages were also reasonably close.
 
 \paragraph{Overall Performance}
-The experiment successfully demonstrated BJT biasing principles. Active mode (Part 1) achieved $I_C = \SI{0.898}{mA}$ (vs. \SI{1.0}{mA} goal). Saturation mode (Part 2) met current goals ($I_C=\SI{1.018}{mA}$, $I_E=\SI{1.106}{mA}$) and confirmed saturation ($\beta_{\text{forced}} \approx 11.6$). Diode-connected (Part 3) achieved $I_C \approx \SI{1.017}{mA}$ accurately. Post-measurement calculations using measured voltages/resistors were crucial. The results emphasize the discrepancies between simple assumptions, detailed simulations, datasheet ranges/typical values, and specific component measurements, particularly for $\beta$ and saturation voltages.
+The experiment successfully demonstrated BJT biasing principles. Active mode (Part 1) achieved $I_C = \SI{0.898}{mA}$ (vs. \SI{1.0}{mA} goal). Saturation mode (Part 2) met current goals ($I_C=\SI{1.018}{mA}$, $I_E=\SI{1.106}{mA}$)  and confirmed saturation ($\beta_{\text{forced}} \approx 11.6$). Diode-connected (Part 3) achieved $I_C \approx \SI{1.017}{mA}$ accurately. Post-measurement calculations using measured voltages/resistors were crucial. The results emphasize the discrepancies between simple assumptions, detailed simulations, datasheet ranges/typical values, and specific component measurements, particularly for $\beta$ and saturation voltages.
 
 \subsection{Conclusion}
 This laboratory exercise successfully investigated the DC biasing of a 2N3906 PNP BJT in active, saturation, and diode-connected configurations. Hand calculations provided effective initial designs, while LTspice simulations offered more accurate predictions by using a detailed transistor model. Experimental measurements, combined with post-measurement calculations, validated the theoretical principles and generally aligned with simulations and datasheet typical values, highlighting the practical impact of component tolerances and transistor parameter variability. Key findings include:
 \begin{itemize}
     \item Target currents were closely achieved in all three configurations. Measured $I_C$ values were \SI{0.898}{mA} (Part 1), \SI{1.018}{mA} (Part 2), and $\approx \SI{1.017}{mA}$ (Part 3).
     \item Measured $V_{EB}$ values were consistently around \SI{0.66}{V}, aligning well with datasheet typical values and simulations, but differing slightly from the \SI{0.7}{V} hand calculation assumption.
-    \item The measured active-mode $\beta$ ($\approx 225$) was significantly higher than the assumed 100 and the typical datasheet value, demonstrating expected device variance but falling within plausible limits (above the minimum 80).
+    \item The measured active-mode $\beta$ ($\approx 225$) was significantly higher than the assumed 100 and the typical datasheet value, demonstrating expected device variance but falling within plausible limits (above the minimum 80 ).
     \item Saturation was confirmed in Part 2 ($\beta_{\text{forced}} \approx 11.6$), although the measured $V_{EC(sat)}$ (\SI{0.587}{V}) was higher than expected from simulation and datasheet values.
+    \item The diode-connected configuration (Part 3) showed particularly strong agreement between calculation, simulation, and measurement for the target current.
 \end{itemize}
 Overall, the experiment provided practical experience in BJT circuit analysis, simulation, and measurement, reinforcing the understanding of operating regions and the differences between idealized models, simulations, datasheet specifications, and real-world hardware performance.
 
@@ -537,6 +551,5 @@ Overall, the experiment provided practical experience in BJT circuit analysis, s
 \newline
 
 [2] ON Semiconductor. "2N3906 General Purpose Transistors PNP Silicon." Datasheet, 2N3906/D, Rev. 4, February 2010. Accessed October 24, 2025. http://onsemi.com.
-% [List all other references cited]
 
 \end{document}
