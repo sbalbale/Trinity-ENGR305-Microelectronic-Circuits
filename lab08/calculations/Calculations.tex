@@ -17,7 +17,7 @@
 \begin{document}
 
 \maketitle
-
+\thispagestyle{empty} % Added to remove page number from title page
 
 \section{Part 1: PNP in Active Mode}
 
@@ -95,24 +95,27 @@ $$
 R_C = \frac{V_C - V_{-}}{I_C} = \frac{\SI{-5}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \frac{\SI{10}{\volt}}{\SI{1}{\milli\ampere}} = \SI{10}{\kilo\ohm}
 $$
 
-\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$)} \\
-This problem is not fully specified, as there is one KCL equation at the base with two unknown resistors. We must make a design choice for the stiffness of the voltage divider. A common rule of thumb is to set the divider current ($I_{\text{divider}}$) to be at least 10 times the base current.
-\begin{itemize}
-    \item $I_B = \SI{10}{\micro\ampere}$ (note: this current flows *out* of the PNP base).
-    \item Let's set the current through $R_2$ as $I_{R2} = 10 \times I_B = 10 \times \SI{10}{\micro\ampere} = \SI{100}{\micro\ampere}$.
-\end{itemize}
-Now, we can find $R_2$:
-$$
-R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{0}{\volt} - (\SI{-15}{\volt})}{\SI{100}{\micro\ampere}} = \frac{\SI{15}{\volt}}{\SI{0.1}{\milli\ampere}} = \SI{150}{\kilo\ohm}
-$$
-The current through $R_1$ is found by KCL at the base node ($I_{R1} = I_{R2} + I_B$):
-$$
-I_{R1} = \SI{100}{\micro\ampere} + \SI{10}{\micro\ampere} = \SI{110}{\micro\ampere}
-$$
-Now, we can find $R_1$:
-$$
-R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - \SI{0}{\volt}}{\SI{110}{\micro\ampere}} = \frac{\SI{15}{\volt}}{\SI{0.11}{\milli\ampere}} \approx \SI{136.36}{\kilo\ohm}
-$$
+\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$) using Thevenin's Theorem} \\
+As noted in the lab manual, the problem is not fully specified. We must choose a value for the Thevenin resistance ($R_{th}$) of the base biasing network to determine its stiffness. A common guideline for stable biasing is $R_{th} \le 0.1(\beta+1)R_E$.
+
+1.  \textit{Choose $R_{th}$:} The stability guideline suggests $R_{th} \le 0.1(100+1)(\SI{14.16}{\kilo\ohm}) \approx \SI{143}{\kilo\ohm}$. Let's choose $R_{th} = \SI{75}{\kilo\ohm}$.
+2.  \textit{Calculate $V_{th}$:} The base voltage is $V_B = V_{th} - I_B R_{th}$. Using the design goals $V_B = \SI{0}{\volt}$ and $I_B = \SI{10}{\micro\ampere}$:
+    $$
+    \SI{0}{\volt} = V_{th} - (\SI{10}{\micro\ampere})(\SI{75}{\kilo\ohm}) \implies V_{th} = \SI{0.75}{\volt}
+    $$
+3.  \textit{Solve for $R_1$ and $R_2$:} We use the definitions of $V_{th}$ and $R_{th}$ for a voltage divider with split supplies ($V_+, V_-$):
+    $$ V_{th} = \frac{R_2 V_+ + R_1 V_-}{R_1 + R_2} = \frac{R_2}{R_1+R_2}(V_+ - V_-) + V_- $$
+    $$ R_{th} = \frac{R_1 R_2}{R_1 + R_2} $$
+    Substituting known values into the $V_{th}$ equation:
+    $$ \SI{0.75}{\volt} = \frac{R_2}{R_1+R_2}(\SI{15}{\volt} - (\SI{-15}{\volt})) + (\SI{-15}{\volt}) $$
+    $$ \SI{15.75}{\volt} = \frac{R_2}{R_1+R_2}(\SI{30}{\volt}) \implies \frac{R_2}{R_1+R_2} = \frac{15.75}{30} = 0.525 $$
+    This implies $\frac{R_1}{R_1+R_2} = 1 - 0.525 = 0.475$.
+    Now substitute into the $R_{th}$ equation:
+    $$ R_{th} = R_1 \left(\frac{R_2}{R_1+R_2}\right) \implies \SI{75}{\kilo\ohm} = R_1 (0.525) $$
+    $$ R_1 = \frac{\SI{75}{\kilo\ohm}}{0.525} \approx \SI{142.9}{\kilo\ohm} $$
+    $$ R_{th} = R_2 \left(\frac{R_1}{R_1+R_2}\right) \implies \SI{75}{\kilo\ohm} = R_2 (0.475) $$
+    $$ R_2 = \frac{\SI{75}{\kilo\ohm}}{0.475} \approx \SI{157.9}{\kilo\ohm} $$
+
 
 \newpage
 \section{Part 2: PNP in Saturation Mode}
@@ -185,24 +188,28 @@ $$
 \beta_{\text{forced}} = \frac{I_C}{I_B} = \frac{\SI{1}{\milli\ampere}}{\SI{0.2}{\milli\ampere}} = 5
 $$
 
-\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$)} \\
-We must again choose a divider current. We will use the $10 \times I_B$ rule for the current through $R_2$.
-\begin{itemize}
-    \item $I_B = \SI{0.2}{\milli\ampere}$ (flowing out of the base).
-    \item $I_{R2} = 10 \times I_B = 10 \times \SI{0.2}{\milli\ampere} = \SI{2.0}{\milli\ampere}$.
-\end{itemize}
-Now, find $R_2$:
-$$
-R_2 = \frac{V_B - V_{-}}{I_{R2}} = \frac{\SI{-2.6}{\volt} - (\SI{-15}{\volt})}{\SI{2.0}{\milli\ampere}} = \frac{\SI{12.4}{\volt}}{\SI{2.0}{\milli\ampere}} = \SI{6.2}{\kilo\ohm}
-$$
-Find $I_{R1}$ using KCL at the base ($I_{R1} = I_{R2} + I_B$):
-$$
-I_{R1} = \SI{2.0}{\milli\ampere} + \SI{0.2}{\milli\ampere} = \SI{2.2}{\milli\ampere}
-$$
-Now, find $R_1$:
-$$
-R_1 = \frac{V_{+} - V_B}{I_{R1}} = \frac{\SI{15}{\volt} - (\SI{-2.6}{\volt})}{\SI{2.2}{\milli\ampere}} = \frac{\SI{17.6}{\volt}}{\SI{2.2}{\milli\ampere}} = \SI{8}{\kilo\ohm}
-$$
+\textbf{4. Calculate Base Biasing Resistors ($R_1$, $R_2$) using Thevenin's Theorem} \\
+Again, the problem is not fully specified, requiring a choice for $R_{th}$. Given the large base current ($I_B = \SI{0.2}{mA}$), a stiff voltage divider (low $R_{th}$) is appropriate.
+
+1.  \textit{Choose $R_{th}$:} Let's choose $R_{th} = \SI{3.5}{\kilo\ohm}$.
+2.  \textit{Calculate $V_{th}$:} Using $V_B = V_{th} - I_B R_{th}$:
+    $$
+    \SI{-2.6}{\volt} = V_{th} - (\SI{0.2}{\milli\ampere})(\SI{3.5}{\kilo\ohm})
+    $$
+    $$
+    \SI{-2.6}{\volt} = V_{th} - \SI{0.7}{\volt} \implies V_{th} = \SI{-1.9}{\volt}
+    $$
+3.  \textit{Solve for $R_1$ and $R_2$:} Using the same Thevenin equations as in Part 1:
+    $$ V_{th} = \frac{R_2}{R_1+R_2}(V_+ - V_-) + V_- $$
+    $$ \SI{-1.9}{\volt} = \frac{R_2}{R_1+R_2}(\SI{30}{\volt}) - \SI{15}{\volt} $$
+    $$ \SI{13.1}{\volt} = \frac{R_2}{R_1+R_2}(\SI{30}{\volt}) \implies \frac{R_2}{R_1+R_2} = \frac{13.1}{30} \approx 0.4367 $$
+    This implies $\frac{R_1}{R_1+R_2} = 1 - 0.4367 = 0.5633$.
+    Now substitute into the $R_{th}$ equation:
+    $$ R_{th} = R_1 \left(\frac{R_2}{R_1+R_2}\right) \implies \SI{3.5}{\kilo\ohm} = R_1 (0.4367) $$
+    $$ R_1 = \frac{\SI{3.5}{\kilo\ohm}}{0.4367} \approx \SI{8.01}{\kilo\ohm} $$
+    $$ R_{th} = R_2 \left(\frac{R_1}{R_1+R_2}\right) \implies \SI{3.5}{\kilo\ohm} = R_2 (0.5633) $$
+    $$ R_2 = \frac{\SI{3.5}{\kilo\ohm}}{0.5633} \approx \SI{6.21}{\kilo\ohm} $$
+
 
 \newpage
 \section{Part 3: Diode-Connected PNP}

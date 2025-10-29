@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.1.23)  24 OCT 2025 16:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.1.23)  29 OCT 2025 10:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -704,11 +704,11 @@ Package hyperref Info: Link coloring OFF on input line 25.
 [1
 
 {c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 61.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 60.
  (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 61.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 60.
  (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -717,8 +717,8 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.73 
-      [1{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+l.74 \end{itemize}
+                   [1{c:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 
 [2]
 
@@ -728,39 +728,33 @@ l.73
 
 [5]
 
-[6
-
-]
+[6]
 
 [7]
 
 [8]
 
-Package pgf Warning: Returning node center instead of a point on node border. Did you specify a point identical to the center of node ``Vcc''? on input line 391.
+Package pgf Warning: Returning node center instead of a point on node border. Did you specify a point identical to the center of node ``Vcc''? on input line 401.
 
 
-Package pgf Warning: Returning node center instead of a point on node border. Did you specify a point identical to the center of node ``Vee''? on input line 394.
+Package pgf Warning: Returning node center instead of a point on node border. Did you specify a point identical to the center of node ``Vee''? on input line 404.
 
 
 
-[9
-
-]
+[9]
 
 [10]
 
 [11]
 
-[12
+[12]
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 536--538
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 550--552
 
  []
 
 
-
-[13]
 
 [14] (./lab08Report.aux)
  ***********
@@ -771,18 +765,18 @@ Package rerunfilecheck Info: File `lab08Report.out' has not changed.
 (rerunfilecheck)             Checksum: 74A8023C3D1FC20F7E10EFD19E767F09;4323.
  ) 
 Here is how much of TeX's memory you used:
- 53341 strings out of 473207
- 1400520 string characters out of 5720461
- 2074596 words of memory out of 5000000
- 75974 multiletter control sequences out of 15000+600000
- 567226 words of font info for 66 fonts, out of 8000000 for 9000
+ 53348 strings out of 473207
+ 1400580 string characters out of 5720461
+ 2077596 words of memory out of 5000000
+ 75975 multiletter control sequences out of 15000+600000
+ 567573 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,13n,107p,811b,1131s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on lab08Report.pdf (15 pages, 158007 bytes).
+ 99i,13n,107p,811b,1133s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on lab08Report.pdf (15 pages, 180963 bytes).
 PDF statistics:
- 264 PDF objects out of 1000 (max. 8388607)
- 222 compressed objects within 3 object streams
- 59 named destinations out of 1000 (max. 500000)
+ 280 PDF objects out of 1000 (max. 8388607)
+ 234 compressed objects within 3 object streams
+ 64 named destinations out of 1000 (max. 500000)
  213 words of extra memory for PDF output out of 10000 (max. 10000000)
 
