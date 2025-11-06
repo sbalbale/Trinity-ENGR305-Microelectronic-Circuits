@@ -1,0 +1,410 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{float} % For [H] figure placement
+\usepackage{booktabs} % For professional tables
+\usepackage{siunitx} % For SI units, e.g., \si{\kilo\ohm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots} % For plotting
+\pgfplotsset{compat=1.18}
+\usepackage{fancyhdr} % To create headers/footers if needed
+\usepackage{hyperref} % For clickable links (if you add them)
+\usepackage{circuitikz} % For drawing circuits
+
+% Set paragraph formatting (no indent, space between)
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+% --- DOCUMENT INFORMATION ---
+\title{Lab 9: NMOS Common-Source Amplifier}
+\author{Sean Balbale}
+\date{\today} % Or specify: {November 6, 2025}
+
+% --- BEGIN DOCUMENT ---
+\begin{document}
+
+% --- COVER SHEET ---
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+
+    \Huge
+    \textbf{Lab 9}
+
+    \LARGE
+    \vspace{0.5cm}
+    NMOS Common-Source Amplifier
+
+    \vspace{3in}
+
+    \textbf{Student Name:} Sean Balbale
+    \\ \textbf{Instructor:} Debora Fixel
+    \\ \textbf{Course:} ENGR 305
+    \\ \textbf{Date:} \today
+
+    \vfill
+  \end{center}
+\end{titlepage}
+
+\newpage
+
+
+
+% --- OBJECTIVE ---
+\section{Objective}
+The objective of this laboratory exercise is to study the NMOS common-source (CS) amplifier. This will be accomplished by:
+\begin{itemize}
+    \item Completing a DC and small-signal analysis to design an amplifier that meets a specific gain requirement.
+    \item Simulating the designed circuit to compare its performance against the paper analysis.
+    \item Implementing the circuit in an experimental setting, taking measurements, and comparing its performance with both theoretical and simulated results.
+    \item Measuring the output resistance of the prototyped amplifier.
+\end{itemize}
+
+
+% --- THEORY ---
+\section{Theory}
+A Metal-Oxide-Semiconductor Field-Effect Transistor (MOSFET) is a three-terminal device (Gate, Drain, Source) that can be used for amplification. The common-source (CS) configuration is a fundamental amplifier topology.
+
+\paragraph{DC Analysis}
+To analyze an amplifier, the first step is to determine the DC operating point (Q-point) by eliminating AC signal sources. For the NMOS amplifier, this involves finding the DC drain current ($I_D$) and drain-to-source voltage ($V_{DS}$). Assuming the transistor is in the saturation region (the region for amplification) and neglecting channel-length modulation, the drain current is:
+$$
+I_{D}=\frac{1}{2}k_{n}(V_{GS}-V_{t})^{2}=\frac{1}{2}k_{n}V_{OV}^{2}
+$$
+where $k_n$ is the process transconductance parameter, $V_{GS}$ is the DC gate-to-source voltage, $V_t$ is the threshold voltage, and $V_{OV}$ is the overdrive voltage.
+The DC drain voltage is then found using Ohm's law on the drain resistor $R_D$:
+$$
+V_{DS}=V_{DD}-R_{D}I_{D}
+$$
+To confirm the transistor is in saturation, the condition $V_{DS} > V_{OV}$ must be met.
+
+\paragraph{AC Small-Signal Analysis}
+Once the DC operating point is found, the small-signal parameters are calculated. The most important parameter is the transconductance, $g_m$:
+$$
+g_m = \frac{2I_D}{V_{OV}}
+$$
+Another parameter is the transistor output resistance $r_o$, caused by channel-length modulation ($\lambda$), given by $r_o = 1 / (\lambda I_D)$.
+
+Next, all DC sources are set to zero (voltage sources become short circuits, current sources become open circuits) and the transistor is replaced with its small-signal model. For the CS amplifier, the voltage gain $A_v$ is the ratio of the AC output voltage ($v_o = v_{ds}$) to the AC input voltage ($v_i = v_{gs}$). When including the load resistor $R_L$ and the transistor's output resistance $r_o$, the gain is:
+$$
+A_v = \frac{v_o}{v_i} = -g_m (R_D \parallel r_o \parallel R_L)
+$$
+The negative sign indicates that the output signal is $180^{\circ}$ out of phase with the input signal.
+
+The amplifier's input resistance $R_{in}$ is the resistance seen by the signal source. For the CS amplifier, this is dominated by the gate resistor $R_G$ (as the MOSFET gate itself has infinite resistance). The output resistance $R_o$ is the Thevenin equivalent resistance seen looking into the amplifier's output terminal (with $R_L$ removed). For this circuit, $R_o = R_D \parallel r_o$.
+
+% --- EXPERIMENTAL METHOD AND REASONING ---
+\section{Experimental Method and Reasoning}
+A common-source amplifier was designed using an enhancement-type NMOS transistor (2N7000) and dual voltage supplies of $V_{+} = \SI{15}{\volt}$ and $V_{-} = \SI{-15}{\volt}$.
+
+\paragraph{Part 1: Design and Simulation}
+First, a DC and AC analysis was performed by hand to design the amplifier. The design goals were $I_D = \SI{1}{mA}$ and $A_v \le \SI{-5}{V/V}$, using given transistor parameters ($k_n$, $V_{tn}$, $\lambda$). This analysis determined the required values for the source resistor $R_S$ and drain resistor $R_D$.
+
+The circuit was then simulated in LTspice using the calculated resistor values and the provided 2N7000 SPICE model. A $10 \text{ mV}_{\text{pk-pk}}$, $1 \text{ kHz}$ sinusoidal input signal ($v_{sig}$) was applied. The simulation was used to measure the DC operating point ($V_{GS}, V_{DS}, I_D$) and the AC voltage gain $A_v$, which were then compared to the hand calculations.
+
+\paragraph{Part 2: Prototyping}
+The circuit was assembled on a breadboard using standard resistor values close to the calculated design values.
+
+\paragraph{Part 3: Measurements}
+Several measurements were taken from the prototyped circuit.
+\begin{itemize}
+    \item \textbf{DC Bias Point:} A digital multimeter was used to measure the DC voltages at the gate ($V_G$), source ($V_S$), and drain ($V_D$). All resistor values were also measured.
+    \item \textbf{AC Voltage Gain:} A function generator applied a $10 \text{ mV}_{\text{pk-pk}}$, $1 \text{ kHz}$ sinusoid, and an oscilloscope was used to measure the AC output ($v_o$) and input ($v_i$) waveforms to determine the gain $A_v$.
+    \item \textbf{Output Resistance:} The load resistor $R_L$ was replaced with a $\SI{1}{M\ohm}$ resistor and the output amplitude was measured. $R_L$ was then adjusted until the output amplitude was 50\% of this "open-load" value. This value of $R_L$ is equal to the output resistance $R_o$.
+\end{itemize}
+Finally, post-measurement calculations were performed to find the experimental $I_D$, $A_v$, and $R_o$, and all three sets of results (hand-calculated, simulated, and measured) were compared.
+
+% --- RESULTS AND CONCLUSIONS (DISCUSSION) ---
+\section{Results and Conclusions (Discussion)}
+
+\subsection{Hand Calculations (Design)}
+
+\subsubsection{DC Operating Point Analysis}
+\paragraph{Given Parameters}
+\begin{itemize}
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+  \item \textbf{Design Goals:} $I_{D} = \SI{1}{\milli\ampere}$, $A_{v} \le \SI{-5}{\volt/\volt}$
+  \item \textbf{Circuit Resistors:} $R_{sig} = \SI{50}{\ohm}$, $R_{L} = \SI{10}{\kilo\ohm}$, $R_{G} = \SI{10}{\kilo\ohm}$
+  \item \textbf{Transistor Parameters (2N7000):} $\lambda = \SI{0.0146}{\per\volt}$, $k_{n} = \SI{1.08}{\milli\ampere\per\volt\squared}$, $V_{tn} = \SI{1.45}{\volt}$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[scale=1.2]
+        % Define power rails
+        \node[vcc](Vcc) at (0, 5) {$V_+ = \SI{15}{\volt}$};
+        \node[vee](Vee) at (0, -5) {$V_- = \SI{-15}{\volt}$};
+    
+        % Transistor
+        \node[nmos, anchor=S](Q1) at (0, 0) {};
+    
+        % Resistors
+        \draw (Q1.D) to[R, l_=$R_D$] (Q1.D |- Vcc.south) -- (Vcc);
+        \draw (Q1.S) to[R, l_=$R_S$] (Q1.S |- Vee.north) -- (Vee);
+        \draw (Q1.G) to[R, l=$R_G$] ++(-2.5,0) node[ground](GND){};
+    
+        % Capacitors (open) - repositioned for better spacing
+        \draw (Q1.G) ++(-5,0) to[C, l=$C_{C1}$, o-o] ++(2,0);
+        \draw (Q1.D) to[C, l=$C_{C2}$, o-o] ++(2.5,0);
+        \draw (Q1.S) to[C, l_=$C_S$, o-o] ++(2.5,0);
+    
+        % Labels for nodes - repositioned to avoid overlap
+        \draw (Q1.G) node[above left, xshift=-1mm, yshift=1mm] {$V_G$};
+        \draw (Q1.D) node[above right, xshift=1mm, yshift=1mm] {$V_D$};
+        \draw (Q1.S) node[below right, xshift=1mm, yshift=-1mm] {$V_S$};
+    \end{circuitikz}
+    \caption{DC Model of the Common-Source Amplifier}
+    \label{fig:dc_model}
+\end{figure}
+
+\paragraph{1. DC Gate Current and Voltage ($I_G$, $V_G$)}
+The DC gate current $I_G$ for a MOSFET is effectively $\SI{0}{\ampere}$. Assuming $R_G$ connects the gate to ground, the DC voltage drop is $I_G \cdot R_G = \SI{0}{\volt}$.
+Therefore, the DC gate voltage is $V_G = \SI{0}{\volt}$.
+
+\paragraph{2. Overdrive Voltage ($V_{OV}$)}
+Using the saturation current equation for the design goal $I_D = \SI{1}{\milli\ampere}$:
+$$
+I_D = \frac{1}{2} k_n (V_{OV})^2
+$$
+$$
+\SI{1}{\milli\ampere} = \frac{1}{2} (\SI{1.08}{\milli\ampere\per\volt\squared}) (V_{OV})^2
+$$
+$$
+V_{OV}^2 = \frac{\SI{2}{\milli\ampere}}{\SI{1.08}{\milli\ampere\per\volt\squared}} \approx \SI{1.8519}{\volt\squared}
+$$
+$$
+V_{OV} = \sqrt{\SI{1.8519}{\volt\squared}} \approx \SI{1.361}{\volt}
+$$
+
+\paragraph{3. Transconductance ($g_m$) and Gate-Source Voltage ($V_{GS}$)}
+$$
+g_m = \frac{2 I_D}{V_{OV}} = \frac{2 \cdot \SI{1}{\milli\ampere}}{\SI{1.361}{\volt}} \approx \SI{1.4695}{\milli\ampere\per\volt} \text{ (or \SI{1.47}{\milli S})}
+$$
+$$
+V_{GS} = V_{OV} + V_{tn} = \SI{1.361}{\volt} + \SI{1.45}{\volt} = \SI{2.811}{\volt}
+$$
+
+\paragraph{4. Early Effect Resistance ($r_o$)}
+$$
+r_o = \frac{1}{\lambda I_D} = \frac{1}{(\SI{0.0146}{\per\volt}) (\SI{1}{\milli\ampere})} \approx \SI{68.5}{\kilo\ohm}
+$$
+
+\paragraph{5. Source Resistor ($R_S$)}
+First, find the DC source voltage $V_S$ using $V_G = \SI{0}{\volt}$:
+$$
+V_{GS} = V_G - V_S \implies \SI{2.811}{\volt} = \SI{0}{\volt} - V_S \implies V_S = \SI{-2.811}{\volt}
+$$
+$R_S$ connects the source terminal ($V_S$) to the negative supply ($V_- = \SI{-15}{\volt}$). The DC current through it is $I_S = I_D = \SI{1}{\milli\ampere}$.
+$$
+R_S = \frac{V_S - V_{-}}{I_D} = \frac{\SI{-2.811}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \frac{\SI{12.189}{\volt}}{\SI{1}{\milli\ampere}} = \SI{12.19}{\kilo\ohm}
+$$
+A standard $\SI{12.1}{\kilo\ohm}$ resistor will be used.
+
+\subsubsection{AC Analysis}
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[scale=1.1, transform shape]
+        % Input side
+        \draw (0,0) to[sV, l=$v_{sig}$] (0,2.5) to[R, l=$R_{sig}$] (2.5,2.5)
+        coordinate (Vin) to[short] (4,2.5) coordinate (Vi)
+        node[above right, xshift=1mm] {$v_i$};
+    
+        % Gate resistor
+        \draw (Vi) to[R, l_=$R_G$, *-] (4,0) node[ground](GND){};
+    
+        % Small-signal model
+        \draw (Vi) -- (5.5,2.5) node[above, yshift=1mm]{G}; % Gate
+        \draw (5.5,0) node[ground]{} -- (5.5,0) node[below, yshift=-1mm]{S}; % Source
+    
+        % Dependent current source
+        \draw (8,3) to[cI, l=$g_m v_{gs}$] (8,0);
+    
+        % Input voltage v_gs - moved further right
+        \draw [dashed] (5.5,2.5) -- (5.5,0);
+        \draw [<->] (6.2, 2.5) -- (6.2, 0) node [midway, right] {$v_{gs} = v_i$};
+    
+        % Output side
+        \draw (8,3) -- (11,3) coordinate (Vo) node[above right, xshift=1mm] {$v_o$};
+        \draw (8,0) -- (14,0) node[ground]{};
+    
+        % Output resistors - better spacing
+        \draw (Vo) to[R, l_=$r_o$, *-] (11,0);
+        \draw (Vo) to[short] (12.5,3) to[R, l=$R_D$] (12.5,0);
+        \draw (Vo) to[short] (14,3) to[R, l=$R_L$] (14,0);
+    \end{circuitikz}
+    \caption{AC Small-Signal Model of the Common-Source Amplifier}
+    \label{fig:ac_model}
+\end{figure}
+
+\paragraph{1. Input Voltage Ratio ($v_i / v_{sig}$)}
+The AC input resistance is $R_{in} = R_G = \SI{10}{\kilo\ohm}$.
+$$
+\frac{v_i}{v_{sig}} = \frac{R_G}{R_{sig} + R_G} = \frac{\SI{10000}{\ohm}}{\SI{50}{\ohm} + \SI{10000}{\ohm}} \approx 0.995
+$$
+(We will approximate $v_i \approx v_{sig}$).
+
+\paragraph{2. Drain Resistor ($R_D$) for Gain $A_v = -5$ V/V}
+The AC bypass capacitor $C_S$ shorts $R_S$ to ground. The gain is:
+$$
+A_v = -g_m (r_o \parallel R_D \parallel R_L)
+$$
+Solving for $R_D$ to get $A_v = \SI{-5}{\volt/\volt}$:
+$$
+\SI{-5}{\volt/\volt} = -(\SI{1.4695}{\milli S}) ( \SI{68.5}{\kilo\ohm} \parallel R_D \parallel \SI{10}{\kilo\ohm} )
+$$
+Let $R_{L}' = r_o \parallel R_L = \SI{68.5}{\kilo\ohm} \parallel \SI{10}{\kilo\ohm} \approx \SI{8.726}{\kilo\ohm}$.
+$$
+5 = (\SI{1.4695}{\milli S}) ( R_D \parallel \SI{8.726}{\kilo\ohm} )
+$$
+Let $R_{eq} = R_D \parallel \SI{8.726}{\kilo\ohm}$.
+$$
+R_{eq} = \frac{5}{\SI{1.4695}{\milli S}} \approx \SI{3.4025}{\kilo\ohm}
+$$
+Now, solve for $R_D$:
+$$
+\frac{1}{R_D} = \frac{1}{R_{eq}} - \frac{1}{R_{L}'} = \frac{1}{\SI{3.4025}{\kilo\ohm}} - \frac{1}{\SI{8.726}{\kilo\ohm}} \approx \SI{0.1793}{\milli S}
+$$
+$$
+R_D = \frac{1}{\SI{0.1793}{\milli S}} \approx \SI{5.577}{\kilo\ohm}
+$$
+A standard $\SI{5.6}{\kilo\ohm}$ resistor will be used.
+
+\paragraph{3. DC Drain Voltage ($V_D$) and Saturation Check}
+Using $R_D = \SI{5.577}{\kilo\ohm}$:
+$$
+V_D = V_{+} - I_D R_D = \SI{15}{\volt} - (\SI{1}{\milli\ampere})(\SI{5.577}{\kilo\ohm}) = \SI{9.423}{\volt}
+$$
+Check saturation condition: $V_{DS} \ge V_{OV}$.
+$$
+V_{DS} = V_D - V_S = \SI{9.423}{\volt} - (\SI{-2.811}{\volt}) = \SI{12.234}{\volt}
+$$
+Since $V_{DS} (\SI{12.234}{\volt}) \ge V_{OV} (\SI{1.361}{\volt})$, the transistor is in saturation.
+
+\paragraph{4. Amplifier Output Resistance ($R_o$)}
+The output resistance $R_o$ is $R_D$ in parallel with $r_o$.
+$$
+R_o = R_D \parallel r_o = \SI{5.577}{\kilo\ohm} \parallel \SI{68.5}{\kilo\ohm} \approx \SI{5.157}{\kilo\ohm}
+$$
+
+\subsection{Simulation Results}
+\begin{table}[H]
+    \centering
+    \caption{Simulation Results (Part 1)}
+    \label{tab:sim_results}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Parameter} & \textbf{Simulated Value} \\
+        \midrule
+        $V_G$ & [Enter Value] \\
+        $V_D$ & [Enter Value] \\
+        $V_S$ & [Enter Value] \\
+        $V_{GS}$ & [Enter Value] \\
+        $V_{DS}$ & [Enter Value] \\
+        $I_D$ & [Enter Value] \\
+        $A_v = v_o / v_i$ & [Enter Value] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Measurement Data}
+\begin{table}[H]
+    \centering
+    \caption{Measured Component Values (Part 3)}
+    \label{tab:measured_components}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Component} & \textbf{Measured Value} \\
+        \midrule
+        $R_D$ ($\SI{5.6}{\kilo\ohm}$ nominal) & [Enter Value] \\
+        $R_S$ ($\SI{12.1}{\kilo\ohm}$ nominal) & [Enter Value] \\
+        $R_G$ ($\SI{10}{\kilo\ohm}$ nominal) & [Enter Value] \\
+        $R_L$ ($\SI{10}{\kilo\ohm}$ nominal) & [Enter Value] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Measured DC and AC Values (Part 3)}
+    \label{tab:measured_dc_ac}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Parameter} & \textbf{Measured Value} \\
+        \midrule
+        $V_G$ & [Enter Value] \\
+        $V_D$ & [Enter Value] \\
+        $V_S$ & [Enter Value] \\
+        $v_i$ (pk-pk) & [Enter Value] \\
+        $v_o$ (pk-pk) & [Enter Value] \\
+        $R_o$ (from 50\% amplitude) & [Enter Value] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\paragraph{Post-Measurement Calculations}
+Using measured values from Tables \ref{tab:measured_components} and \ref{tab:measured_dc_ac}:
+$$
+V_{GS} = V_G - V_S = \text{[...]} = \text{[...]}
+$$
+$$
+V_{DS} = V_D - V_S = \text{[...]} = \text{[...]}
+$$
+$$
+I_D = \frac{V_D - V_{+}}{R_D} = \text{[...]} = \text{[...]} \text{ (Note: Use measured } V_+ \text{ and } R_D \text{)}
+$$
+$$
+A_v = v_o / v_i = \text{[...]} = \text{[...]}
+$$
+$$
+R_o = \text{[Value from Table \ref{tab:measured_dc_ac}]}
+$$
+
+
+\subsection{Comparison of Results}
+\begin{table}[H]
+    \centering
+    \caption{Comparison of Calculated, Simulated, and Measured Values}
+    \label{tab:final_compare}
+    \sisetup{round-mode=places,round-precision=3}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Parameter} & \textbf{Hand Calc (Goal)} & \textbf{Simulation} & \textbf{Measured} \\
+        \midrule
+        $V_{GS}$ & \SI{2.811}{\volt} & [Enter Sim Value] & [Enter Meas Value] \\
+        $V_{DS}$ & \SI{12.234}{\volt} & [Enter Sim Value] & [Enter Meas Value] \\
+        $I_D$ & \SI{1.0}{\milli\ampere} & [Enter Sim Value] & [Enter Meas Value] \\
+        $A_v$ & \SI{-5.0}{\volt/\volt} & [Enter Sim Value] & [Enter Meas Value] \\
+        $R_o$ & \SI{5.157}{\kilo\ohm} & (N/A) & [Enter Meas Value] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Discussion}
+[This is where you discuss your results.
+Start by comparing the three sets of values in Table \ref{tab:final_compare}.
+- How close did your simulation (Part 1) get to the hand-calculated goals?
+- How close did your measured values (Part 3) get to the simulation and the hand calculations?
+- Discuss discrepancies. The lab manual suggests the biggest source of error will be the transistor's actual $V_{tn}$ varying from the one used in calculations. How does this explain any differences in $V_{GS}$ and $I_D$?
+- How did your measured $A_v$ compare to the goal of -5 V/V? Explain any differences.
+- How did your measured $R_o$ compare to your calculated $R_o$? Does it follow the hint that $R_o \le R_D$?
+- Discuss the "Further exploration": What happened when you increased the input amplitude? At what point did distortion appear? Why does this happen (relate it to the small-signal condition $v_{gs} \ll 2V_{OV}$ and the saturation condition $V_{DS} \ge V_{OV}$)?]
+
+\subsection{Conclusion}
+[This is where you summarize the lab.
+Restate the objective (e.g., "This lab successfully designed, simulated, and tested an NMOS common-source amplifier...").
+State your key findings clearly (e.g., "The designed amplifier achieved a gain of [Meas. $A_v$]...").
+Summarize the agreement between theory, simulation, and measurement. Reiterate the main reasons for any discrepancies (e.g., "Discrepancies between theory and measurement were observed, likely due to variations in the 2N7000's $V_{tn}$...").
+Conclude with a final statement about what you learned or demonstrated.]
+
+
+% --- BIBLIOGRAPHY ---
+\section{Bibliography}
+[1] Fixel, Debora. "ENGR 305 - Lab 9: NMOS Common-Source Amplifier." Trinity College, Hartford, CT, October 2025.
+\newline
+
+[2] Microchip Technology Inc. "2N7000 N-Channel Enhancement-Mode Vertical DMOS FET." Datasheet, DS20005695A, 2021.
+\end{document}
