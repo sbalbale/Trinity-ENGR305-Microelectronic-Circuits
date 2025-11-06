@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx} % For proper unit formatting
+\usepackage{booktabs} % For any tables
+\usepackage{circuitikz} % Added for circuit drawings
+\usepackage{float} % Added for [H] figure placement
+
+% Set paragraph spacing instead of indentation
+\setlength{\parindent}{0in}
+\setlength{\parskip}{1ex}
+
+\title{ENGR 305 Lab 9: Amplifier Schematics}
+\author{Sean Balbale}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Part 1: LTspice Simulation Schematic}
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.2, transform shape]
+    % Define power rails
+    \node[vcc](Vcc) at (6, 6) {$V_+ = \SI{15}{\volt}$};
+    \node[vee](Vee) at (6, -6) {$V_- = \SI{-15}{\volt}$};
+
+    % Input Source with ground
+    \draw (0,0) node[ground]{} to[sV, l={\parbox{1.3cm}{\centering $v_{sig}$ \\ \scriptsize SINE \\ \scriptsize (0 5m 1k)}}] (0,2)
+    to[R, l_={\scriptsize $R_{sig}$}, l^={\scriptsize \SI{50}{\ohm}}] (2,2);
+
+    % Coupling capacitor
+    \draw (2,2) to[C, l_={\scriptsize $C_{C1}$}, l^={\scriptsize \SI{47}{\micro\farad}}] (4.5,2);
+
+    % Gate resistor and MOSFET
+    \draw (4.5,2) to[short] (4.5,3);
+    \draw (4.5,2) to[R, l={\scriptsize $R_G = \SI{10}{\kilo\ohm}$}] (4.5,0) node[ground]{};
+    \node[nmos, anchor=G](Q1) at (6.5,3) {};
+    \draw (4.5,3) to[short, -o] (Q1.G);
+    \node at (6.5,3.8) {\small 2N7000};
+
+    % Drain circuit
+    \draw (Q1.D) to[R, l={\scriptsize $R_D = \SI{5.577}{\kilo\ohm}$}] (6.5,6) -- (Vcc);
+    \draw (Q1.D) to[C, l_={\scriptsize $C_{C2}$}, l^={\scriptsize \SI{47}{\micro\farad}}] (9.5,5)
+    to[R, l={\scriptsize $R_L = \SI{10}{\kilo\ohm}$}] (9.5,2) node[ground]{};
+    \node at (9.5,5) [right, xshift=2mm] {$v_o$};
+
+    % Source circuit with bypass capacitor
+    \draw (Q1.S) to[short] (6.5,1);
+    \draw (6.5,1) to[R, l={\scriptsize $R_S = \SI{12.19}{\kilo\ohm}$}] (6.5,-2);
+    \draw (6.5,-2) to[short] (6.5,-6) -- (Vee);
+    \draw (6.5,1) to[C, l_={\scriptsize $C_S$}, l^={\scriptsize \SI{47}{\micro\farad}}] (8.5,1) node[ground]{};
+
+  \end{circuitikz}
+  \caption{Schematic for LTspice simulation. This circuit includes the signal source $v_{sig}$ and its internal resistance $R_{sig}$. It uses the exact calculated resistor values for $R_D$ and $R_S$ to verify the hand calculations.}
+  \label{fig:ltspice_model}
+\end{figure}
+
+\newpage
+\section{Part 2: Physical Build Schematic}
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.2, transform shape]
+    % Define power rails
+    \node[vcc](Vcc) at (6, 6) {$V_+ = \SI{15}{\volt}$};
+    \node[vee](Vee) at (6, -6) {$V_- = \SI{-15}{\volt}$};
+
+    % Input from function generator
+    \draw (0,2) to[short, o-] (0.5,2);
+    \node at (0,2) [left, xshift=-1mm] {\scriptsize From Func. Gen.};
+
+    % Coupling capacitor
+    \draw (0.5,2) to[C, l_={\scriptsize $C_{C1}$}, l^={\scriptsize \SI{47}{\micro\farad}}] (3.5,2);
+
+    % Gate resistor and MOSFET
+    \draw (3.5,2) to[short] (3.5,3);
+    \draw (3.5,2) to[R, l={\scriptsize $R_G = \SI{10}{\kilo\ohm}$}] (3.5,0) node[ground]{};
+    \node[nmos, anchor=G](Q1) at (6,3) {};
+    \draw (3.5,3) to[short, -o] (Q1.G);
+    \node at (6,3.8) {\small 2N7000};
+
+    % Drain circuit with output to oscilloscope
+    \draw (Q1.D) to[R, l={\scriptsize $R_D = \SI{5.6}{\kilo\ohm}$}] (6,6) -- (Vcc);
+    \draw (Q1.D) to[C, l_={\scriptsize $C_{C2}$}, l^={\scriptsize \SI{47}{\micro\farad}}] (9.5,5);
+    \draw (9.5,5) to[short, -o] (10.5,5);
+    \node at (10.5,5) [right, xshift=1mm] {\scriptsize To Oscilloscope};
+    \draw (9.5,5) to[R, l={\scriptsize $R_L = \SI{10}{\kilo\ohm}$}] (9.5,2) node[ground]{};
+
+    % Source circuit with bypass capacitor
+    \draw (Q1.S) to[short] (6,1);
+    \draw (6,1) to[R, l={\scriptsize $R_S = \SI{12.1}{\kilo\ohm}$}] (6,-2);
+    \draw (6,-2) to[short] (6,-6) -- (Vee);
+    \draw (6,1) to[C, l_={\scriptsize $C_S$}, l^={\scriptsize \SI{47}{\micro\farad}}] (8,1) node[ground]{};
+
+  \end{circuitikz}
+  \caption{Schematic for physical breadboard implementation. $R_{sig}$ is not included as it is internal to the function generator. Standard resistor values ($5.6\text{k}\Omega$, $12.1\text{k}\Omega$) are used for $R_D$ and $R_S$.}
+  \label{fig:physical_model}
+\end{figure}
+
+\newpage
+\section{AC Small-Signal Model Schematics}
+These diagrams show the equivalent circuit used for AC analysis, after all DC sources are grounded and all capacitors are treated as short circuits.
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.2, transform shape]
+    % Input side
+    \draw (0,0) node[ground]{} to[sV, l_={\scriptsize $v_{sig}$}] (0,2.5) to[R, l_={\scriptsize $R_{sig}$}] (2.5,2.5)
+    coordinate (Vin) to[short] (4,2.5) coordinate (Vi)
+    node[above, yshift=1mm] {\small $v_i$};
+
+    % Gate resistor
+    \draw (Vi) to[R, l={\scriptsize $R_G$}, *-] (4,0) node[ground](GND){};
+
+    % Small-signal model
+    \draw (Vi) -- (5.5,2.5) node[above, yshift=2mm]{\small G}; % Gate
+    \draw (5.5,0) node[ground]{} node[below, yshift=-2mm]{\small S}; % Source
+
+    % Dependent current source
+    \draw (8,3) to[cI, l_={\scriptsize $g_m v_{gs}$}] (8,0) node[ground]{};
+
+    % Input voltage v_gs
+    \draw [dashed] (5.5,2.5) -- (5.5,0);
+    \draw [<->] (6.5, 2.5) -- (6.5, 0) node [midway, right] {\scriptsize $v_{gs} = v_i$};
+
+    % Output side
+    \draw (8,3) -- (11,3) coordinate (Vo) node[above, yshift=1mm] {\small $v_o$};
+    \draw (8,0) -- (14,0);
+
+    % Output resistors - spaced out
+    \draw (Vo) to[R, l={\scriptsize $r_o$}, *-] (11,0);
+    \draw (Vo) to[short] (12.5,3) to[R, l={\scriptsize $R_D$}] (12.5,0);
+    \draw (Vo) to[short] (14,3) to[R, l={\scriptsize $R_L$}] (14,0);
+  \end{circuitikz}
+  \caption{AC Small-Signal Model (Hybrid-$\pi$ Model) showing all parallel output resistances.}
+  \label{fig:ac_model_full}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.2, transform shape]
+    % Input side
+    \draw (0,0) node[ground]{} to[sV, l_={\scriptsize $v_{sig}$}] (0,2.5) to[R, l_={\scriptsize $R_{sig}$}] (2.5,2.5)
+    coordinate (Vin) to[short] (4,2.5) coordinate (Vi)
+    node[above, yshift=1mm] {\small $v_i$};
+
+    % Gate resistor
+    \draw (Vi) to[R, l={\scriptsize $R_G$}, *-] (4,0) node[ground](GND){};
+
+    % Small-signal model (pi-model)
+    \coordinate (G) at (5.5,2.5);
+    \coordinate (S) at (5.5,0);
+    \draw (Vi) -- (G) node[above, yshift=2mm]{\small G};
+    \draw (S) node[ground]{} node[below, yshift=-2mm]{\small S};
+    \draw [dashed] (G) -- (S);
+    \draw [<->] (6.5, 2.5) -- (6.5, 0) node [midway, right] {\scriptsize $v_{gs} = v_i$};
+
+    % Dependent current source
+    \coordinate (D) at (8,2.5);
+    \draw (D) to[cI, l_={\scriptsize $g_m v_{gs}$}] (8,0) node[ground]{};
+
+    % Output side - Grouped parallel resistors
+    \draw (D) -- (11,2.5) coordinate (Vo) node[above, yshift=1mm] {\small $v_o$};
+    \draw (Vo) to[R, l={\scriptsize $R_{eq} = R_D \parallel r_o \parallel R_L$}] (11,0) node[ground]{};
+  \end{circuitikz}
+  \caption{Simplified AC Small-Signal Model, with all output resistances combined into $R_{eq}$.}
+  \label{fig:ac_model_simple}
+\end{figure}
+
+\end{document}

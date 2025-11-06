@@ -1,0 +1,260 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx} % For proper unit formatting
+\usepackage{booktabs} % For any tables
+\usepackage{circuitikz} % Added for circuit drawings
+\usepackage{float} % Added for [H] figure placement
+
+% Set paragraph spacing instead of indentation
+\setlength{\parindent}{0in}
+\setlength{\parskip}{1ex}
+
+\title{ENGR 305 Lab 9: NMOS Common-Source Amplifier \\ Hand Calculations}
+\author{Sean Balbale}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Part 1: Design and Simulation}
+
+\subsection{Given Parameters and Design Goals}
+\begin{itemize}
+  \item \textbf{Voltage Supplies:} $V_{+} = \SI{15}{\volt}$, $V_{-} = \SI{-15}{\volt}$
+  \item \textbf{Design Goals:} $I_{D} = \SI{1}{\milli\ampere}$, $A_{v} \le \SI{-5}{\volt/\volt}$
+  \item \textbf{Circuit Resistors:} $R_{sig} = \SI{50}{\ohm}$, $R_{L} = \SI{10}{\kilo\ohm}$, $R_{G} = \SI{10}{\kilo\ohm}$
+  \item \textbf{Transistor Parameters (2N7000):} $\lambda = \SI{0.0146}{\per\volt}$, $k_{n} = \SI{1.08}{\milli\ampere\per\volt\squared}$, $V_{tn} = \SI{1.45}{\volt}$
+\end{itemize}
+
+\subsection{DC Operating Point Analysis}
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.2]
+    % Define power rails
+    \node[vcc](Vcc) at (0, 5) {$V_+ = \SI{15}{\volt}$};
+    \node[vee](Vee) at (0, -5) {$V_- = \SI{-15}{\volt}$};
+
+    % Transistor
+    \node[nmos, anchor=S](Q1) at (0, 0) {};
+
+    % Resistors
+    \draw (Q1.D) to[R, l_=$R_D$] (Q1.D |- Vcc.south) -- (Vcc);
+    \draw (Q1.S) to[R, l_=$R_S$] (Q1.S |- Vee.north) -- (Vee);
+    \draw (Q1.G) to[R, l=$R_G$] ++(-2.5,0) node[ground](GND){};
+
+    % Capacitors (open) - repositioned for better spacing
+    \draw (Q1.G) ++(-5,0) to[C, l=$C_{C1}$, o-o] ++(2,0);
+    \draw (Q1.D) to[C, l=$C_{C2}$, o-o] ++(2.5,0);
+    \draw (Q1.S) to[C, l_=$C_S$, o-o] ++(2.5,0);
+
+    % Labels for nodes - repositioned to avoid overlap
+    \draw (Q1.G) node[above left, xshift=-1mm, yshift=1mm] {$V_G$};
+    \draw (Q1.D) node[above right, xshift=1mm, yshift=1mm] {$V_D$};
+    \draw (Q1.S) node[below right, xshift=1mm, yshift=-1mm] {$V_S$};
+  \end{circuitikz}
+  \caption{DC Model of the Common-Source Amplifier}
+  \label{fig:dc_model}
+\end{figure}
+
+\textbf{1. DC Gate Current and Voltage ($I_G$, $V_G$)} \\
+The DC gate current $I_G$ for a MOSFET is effectively $\SI{0}{\ampere}$. The lab manual specifies a gate resistor $R_G$. Assuming $R_G$ connects the gate to ground, the DC voltage drop across it is $I_G \cdot R_G = \SI{0}{\volt}$.
+Therefore, the DC gate voltage is $V_G = \SI{0}{\volt}$.
+
+\textbf{2. Overdrive Voltage ($V_{OV}$)} \\
+Using the saturation current equation for the design goal $I_D = \SI{1}{\milli\ampere}$:
+$$
+I_D = \frac{1}{2} k_n (V_{OV})^2
+$$
+$$
+\SI{1}{\milli\ampere} = \frac{1}{2} (\SI{1.08}{\milli\ampere\per\volt\squared}) (V_{OV})^2
+$$
+
+$$
+V_{OV}^2 = \frac{\SI{2}{\milli\ampere}}{\SI{1.08}{\milli\ampere\per\volt\squared}} \approx \SI{1.8519}{\volt\squared}
+$$
+$$
+V_{OV} = \sqrt{\SI{1.8519}{\volt\squared}} \approx \SI{1.361}{\volt}
+$$
+
+\textbf{3. Transconductance ($g_m$) and Gate-Source Voltage ($V_{GS}$)} \\
+The transconductance $g_m$ is:
+$$
+g_m = \frac{2 I_D}{V_{OV}} = \frac{2 \cdot \SI{1}{\milli\ampere}}{\SI{1.361}{\volt}} \approx \SI{1.4695}{\milli\ampere\per\volt} \text{ (or \SI{1.47}{\milli S})}
+$$
+The gate-source voltage $V_{GS}$ is:
+$$
+V_{GS} = V_{OV} + V_{tn} = \SI{1.361}{\volt} + \SI{1.45}{\volt} = \SI{2.811}{\volt}
+$$
+
+\textbf{4. Early Effect Resistance ($r_o$)} \\
+The output resistance of the transistor itself is:
+$$
+r_o = \frac{1}{\lambda I_D} = \frac{1}{(\SI{0.0146}{\per\volt}) (\SI{1}{\milli\ampere})} = \frac{1}{\SI{0.0000146}{S}} \approx \SI{68493}{\ohm} \text{ or } \SI{68.5}{\kilo\ohm}
+$$
+
+\textbf{5. Source Resistor ($R_S$)} \\
+First, we find the DC source voltage $V_S$ using $V_G = \SI{0}{\volt}$:
+$$
+V_{GS} = V_G - V_S \implies \SI{2.811}{\volt} = \SI{0}{\volt} - V_S \implies V_S = \SI{-2.811}{\volt}
+$$
+The resistor $R_S$ connects the source terminal ($V_S$) to the negative supply ($V_- = \SI{-15}{\volt}$). The DC current through $R_S$ is $I_S = I_D = \SI{1}{\milli\ampere}$ (since $I_G=0$).
+$$
+R_S = \frac{V_S - V_{-}}{I_D} = \frac{\SI{-2.811}{\volt} - (\SI{-15}{\volt})}{\SI{1}{\milli\ampere}} = \frac{\SI{12.189}{\volt}}{\SI{1}{\milli\ampere}} = \SI{12.19}{\kilo\ohm}
+$$
+This value is very close to the standard E24 resistor value of $\SI{12.1}{\kilo\ohm}$.
+
+\newpage
+\subsection{AC Analysis}
+For the AC model, all capacitors ($C_{C1}$, $C_{C2}$, $C_S$) are treated as short circuits, and DC supplies ($V_+$, $V_-$) are treated as AC ground.
+
+\begin{figure}[H]
+  \centering
+  \begin{circuitikz}[scale=1.1, transform shape]
+    % Input side
+    \draw (0,0) to[sV, l=$v_{sig}$] (0,2.5) to[R, l=$R_{sig}$] (2.5,2.5)
+    coordinate (Vin) to[short] (4,2.5) coordinate (Vi)
+    node[above right, xshift=1mm] {$v_i$};
+
+    % Gate resistor
+    \draw (Vi) to[R, l_=$R_G$, *-] (4,0) node[ground](GND){};
+
+    % Small-signal model
+    \draw (Vi) -- (5.5,2.5) node[above, yshift=1mm]{G}; % Gate
+    \draw (5.5,0) node[ground]{} -- (5.5,0) node[below, yshift=-1mm]{S}; % Source
+
+    % Dependent current source
+    \draw (8,3) to[cI, l=$g_m v_{gs}$] (8,0);
+
+    % Input voltage v_gs - moved further right
+    \draw [dashed] (5.5,2.5) -- (5.5,0);
+    \draw [<->] (6.2, 2.5) -- (6.2, 0) node [midway, right] {$v_{gs} = v_i$};
+
+    % Output side
+    \draw (8,3) -- (11,3) coordinate (Vo) node[above right, xshift=1mm] {$v_o$};
+    \draw (8,0) -- (14,0) node[ground]{};
+
+    % Output resistors - better spacing
+    \draw (Vo) to[R, l_=$r_o$, *-] (11,0);
+    \draw (Vo) to[short] (12.5,3) to[R, l=$R_D$] (12.5,0);
+    \draw (Vo) to[short] (14,3) to[R, l=$R_L$] (14,0);
+  \end{circuitikz}
+  \caption{AC Small-Signal Model of the Common-Source Amplifier}
+  \label{fig:ac_model}
+\end{figure}
+
+\textbf{1. Input Voltage Ratio ($v_i / v_{sig}$)} \\
+The AC input resistance $R_{in}$ of the amplifier is $R_G$ in parallel with the gate's infinite resistance, so $R_{in} = R_G = \SI{10}{\kilo\ohm}$. This forms a voltage divider with the signal source resistance $R_{sig}$.
+$$
+\frac{v_i}{v_{sig}} = \frac{R_{in}}{R_{sig} + R_{in}} = \frac{R_G}{R_{sig} + R_G} = \frac{\SI{10000}{\ohm}}{\SI{50}{\ohm} + \SI{10000}{\ohm}} = \frac{10000}{10050} \approx 0.995
+$$
+This ratio is very close to 1, so for further calculations, we can approximate $v_i \approx v_{sig}$.
+
+\textbf{2. Drain Resistor ($R_D$) for Gain $A_v = -5$ V/V} \\
+The AC bypass capacitor $C_S$ shorts $R_S$ to ground, so the source is at AC ground. The small-signal voltage gain $A_v = v_o / v_i$ is:
+$$
+A_v = -g_m (r_o \parallel R_D \parallel R_L)
+$$
+We need to solve for $R_D$ to achieve $A_v = \SI{-5}{\volt/\volt}$.
+$$
+\SI{-5}{\volt/\volt} = -(\SI{1.4695}{\milli S}) ( \SI{68.5}{\kilo\ohm} \parallel R_D \parallel \SI{10}{\kilo\ohm} )
+$$
+
+First, let's combine the known parallel resistances $R_{L}' = r_o \parallel R_L$:
+$$
+R_{L}' = \frac{\SI{68.5}{\kilo\ohm} \cdot \SI{10}{\kilo\ohm}}{\SI{68.5}{\kilo\ohm} + \SI{10}{\kilo\ohm}} = \frac{685}{78.5} \approx \SI{8.726}{\kilo\ohm}
+$$
+Now substitute this back into the gain equation:
+$$
+5 = (\SI{1.4695}{\milli S}) ( R_D \parallel \SI{8.726}{\kilo\ohm} )
+$$
+Let $R_{eq} = R_D \parallel \SI{8.726}{\kilo\ohm}$. We solve for this equivalent resistance:
+$$
+R_{eq} = \frac{5}{\SI{1.4695}{\milli S}} \approx \SI{3.4025}{\kilo\ohm}
+$$
+Now, we can solve for $R_D$:
+$$
+\frac{1}{R_{eq}} = \frac{1}{R_D} + \frac{1}{R_{L}'} \implies \frac{1}{R_D} = \frac{1}{R_{eq}} - \frac{1}{R_{L}'}
+$$
+$$
+\frac{1}{R_D} = \frac{1}{\SI{3.4025}{\kilo\ohm}} - \frac{1}{\SI{8.726}{\kilo\ohm}} \approx 0.0002939 - 0.0001146 = \SI{0.0001793}{\per\kilo\ohm}
+$$
+$$
+R_D = \frac{1}{0.0001793} \approx \SI{5.577}{\kilo\ohm}
+$$
+A standard $\SI{5.6}{\kilo\ohm}$ resistor would be a suitable choice.
+
+\textbf{3. DC Drain Voltage ($V_D$) and Saturation Check} \\
+Using our calculated $R_D = \SI{5.577}{\kilo\ohm}$, we find the DC drain voltage $V_D$:
+$$
+V_D = V_{+} - I_D R_D = \SI{15}{\volt} - (\SI{1}{\milli\ampere})(\SI{5.577}{\kilo\ohm}) = \SI{15}{\volt} - \SI{5.577}{\volt} = \SI{9.423}{\volt}
+$$
+To be in saturation, the transistor must satisfy $V_{DS} \ge V_{OV}$.
+$$
+V_{DS} = V_D - V_S = \SI{9.423}{\volt} - (\SI{-2.811}{\volt}) = \SI{12.234}{\volt}
+$$
+Check: $V_{DS} (\SI{12.234}{\volt}) \ge V_{OV} (\SI{1.361}{\volt})$.
+The condition is clearly met, so the transistor is operating in the saturation region as assumed.
+
+\textbf{4. Amplifier Output Resistance ($R_o$)} \\
+The output resistance $R_o$ of the amplifier (as defined in the lab manual, step 2) is the resistance looking into the drain, *before* $R_L$ is attached. This is $R_D$ in parallel with $r_o$.
+$$
+R_o = R_D \parallel r_o = \SI{5.577}{\kilo\ohm} \parallel \SI{68.5}{\kilo\ohm}
+$$
+$$
+R_o = \frac{\SI{5.577}{\kilo\ohm} \cdot \SI{68.5}{\kilo\ohm}}{\SI{5.577}{\kilo\ohm} + \SI{68.5}{\kilo\ohm}} = \frac{381.99}{74.077} \approx \SI{5.157}{\kilo\ohm}
+$$
+
+\newpage
+\section{Summary of Calculated Values}
+
+The following table summarizes all the key calculated values from the design and analysis of the NMOS common-source amplifier:
+
+\begin{table}[H]
+  \centering
+  \caption{Summary of Calculated Design Parameters}
+  \label{tab:summary}
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Parameter} & \textbf{Symbol} & \textbf{Value} & \textbf{Section} \\
+    \midrule
+    \multicolumn{4}{l}{\textit{DC Operating Point}} \\
+    \midrule
+    DC Gate Current & $I_G$ & \SI{0}{\ampere} & 1.2 \\
+    DC Gate Voltage & $V_G$ & \SI{0}{\volt} & 1.2 \\
+    Overdrive Voltage & $V_{OV}$ & \SI{1.361}{\volt} & 1.2 \\
+    Transconductance & $g_m$ & \SI{1.47}{\milli\siemens} & 1.2 \\
+    Gate-Source Voltage & $V_{GS}$ & \SI{2.811}{\volt} & 1.2 \\
+    Early Effect Resistance & $r_o$ & \SI{68.5}{\kilo\ohm} & 1.2 \\
+    DC Source Voltage & $V_S$ & \SI{-2.811}{\volt} & 1.2 \\
+    Source Resistor & $R_S$ & \SI{12.19}{\kilo\ohm} & 1.2 \\
+    \midrule
+    \multicolumn{4}{l}{\textit{AC Analysis and Design}} \\
+    \midrule
+    Input Voltage Ratio & $v_i / v_{sig}$ & 0.995 & 1.3 \\
+    Drain Resistor & $R_D$ & \SI{5.577}{\kilo\ohm} & 1.3 \\
+    DC Drain Voltage & $V_D$ & \SI{9.423}{\volt} & 1.3 \\
+    Drain-Source Voltage & $V_{DS}$ & \SI{12.234}{\volt} & 1.3 \\
+    Voltage Gain & $A_v$ & \SI{-5}{\volt/\volt} & 1.3 \\
+    Output Resistance & $R_o$ & \SI{5.157}{\kilo\ohm} & 1.3 \\
+    \midrule
+    \multicolumn{4}{l}{\textit{Design Goals \& Given Parameters}} \\
+    \midrule
+    Drain Current (Design) & $I_D$ & \SI{1}{\milli\ampere} & 1.1 \\
+    Positive Supply & $V_+$ & \SI{15}{\volt} & 1.1 \\
+    Negative Supply & $V_-$ & \SI{-15}{\volt} & 1.1 \\
+    Signal Source Resistance & $R_{sig}$ & \SI{50}{\ohm} & 1.1 \\
+    Load Resistance & $R_L$ & \SI{10}{\kilo\ohm} & 1.1 \\
+    Gate Resistance & $R_G$ & \SI{10}{\kilo\ohm} & 1.1 \\
+    Channel-Length Modulation & $\lambda$ & \SI{0.0146}{\per\volt} & 1.1 \\
+    Transconductance Parameter & $k_n$ & \SI{1.08}{\milli\ampere\per\volt\squared} & 1.1 \\
+    Threshold Voltage & $V_{tn}$ & \SI{1.45}{\volt} & 1.1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Note:} The transistor is confirmed to be in saturation since $V_{DS} = \SI{12.234}{\volt} \ge V_{OV} = \SI{1.361}{\volt}$.
+
+\end{document}
