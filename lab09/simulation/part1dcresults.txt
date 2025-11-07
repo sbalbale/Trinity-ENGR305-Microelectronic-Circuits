@@ -1,0 +1,25 @@
+       --- Operating Point ---
+
+V(n004):	 0	 voltage
+V(n001):	 15	 voltage
+V(p001):	 -15	 voltage
+V(n003):	 0	 voltage
+V(n002):	 9.31422	 voltage
+V(n005):	 -2.71465	 voltage
+V(v0):	 4.37768e-13	 voltage
+V(n006):	 0	 voltage
+Id(M1):	 0.00101532	 device_current
+Ig(M1):	 0	 device_current
+Is(M1):	 -0.00101532	 device_current
+Ib(M1):	 -1.20389e-11	 device_current
+I(Rd):	 0.00101532	 device_current
+I(Rl):	 4.37768e-17	 device_current
+I(Rsig):	 0	 device_current
+I(C1):	 0	 device_current
+I(C2):	 -4.37768e-17	 device_current
+I(V+):	 -0.00101532	 device_current
+I(Vsig):	 0	 device_current
+I(Rg):	 0	 device_current
+I(Rs):	 0.00101532	 device_current
+I(Cs):	 1.27589e-16	 device_current
+I(V-):	 0.00101532	 device_current
