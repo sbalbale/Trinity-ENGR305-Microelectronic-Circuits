@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{siunitx}
+\usepackage{circuitikz}
+\usepackage{float}
+
+% Remove paragraph indentation
+\setlength{\parindent}{0in}
+
+\begin{document}
+
+% --- Figure 1: Full Experimental Schematic ---
+\begin{circuitikz}[american]
+  % Power Rails
+  \node[vcc](Vcc) at (4, 5) {$V_+ = \SI{15}{V}$};
+  \node[vee](Vee) at (4, -5) {$V_- = \SI{-15}{V}$};
+
+  % Transistor
+  \node[npn](Q1) at (4, 0) {2N3904};
+
+  % Bias Resistors
+  \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vcc.south) -- (Vcc);
+  \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vee.south) -- (Vee);
+  \draw (Q1.B) -- ++(-1,0) coordinate(Bnode);
+  \draw (Bnode) to[R, l=$R_B$] (Bnode |- Vee.north) node[ground]{}; % RB to Ground
+
+  % Input Stage (AC Coupled)
+  \draw (Bnode) to[C, l=$C_{c1}$, -o] ++(-2.5, 0) coordinate(Vin);
+  \draw (Vin) to[R, l=$R_{sig}$] ++(-2, 0) coordinate(Vsource);
+  \draw (Vsource) to[sV, l=$v_{sig}$] (Vsource |- Vee.north) node[ground]{};
+
+  % Output Stage (AC Coupled)
+  \draw (Q1.C) to[C, l=$C_{c2}$, -o] ++(2.5, 0) coordinate(Vout);
+  \draw (Vout) to[R, l=$R_L$] (Vout |- Vee.north) node[ground]{};
+  \draw (Vout) -- ++(0.5, 0) node[right] {$v_o$};
+
+  % Emitter Bypass
+  % Note: CE connects Emitter to Ground to bypass RE
+  \draw (Q1.E) -- ++(1,0) coordinate(Enode);
+  \draw (Enode) to[C, l=$C_E$] (Enode |- Vee.north) node[ground]{};
+
+\end{circuitikz}
+
+% --- Figure 2: DC Equivalent Circuit ---
+% Capacitors Open: Input/Output/Bypass removed
+\begin{circuitikz}[american]
+  % Power Rails
+  \node[vcc](Vcc) at (2, 3) {$V_+ = \SI{15}{V}$};
+  \node[vee](Vee) at (2, -3) {$V_- = \SI{-15}{V}$};
+
+  % Transistor
+  \node[npn](Q1) at (2, 0) {};
+
+  % Resistors
+  \draw (Q1.C) to[R, l=$R_C$] (Q1.C |- Vcc.south) -- (Vcc);
+  \draw (Q1.E) to[R, l=$R_E$] (Q1.E |- Vee.north) -- (Vee);
+
+  % Base Resistor (RB to Ground in this topology)
+  \draw (Q1.B) -- ++(-1,0) coordinate(Bnode);
+  \draw (Bnode) to[R, l=$R_B$] ++(0, -2) node[ground]{};
+
+  % Labels for Analysis
+  \draw (Q1.B) node[above left] {$V_B$};
+  \draw (Q1.E) node[right] {$V_E$};
+  \draw (Q1.C) node[right] {$V_C$};
+\end{circuitikz}
+
+% --- Figure 3: AC Small-Signal Model (Hybrid-pi) ---
+% Capacitors Shorted: VCC/VEE -> AC Ground
+\begin{circuitikz}[american]
+  % Input Loop
+  \draw (0,0) node[ground]{} to[sV, l=$v_{sig}$] (0,2)
+  to[R, l=$R_{sig}$] (2,2) coordinate(BaseNode);
+
+  % Base Node: RB || r_pi
+  \draw (BaseNode) -- ++(0, -0.5) to[R, l=$R_B$] ++(0, -1.5) node[ground]{};
+  \draw (BaseNode) -- ++(2, 0) coordinate(PiNode);
+
+  % Hybrid-pi Transistor Model
+  \draw (PiNode) to[R, l=$r_{\pi}$, v=$v_{\pi}$] (PiNode |- 0,0) node[ground]{};
+
+  % Dependent Current Source (g_m * v_pi)
+  % Gap between input and output sides
+  \draw (6,0) node[ground]{} to[cI, l=$g_m v_{\pi}$] (6,2) coordinate(CollNode);
+
+  % Output Node: RC || RL
+  \draw (CollNode) -- ++(2,0) coordinate(LoadNode);
+  \draw (CollNode) -- ++(0, -0.5) to[R, l=$R_C$] ++(0, -1.5) node[ground]{};
+  \draw (LoadNode) to[R, l=$R_L$] (LoadNode |- 0,0) node[ground]{};
+
+  % Output Label
+  \draw (LoadNode) -- ++(1,0) node[right] {$v_o$};
+
+\end{circuitikz}
+
+\newpage
+\section*{Lab 10: Circuit Diagrams with Design Values}
+
+\subsection*{1. Full Experimental Schematic}
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american]
+        % --- Coordinates ---
+        % Define the main transistor position
+        \node[npn](Q1) at (6, 0) {2N3904};
+
+        % --- Power Rails (Vertical Alignment) ---
+        \draw (Q1.C) -- ++(0, 0.5) coordinate(CNode);
+        \draw (CNode) to[R, l=$R_C$, a=$\SI{10.83}{k\ohm}$] ++(0, 3) node[vcc]{$V_+ = \SI{15}{V}$};
+        
+        \draw (Q1.E) -- ++(0, -0.5) coordinate(ENode);
+        \draw (ENode) to[R, l=$R_E$, a=$\SI{14.06}{k\ohm}$] ++(0, -3) node[vee]{$V_- = \SI{-15}{V}$};
+
+        % --- Input Stage (Left Side) ---
+        % Horizontal path: Source -> Rsig -> Cc1 -> Base
+        \draw (Q1.B) -- ++(-1, 0) coordinate(BaseNode); % Node for RB connection
+        
+        % RB to Ground (Vertical drop)
+        \draw (BaseNode) to[R, l=$R_B$, a=$\SI{10}{k\ohm}$] (BaseNode |- 0, -4) node[ground]{};
+        
+        % Input path continuing left
+        \draw (BaseNode) to[C, l=$C_{c1}$, a=$\SI{47}{\micro\farad}$] ++(-3, 0) coordinate(C1Node);
+        \draw (C1Node) to[R, l=$R_{sig}$, a=$\SI{50}{\ohm}$] ++(-3, 0) coordinate(InNode);
+        
+        % Source to Ground
+        \draw (InNode) to[sV, l=$v_{sig}$] (InNode |- 0, -4) node[ground]{};
+
+        % --- Output Stage (Right Side) ---
+        % Horizontal path: Collector -> Cc2 -> Output
+        \draw (CNode) to[short, *-] ++(0,0) -- ++(1.5, 0) coordinate(C2Start);
+        \draw (C2Start) to[C, l=$C_{c2}$, a=$\SI{47}{\micro\farad}$] ++(2.5, 0) coordinate(OutNode);
+        
+        % Output label
+        \draw (OutNode) to[short, -o] ++(0.5, 0) node[right]{$v_o$};
+        
+        % RL to Ground (Vertical drop from Output Node)
+        \draw (OutNode) to[R, l=$R_L$, a=$\SI{10}{k\ohm}$] (OutNode |- 0, -4) node[ground]{};
+
+        % --- Emitter Bypass (Right Side) ---
+        % Connection from Emitter Node -> Right -> Down through CE -> Ground
+        % This matches the visual style of placing shunts vertically
+        \draw (ENode) to[short, *-] ++(2, 0) coordinate(ECapNode);
+        \draw (ECapNode) to[C, l=$C_E$, a=$\SI{47}{\micro\farad}$] (ECapNode |- 0, -4) node[ground]{};
+
+    \end{circuitikz}
+    \caption{Full Amplifier Schematic (Orthogonal Layout)}
+\end{figure}
+
+\subsection*{2. DC Equivalent Circuit (Bias Point)}
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american]
+        % Transistor centered
+        \node[npn](Q1) at (4, 0) {};
+
+        % RC and VCC
+        \draw (Q1.C) -- ++(0, 0.5) coordinate(CNode);
+        \draw (CNode) to[R, l=$R_C$, a=$\SI{10.83}{k\ohm}$, i<_=$I_C$] ++(0, 2.5) node[vcc]{$V_+$};
+        \draw (Q1.C) node[right, xshift=0.2cm] {$V_C = \SI{4.17}{V}$};
+
+        % RE and VEE
+        \draw (Q1.E) -- ++(0, -0.5) coordinate(ENode);
+        \draw (ENode) to[R, l=$R_E$, a=$\SI{14.06}{k\ohm}$, i=$I_E$] ++(0, -2.5) node[vee]{$V_-$};
+        \draw (Q1.E) node[right, xshift=0.2cm] {$V_E = \SI{-0.8}{V}$};
+
+        % RB to Ground
+        \draw (Q1.B) -- ++(-1, 0) coordinate(BaseNode);
+        \draw (BaseNode) to[R, l=$R_B$, a=$\SI{10}{k\ohm}$, i<_=$I_B$] (BaseNode |- 0, -3) node[ground]{};
+        \draw (Q1.B) node[above left] {$V_B = \SI{-0.1}{V}$};
+
+    \end{circuitikz}
+    \caption{DC Equivalent Circuit}
+\end{figure}
+
+\subsection*{3. AC Small-Signal Model}
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american]
+        % --- Input Loop ---
+        \draw (0,0) node[ground]{} to[sV, l=$v_{sig}$] (0,3) 
+        to[R, l=$R_{sig}$, a=$\SI{50}{\ohm}$] (3,3) coordinate(BaseNode);
+        
+        % RB shunt
+        \draw (BaseNode) to[R, l=$R_B$, a=$\SI{10}{k\ohm}$, *-] (BaseNode |- 0,0) node[ground]{};
+        
+        % Link to Transistor Model
+        \draw (BaseNode) -- (5,3) coordinate(PiNode);
+        
+        % --- Hybrid-pi Model ---
+        \draw (PiNode) to[R, l=$r_{\pi}$, a=$\SI{2.6}{k\ohm}$, v=$v_{\pi}$] (PiNode |- 0,0) node[ground]{};
+        
+        % Dependent Source
+        \draw (8,0) node[ground]{} to[cI, l=$g_m v_{\pi}$, a=$(\SI{38.5}{mS})v_{\pi}$] (8,3) coordinate(CollNode);
+        
+        % --- Output Loop ---
+        % RC shunt
+        \draw (CollNode) to[short, *-] (9.5,3) coordinate(RCNode);
+        \draw (RCNode) to[R, l=$R_C$, a=$\SI{10.83}{k\ohm}$] (RCNode |- 0,0) node[ground]{};
+        
+        % RL shunt
+        \draw (RCNode) -- (12,3) coordinate(RLNode);
+        \draw (RLNode) to[R, l=$R_L$, a=$\SI{10}{k\ohm}$] (RLNode |- 0,0) node[ground]{};
+        
+        % Output Terminal
+        \draw (RLNode) to[short, -o] (13,3) node[right] {$v_o$};
+
+    \end{circuitikz}
+    \caption{Small-Signal AC Model}
+\end{figure}
+
+\end{document}
