@@ -44,13 +44,26 @@
 
 ## :dart: About ##
 
-This is my coursework for Microelectronic Circuits (ENGR305) at Trinity College.
+This repository contains coursework, lab reports, simulations, and notes for **ENGR305 Microelectronic Circuits** at Trinity College. It serves as a comprehensive archive of the practical work and study materials developed throughout the course.
 
 ## :rocket: Technologies ##
 
 The following tools were used in this project:
 
-- [LTSpice](https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html)
+- [LTSpice](https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html) - For circuit simulation and analysis
+- [LaTeX](https://www.latex-project.org/) - For typesetting professional lab reports and note sheets
+- **Microsoft Office** (Word, Excel) - For data analysis and report drafting
+
+## :file_folder: Structure ##
+
+The repository is organized as follows:
+
+- **`lab01` - `lab10`**: Individual folders for each laboratory assignment. These contain:
+  - LTSpice simulation files (`.asc`)
+  - Simulation results and data (`.txt`, `.xlsx`)
+  - Lab reports and calculations (`.tex`, `.docx`, `.pdf`)
+- **`lectures/`**: Lecture notes and supplementary materials.
+- **`midtermNotesheet/`**: LaTeX source code and compiled PDFs for exam reference sheets.
 
 ## :checkered_flag: Starting ##
 
