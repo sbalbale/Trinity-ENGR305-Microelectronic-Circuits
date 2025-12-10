@@ -1,0 +1,312 @@
+\documentclass[8pt, letterpaper]{article}
+\usepackage[margin=0.25in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+% --- FORMATTING SETTINGS ---
+\setlength{\columnsep}{0.2in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Compact list settings
+\setlist[itemize]{leftmargin=*, noitemsep, topsep=0pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=*, noitemsep, topsep=0pt, parsep=0pt}
+
+% Section formatting
+\titleformat{\section}
+{\normalfont\small\bfseries\uppercase}{\thesection}{1em}{}[{\titlerule[0.5pt]}]
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+
+\titleformat{\subsection}
+{\normalfont\footnotesize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{2pt}{1pt}
+
+\begin{document}
+
+\begin{center}
+  \textbf{\large ENGR 305 Final Exam Notesheet}
+\end{center}
+
+\begin{multicols*}{3}
+
+  % ==========================================
+  % CONSTANTS & VALUES
+  % ==========================================
+  \section*{Key Constants \& Values}
+  \begin{itemize}
+    \item $q = 1.602 \times 10^{-19}$ C
+    \item $k = 8.62 \times 10^{-5}$ eV/K $= 1.38 \times 10^{-23}$ J/K
+    \item $V_T = \frac{kT}{q} \approx 25.9$ mV at 300K
+    \item $n_i (\text{Si}) \approx 1.5 \times 10^{10}$ cm$^{-3}$ at 300K
+    \item $\epsilon_s (\text{Si}) = 11.7 \epsilon_0 \approx 1.04 \times 10^{-12}$ F/cm
+    \item $E_g (\text{Si}) \approx 1.12$ eV
+  \end{itemize}
+
+  % ==========================================
+  % CHAPTER 3
+  % ==========================================
+  \section*{Ch 3: Semiconductors}
+
+  \subsection*{Equations}
+  \textbf{Intrinsic Conc ($n_i$):} $n_i = B T^{3/2} e^{-E_g / 2kT}$ \\
+  \textbf{Mass Action:} $n \cdot p = n_i^2$ \\
+  \textbf{Doping:}
+  \begin{itemize}
+    \item N-type ($N_D$): $n_n \approx N_D, \quad p_n \approx n_i^2/N_D$
+    \item P-type ($N_A$): $p_p \approx N_A, \quad n_p \approx n_i^2/N_A$
+  \end{itemize}
+  \textbf{Conductivity:} $\sigma = q(\mu_n n + \mu_p p) = 1/\rho$ \\
+  \textbf{Drift Current:} $J_{drift} = q(n\mu_n + p\mu_p)E$ \\
+  \textbf{Diffusion:} $J_n = qD_n \frac{dn}{dx}, \quad J_p = -qD_p \frac{dp}{dx}$ \\
+  \textbf{Einstein:} $D/\mu = V_T$ \\
+  \textbf{Built-in Potential:} $V_0 = V_T \ln(N_A N_D / n_i^2)$ \\
+  \textbf{Depletion Width:} $W = \sqrt{\frac{2\epsilon_s}{q}(\frac{1}{N_A}+\frac{1}{N_D})(V_0+V_R)}$
+  \begin{itemize}
+    \item $x_n = W \frac{N_A}{N_A+N_D}, \quad x_p = W \frac{N_D}{N_A+N_D}$
+    \item Charge: $Q_J = A q (\frac{N_A N_D}{N_A+N_D}) W$
+  \end{itemize}
+
+  \subsection*{HW 1 Examples}
+  \textbf{3.1 Intrinsic $n_i$:} Calc $n_i$ at different temps.
+  \begin{itemize}
+    \item Use $T$ in Kelvin. $n_i$ rises drastically with temp.
+  \end{itemize}
+  \textbf{3.4 Minority Carriers:} Given $N_A \gg n_i$ (p-type).
+  \begin{itemize}
+    \item Maj: $p_p \approx N_A$. Min: $n_p = n_i^2/N_A$.
+  \end{itemize}
+  \textbf{3.7 Resistivity:} Calculate $R = \rho L / A$.
+  \begin{itemize}
+    \item Find $\rho = 1/[q(\mu_n n + \mu_p p)]$. Note $\mu$ changes with doping.
+  \end{itemize}
+  \textbf{3.14/3.20 Junction:} Find $V_0, W, Q_J$.
+  \begin{itemize}
+    \item $V_R=2V \rightarrow W$ increases $\rightarrow Q_J$ increases.
+  \end{itemize}
+
+  % ==========================================
+  % CHAPTER 4
+  % ==========================================
+  \section*{Ch 4: Diodes}
+
+  \subsection*{Equations}
+  \textbf{Shockley:} $i_D = I_S (e^{v_D/V_T} - 1)$ \\
+  \textbf{Change:} $V_2 - V_1 = 2.3 V_T \log(I_2/I_1) \approx 60 \text{ mV/dec}$ \\
+  \textbf{Models:}
+  \begin{itemize}
+    \item Ideal: $v_D=0$ (on), $i_D=0$ (off)
+    \item CVD: $v_D=0.7$ (on), $i_D=0$ (off)
+    \item Small Signal: $r_d = V_T / I_D$
+  \end{itemize}
+  \textbf{Rectifiers:}
+  \begin{itemize}
+    \item Half-Wave: $V_{out} = V_{in} - V_{D,on}$
+    \item PIV (Half): $V_{peak}$
+    \item PIV (Full-Bridge): $V_{peak} - V_{D,on}$
+  \end{itemize}
+  \textbf{Zener:} $V_Z = V_{Z0} + r_z I_Z$
+
+  \subsection*{HW 2 \& 3 Examples}
+  \textbf{4.2 Ideal Model:} Check bias. If anode $>$ cathode, short ($0V$). If not, open ($I=0$).
+  \textbf{4.21 Exponential Calculation:}
+  \begin{itemize}
+    \item Given $1$mA at $0.7$V. Find $V_D$ for new $I$.
+    \item Use $\Delta V = V_T \ln(I_{new}/I_{old})$.
+  \end{itemize}
+  \textbf{4.46 Zener Parameters:}
+  \begin{itemize}
+    \item Given $V_{ZT} @ I_{ZT}$ and $r_z$.
+    \item Find $V_{Z0} = V_{ZT} - I_{ZT}r_z$.
+    \item New $V_Z = V_{Z0} + I_{new}r_z$.
+  \end{itemize}
+  \textbf{4.9 Peak Current:} $I_{peak} = (V_{peak} - V_D)/R$.
+
+  % ==========================================
+  % CHAPTER 5
+  % ==========================================
+  \section*{Ch 5: MOSFETs}
+
+  \subsection*{Equations (NMOS)}
+  \textbf{Overdrive:} $v_{OV} = v_{GS} - V_{tn}$ \\
+  \textbf{1. Cutoff:} $v_{GS} < V_{tn} \Rightarrow i_D = 0$ \\
+  \textbf{2. Triode:} $v_{DS} < v_{OV}$
+  $$ i_D = k_n' (W/L) [(v_{OV})v_{DS} - \frac{1}{2}v_{DS}^2] $$
+  Small $v_{DS}$: $R_{DS} = 1/[k_n'(W/L)v_{OV}]$ \\
+  \textbf{3. Saturation:} $v_{DS} \ge v_{OV}$
+  $$ i_D = \frac{1}{2} k_n' (W/L) v_{OV}^2 (1 + \lambda v_{DS}) $$
+  \textbf{Output Res:} $r_o = |V_A|/I_D = 1/(\lambda I_D)$ \\
+  \textbf{PMOS:} Use $|v_{GS}|, |V_{tp}|, |v_{DS}|$. Sat if $|v_{DS}| \ge |v_{OV}|$.
+
+  \subsection*{HW 4 Examples}
+  \textbf{5.17 Bias Point:}
+  \begin{itemize}
+    \item Given $I_D$, find $v_{GS}$. Rearrange Sat eq: $v_{OV} = \sqrt{2 I_D / k_n}$.
+    \item $v_{GS} = v_{OV} + V_t$. Min $v_{DS} = v_{OV}$.
+  \end{itemize}
+  \textbf{5.44 Circuit Analysis:}
+  \begin{itemize}
+    \item Assume Saturation. Gate current $= 0$.
+    \item Calculate $I_D$. Find $R_D, R_S$ using KVL.
+    \item Check Sat condition ($V_D \ge V_G - V_t$).
+  \end{itemize}
+  \textbf{5.47 Edge of Saturation:} Set $V_{DS} = V_{OV}$.
+
+  % ==========================================
+  % CHAPTER 6
+  % ==========================================
+  \section*{Ch 6: BJTs}
+
+  \subsection*{Equations (NPN)}
+  \textbf{Active Mode:} $V_{BE} \approx 0.7$V, $V_{BC} < 0.4$V.
+  $$ I_C = I_S e^{V_{BE}/V_T}, \quad I_C = \beta I_B $$
+  $$ I_E = (\beta+1)I_B, \quad \alpha = \frac{\beta}{\beta+1} \approx 1 $$
+  \textbf{Saturation:} $I_C < \beta I_B$, $V_{CE(sat)} \approx 0.2$V. \\
+  \textbf{Early Effect:} $I_C = I_S e^{V_{BE}/V_T}(1 + V_{CE}/V_A)$.
+
+  \subsection*{HW 5 Examples}
+  \textbf{6.2 Scale Current ($I_S$) Ratio:}
+  \begin{itemize}
+    \item Given two devices with different $I_C$ at same $V_{BE}$.
+    \item Since $I_C \propto \text{Area}$, Ratio $= I_{C2}/I_{C1}$.
+  \end{itemize}
+  \textbf{6.14 Parameter Calc:}
+  \begin{itemize}
+    \item Given $I_C, I_B \rightarrow \beta = I_C/I_B$.
+    \item $\alpha = \beta/(\beta+1)$. $I_E = I_C/\alpha$.
+  \end{itemize}
+  \textbf{6.28 DC Analysis ($\beta \to \infty$):}
+  \begin{itemize}
+    \item If $\beta$ is large, $I_B \approx 0$.
+    \item Base voltage set by divider or source.
+    \item $V_E = V_B - 0.7$. $I_E = (V_E - V_{EE})/R_E$.
+    \item $I_C \approx I_E$. $V_C = V_{CC} - I_C R_C$.
+  \end{itemize}
+
+  % ==========================================
+  % CHAPTER 7
+  % ==========================================
+  \section*{Ch 7: Transistor Amplifiers}
+
+  \subsection*{Small Signal Models}
+  \textbf{MOSFET:}
+  \begin{itemize}
+    \item $g_m = 2I_D/V_{OV} = \sqrt{2k_n I_D}$
+    \item $r_o = |V_A|/I_D$
+    \item Input $R = \infty$ (Gate)
+  \end{itemize}
+  \textbf{BJT:}
+  \begin{itemize}
+    \item $g_m = I_C/V_T$
+    \item $r_\pi = \beta/g_m = V_T/I_B$ (Base input R)
+    \item $r_e = \alpha/g_m \approx 1/g_m$ (Emitter input R)
+    \item $r_o = |V_A|/I_C$
+  \end{itemize}
+
+  \subsection*{Amplifier Configurations}
+  \textbf{Common Source (CS):}
+  \begin{itemize}
+    \item $R_{in} = R_G$
+    \item $A_{vo} = -g_m (R_D || r_o)$
+    \item $G_v = -g_m (R_D || r_o) \frac{R_{in}}{R_{in}+R_{sig}}$
+  \end{itemize}
+  \textbf{Common Emitter (CE):}
+  \begin{itemize}
+    \item $R_{in} = R_B || r_\pi$
+    \item $A_{vo} = -g_m (R_C || r_o)$
+    \item Gain is reduced by $r_\pi / (r_\pi + R_{sig})$.
+  \end{itemize}
+  \textbf{Source/Emitter Follower:}
+  \begin{itemize}
+    \item Gain $\approx 1$, High $R_{in}$, Low $R_{out}$.
+    \item BJT Emitter Follower reflects $R_L$ to base as $(\beta+1)R_L$.
+  \end{itemize}
+
+  \subsection*{HW 6, 7, 8 Examples}
+  \textbf{7.1 VTC Active Region (MOS):}
+  \begin{itemize}
+    \item Active range is between cutoff ($V_{GS}=V_t$) and triode boundary ($V_{DS} = V_{GS} - V_t$).
+    \item Use saturation equation to find coords.
+  \end{itemize}
+  \textbf{7.4 Bias for Gain:}
+  \begin{itemize}
+    \item Max gain is near triode boundary.
+    \item $|A_v| \approx 2(V_{DD} - V_{DS}) / V_{OV}$.
+  \end{itemize}
+  \textbf{7.27/7.36 Small Sig Params:}
+  \begin{itemize}
+    \item Calculate $g_m, r_o, r_\pi$ given bias currents.
+    \item Note: $g_m$ for BJT depends only on $I_C$. $g_m$ for MOS depends on $I_D$ and geometry/overdrive.
+  \end{itemize}
+  \textbf{7.65/7.68 Amp Analysis:}
+  \begin{itemize}
+    \item 1. DC Analysis: Find $I_D$ or $I_C$. Check mode.
+    \item 2. Calc parameters: $g_m, r_o, r_\pi$.
+    \item 3. AC Analysis: $R_{in}, R_{out}, A_v$.
+    \item CE $R_{in} = R_{Bias} || r_\pi$. CS $R_{in} = R_{Gate}$.
+  \end{itemize}
+  \textbf{7.74 CE with $R_E$:}
+  \begin{itemize}
+    \item $R_E$ stabilizes bias but reduces gain.
+    \item $A_v \approx -g_m R_C / (1 + g_m R_E) \approx -R_C/R_E$.
+    \item $R_{in (base)} = r_\pi + (\beta+1)R_E$.
+  \end{itemize}
+
+  % ==========================================
+  % CHAPTER 9
+  % ==========================================
+  \section*{Ch 9: Differential Amplifiers}
+
+  \subsection*{Equations}
+  \textbf{MOS Diff Pair:}
+  \begin{itemize}
+    \item Bias current $I$ splits to $I/2$ at equilibrium.
+    \item $V_{OV} = \sqrt{I/k_n}$.
+    \item Differential Gain $A_d = g_m R_D$ (Single-ended output).
+    \item $A_d = 2 g_m R_D$ (Differential output).
+  \end{itemize}
+  \textbf{BJT Diff Pair:}
+  \begin{itemize}
+    \item Bias $I$ splits to $I/2$.
+    \item Diff Input Resistance $R_{id} = 2 r_\pi$.
+    \item $A_d = g_m R_C$ (Single-ended).
+  \end{itemize}
+  \textbf{CMRR:} $20 \log(|A_d|/|A_{cm}|)$.
+  \begin{itemize}
+    \item Ideal current source gives $A_{cm} \approx 0$.
+    \item Finite $R_{SS}$ (source resistance) degrades CMRR. $A_{cm} \approx -R_D / (2 R_{SS})$.
+  \end{itemize}
+
+  \subsection*{HW 9 Examples}
+  \textbf{9.1 MOS Diff Pair Bias:}
+  \begin{itemize}
+    \item Given $I$ and device params.
+    \item $V_{GS} = V_t + \sqrt{(I/2)/k}$.
+    \item $V_S = V_{CM} - V_{GS}$.
+    \item Check saturation: $V_D \ge V_G - V_t$.
+  \end{itemize}
+  \textbf{9.26 BJT Diff Pair DC:}
+  \begin{itemize}
+    \item $V_E = V_{CM} - 0.7$.
+    \item $I_E \approx I_{bias}/2$.
+    \item $V_C = V_{CC} - I_C R_C$.
+  \end{itemize}
+  \textbf{7.117/7.125 Overall Gain:}
+  \begin{itemize}
+    \item Combine stages.
+    \item $G_v = A_{vo} \cdot \frac{R_{in}}{R_{in} + R_{sig}} \cdot \frac{R_L}{R_L + R_{out}}$.
+  \end{itemize}
+  \textbf{Analysis Steps for Any Transistor Circuit:}
+  \begin{enumerate}
+    \item \textbf{DC Analysis:} Open capacitors. Find $V_G/V_B$, assume Saturation/Active. Solve for $I_D/I_C$. Check validity ($V_{DS} \ge V_{OV}$ or $V_{CE} \ge 0.3$).
+    \item \textbf{Small Signal Params:} Use DC currents to find $g_m, r_o, r_\pi$.
+    \item \textbf{AC Analysis:} Short DC sources, short capacitors (mid-band). Draw small signal model. Solve for Gain ($v_{out}/v_{in}$), $R_{in}$, $R_{out}$.
+  \end{enumerate}
+
+\end{multicols*}
+
+\end{document}
