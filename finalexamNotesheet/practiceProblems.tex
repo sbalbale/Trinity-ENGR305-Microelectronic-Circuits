@@ -185,15 +185,69 @@ $$ I_E = (\beta+1)I_B, \quad \alpha = \frac{\beta}{\beta+1} \approx 1 $$
     \item Finite $R_{SS}$ (source resistance) degrades CMRR. $A_{cm} \approx -R_D / (2 R_{SS})$.
 \end{itemize}
 
-\section*{Circuit Analysis Steps}
-\begin{enumerate}
-    \item \textbf{DC Analysis:} Open capacitors. Find $V_G/V_B$, assume Saturation/Active. Solve for $I_D/I_C$. Check validity ($V_{DS} \ge V_{OV}$ or $V_{CE} \ge 0.3$).
-    \item \textbf{Small Signal Params:} Use DC currents to find $g_m, r_o, r_\pi$.
-    \item \textbf{AC Analysis:} Short DC sources, short capacitors (mid-band). Draw small signal model. Solve for Gain ($v_{out}/v_{in}$), $R_{in}$, $R_{out}$.
-\end{enumerate}
+\section*{Key Practice Problems}
 
+\subsection*{Semiconductors (Ch 3)}
+\textbf{Problem 3.14 (HW1):} A pn junction has $N_A=10^{17}$ and $N_D=10^{16}$ cm$^{-3}$. Find the built-in potential ($V_0$) and depletion width ($W$).
+\begin{itemize}
+    \item $V_0 = 25.9\text{mV} \ln(\frac{10^{17}10^{16}}{(1.5\text{e}10)^2}) = 0.754 \text{ V}$
+    \item $W = \sqrt{\frac{2\epsilon_s}{q}(\frac{1}{N_A}+\frac{1}{N_D})V_0} = 0.328 \mu\text{m}$
+\end{itemize}
+\textbf{Problem 3.13 (Review):} A junction is doped symmetrically with $N_A=N_D=5\times 10^{16}$. Find $W$.
+\begin{itemize}
+    \item Since $N_A=N_D$, depletion is symmetric: $x_n = x_p = W/2$.
+    \item $V_0 = 0.778 \text{ V}$. $W = 0.2 \mu\text{m}$.
+\end{itemize}
 
+\subsection*{Diodes (Ch 4)}
+\textbf{Problem 4.21 (HW2):} A diode conducts $1\text{mA}$ at $0.7\text{V}$. Find the voltage required for $10\text{mA}$.
+\begin{itemize}
+    \item $\Delta V = 2.3 V_T \log(10/1) \approx 60 \text{ mV}$.
+    \item $V_{new} = 0.7 + 0.06 = 0.76 \text{ V}$.
+\end{itemize}
+\textbf{Problem 4.65 (Rectifier):} $1\text{V}$ source, $200\Omega$ resistor, diode ($0.7$V drop). Find Peak Current ($I$).
+\begin{itemize}
+    \item $I_{peak} = (V_{in} - 0.7)/R = (1 - 0.7)/200 = 1.5 \text{ mA}$.
+\end{itemize}
 
+\subsection*{MOSFET DC (Ch 5)}
+\textbf{Problem 5.17 (HW4):} $V_t=0.4, k_n=2\text{mA/V}^2$. Design $V_{GS}$ for $I_D=0.2\text{mA}$ in saturation.
+\begin{itemize}
+    \item Saturation Eq: $I_D = 0.5 k_n V_{OV}^2 \Rightarrow 0.2 = 0.5(2)V_{OV}^2$.
+    \item $V_{OV} = \sqrt{0.2} = 0.45 \text{ V}$. $V_{GS} = 0.45 + 0.4 = 0.85 \text{ V}$.
+\end{itemize}
+\textbf{Problem 5.19 (Design):} Find width $W$ for $I_D=2\text{mA}$, $L=0.18\mu\text{m}$, $k_n'=400\mu\text{A/V}^2$, $V_{OV}=1.3\text{V}$.
+\begin{itemize}
+    \item $2\text{mA} = 0.5(0.4\text{m}) (\frac{W}{L}) (1.3)^2$.
+    \item Solve $\frac{W}{L} = 5.92 \Rightarrow W = 5.92(0.18) = 1.07 \mu\text{m}$.
+\end{itemize}
+
+\subsection*{BJT DC (Ch 6)}
+\textbf{Problem 6.4 (Review):} $V_B=4\text{V}, R_E=3.3\text{k}, V_{CC}=10\text{V}, R_C=4.7\text{k}$. Find $V_C$.
+\begin{itemize}
+    \item Assume Active Mode ($V_{BE}=0.7$).
+    \item $V_E = 4 - 0.7 = 3.3 \text{ V}$.
+    \item $I_E = 3.3\text{V}/3.3\text{k} = 1 \text{ mA}$.
+    \item $I_C \approx I_E = 1 \text{ mA}$. $V_C = 10 - (1)(4.7) = 5.3 \text{ V}$.
+    \item Check: $V_C (5.3) > V_B (4)$. Active confirmed.
+\end{itemize}
+
+\subsection*{Small Signal (Ch 7)}
+\textbf{Problem 7.27 (Review):} NMOS $I_D=0.5\text{mA}, V_A=5\text{V}, k_n(W/L)=8\text{mA/V}^2$. Find $g_m, r_o$.
+\begin{itemize}
+    \item $V_{OV} = \sqrt{2 I_D / k_n} = \sqrt{1/8} = 0.35 \text{ V}$.
+    \item $g_m = 2 I_D / V_{OV} = 2.9 \text{ mA/V}$.
+    \item $r_o = V_A / I_D = 5/0.5 = 10 \text{ k}\Omega$.
+\end{itemize}
+
+\subsection*{Differential Pair (Ch 9)}
+\textbf{Problem 9.1 (Review):} NMOS Diff Pair, $I=0.16\text{mA}, k_n=4\text{mA/V}^2$. Find $V_{GS}$ and Range.
+\begin{itemize}
+    \item Bias per side: $I_D = I/2 = 0.08 \text{ mA}$.
+    \item $V_{OV} = \sqrt{I_{D} / (0.5 k_n')} = \sqrt{0.08/2} = 0.2 \text{ V}$.
+    \item $V_{GS} = V_t + V_{OV} = 0.4 + 0.2 = 0.6 \text{ V}$.
+    \item Linear Range Limit: $V_{CM,max} = V_{DD} - I_D R_D + V_{tn} = 1.0 \text{ V}$.
+\end{itemize}
 
 \end{multicols*}
 \end{document}
